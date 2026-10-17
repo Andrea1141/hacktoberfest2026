@@ -1,0 +1,50 @@
+Il controllo del diabete e la stabilità glicemica possono essere alterati da diversi **stimoli e fattori esterni** (ambientali, fisici e comportamentali). Molti di questi agiscono attivando la produzione di **ormoni controinsulari** (come cortisolo, adrenalina e glucagone), che aumentano la produzione di glucosio da parte del fegato e riducono la sensibilità dei tessuti all'insulina.
+
+Ecco i principali stimoli esterni:
+
+---
+
+### 1. Infezioni e malattie intercorrenti
+* **Fattori:** Febbre, influenze, infezioni virali o batteriche (es. urinarie, respiratorie o dentarie).
+* **Meccanismo:** Il sistema immunitario rilascia citochine infiammatorie e stimola la produzione di ormoni dello stress, determinando marcati e repentini rialzi glicemici (iperglicemia da malattia).
+
+---
+
+### 2. Stress psicologico ed emotivo acuto o cronico
+* **Fattori:** Tensioni lavorative, lutti, traumi emotivi, ansia o attacchi di panico.
+* **Meccanismo:** L'attivazione dell'asse ipotalamo-ipofisi-surrene rilascia **cortisolo e adrenalina**, provocando picchi glicemici anche a digiuno o in assenza di carboidrati.
+
+---
+
+### 3. Temperature ed eventi climatici estremi
+* **Caldo eccessivo e ondate di calore:**
+  * Può causare **disidratazione**, concentrando la quantità di glucosio nel sangue.
+  * La vasodilatazione periferica può accelerare l'assorbimento dell'insulina sottocutanea, aumentando il rischio di ipoglicemie improvvise.
+  * *Attenzione pratica:* Le alte temperature possono alterare o degradare l'insulina e il funzionamento di sensori/glucometri.
+* **Freddo intenso:**
+  * L'organismo consuma energia per termoregolarsi, ma vasocostrizione e brividi possono rendere meno prevedibile l'assorbimento dell'insulina e la risposta glicemica.
+
+---
+
+### 4. Farmaci e sostanze chimiche
+* **Corticosteroidi (cortisone):** Tra i più potenti stimoli iperglicemizzanti esterni; riducono drasticamente l'efficacia dell'insulina.
+* **Altri farmaci:** Alcuni diuretici tiazidici, beta-bloccanti, antipsicotici o immunosoppressori.
+* **Alcol:** A breve termine può portare a iperglicemia (specie se associato a bevande zuccherine), ma a distanza di ore blocca la gluconeogenesi epatica, provocando **ipoglicemie ritardate severe**.
+* **Caffeina in dosi elevate e fumo (nicotina):** Possono indurre resistenza transitoria all'insulina per stimolazione simpatica.
+
+---
+
+### 5. Privazione di sonno e alterazione dei ritmi circadiani
+* **Fattori:** Turni di notte, jet lag, insonnia o apnee ostruttive del sonno (OSAS).
+* **Meccanismo:** Il sonno insufficiente o frammentato aumenta la resistenza all'insulina già dal mattino seguente, alterando la regolazione di leptina e grelina (fame/sazietà).
+
+---
+
+### 6. Sforzi fisici anaerobici intensi o non programmati
+* Mentre l'attività aerobica moderata tende ad abbassare la glicemia aumentando la sensibilità all'insulina:
+  * **Sforzi anaerobici ad alta intensità** (sprint, sollevamento carichi pesanti, gare ad alto carico adrenalinico) scatenano scariche di adrenalina che provocano **iperglicemie paradossali** subito dopo lo sforzo.
+
+---
+
+### 7. Traumi fisici, dolore acuto e interventi chirurgici
+* Fratture, ustioni, ferite importanti o il periodo post-operatorio mettono il corpo in allerta fisiologica, causando una risposta metabolica allo stress con aumentato fabbisogno di insu
