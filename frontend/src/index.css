@@ -8,63 +8,42 @@
 
   body {
     font-family: var(--font-sans);
-    background-color: #030712;
-    color: #f3f4f6;
+    background-color: #0f172a;
+    color: #f8fafc;
     overflow-x: hidden;
   }
 }
 
-/* Glassmorphism & Neon Glow Utilities */
+/* Pannelli morbidi e accoglienti (meno da tech, più umani) */
 .glass-panel {
-  background: rgba(15, 23, 42, 0.7);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(51, 65, 85, 0.5);
+  background: rgba(30, 41, 59, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(51, 65, 85, 0.6);
 }
 
 .glass-panel-glow {
-  background: rgba(15, 23, 42, 0.75);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(16, 185, 129, 0.3);
-  box-shadow: 0 0 30px -5px rgba(16, 185, 129, 0.12);
+  background: rgba(30, 41, 59, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(45, 212, 191, 0.3);
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.5);
 }
 
-.glow-emerald {
-  box-shadow: 0 0 25px -4px rgba(16, 185, 129, 0.4);
-}
-
-.glow-rose {
-  box-shadow: 0 0 25px -4px rgba(244, 63, 94, 0.4);
-}
-
-.glow-cyan {
-  box-shadow: 0 0 25px -4px rgba(6, 182, 212, 0.4);
-}
-
-/* Custom Scrollbar */
+/* Custom Scrollbar pulita */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #020617;
+  background: #0f172a;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1e293b;
+  background: #334155;
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #334155;
-}
-
-@keyframes pulseGlow {
-  0%, 100% { opacity: 0.8; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.04); }
-}
-
-.pulse-glow {
-  animation: pulseGlow 3s ease-in-out infinite;
+  background: #475569;
 }

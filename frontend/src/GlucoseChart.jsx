@@ -91,16 +91,16 @@ const CustomTooltip = ({ active, payload, label }) => {
         {optVal !== undefined && (
           <div className="flex items-center justify-between gap-4">
             <span className="flex items-center gap-1.5 text-emerald-400 font-medium">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block shadow-sm shadow-emerald-500/50"></span>
-              Con Hack Gluco:
+              <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block shadow-sm"></span>
+              Con consigli Gluco:
             </span>
             <span className="font-mono font-bold text-emerald-300">{optVal} mg/dL</span>
           </div>
         )}
         {diff > 0 && (
-          <div className="pt-1 border-t border-slate-800/80 flex items-center justify-between text-cyan-300 font-semibold">
-            <span>Delta Risparmiato:</span>
-            <span className="bg-cyan-500/10 px-1.5 py-0.5 rounded">-{diff} mg/dL</span>
+          <div className="pt-1 border-t border-slate-800/80 flex items-center justify-between text-teal-300 font-semibold">
+            <span>Differenza glicemica:</span>
+            <span className="bg-teal-500/10 px-1.5 py-0.5 rounded">-{diff} mg/dL</span>
           </div>
         )}
       </div>
@@ -126,13 +126,13 @@ export default function GlucoseChart({ data, mostraOttimizzata }) {
               <stop offset="95%" stopColor="#f43f5e" stopOpacity={0} />
             </linearGradient>
             <linearGradient id="colorOpt" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#10b981" stopOpacity={0.55} />
-              <stop offset="60%" stopColor="#10b981" stopOpacity={0.15} />
-              <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
+              <stop offset="5%" stopColor="#14b8a6" stopOpacity={0.5} />
+              <stop offset="60%" stopColor="#14b8a6" stopOpacity={0.15} />
+              <stop offset="95%" stopColor="#14b8a6" stopOpacity={0} />
             </linearGradient>
             <linearGradient id="tirFill" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#10b981" stopOpacity={0.06} />
-              <stop offset="100%" stopColor="#10b981" stopOpacity={0.02} />
+              <stop offset="0%" stopColor="#14b8a6" stopOpacity={0.06} />
+              <stop offset="100%" stopColor="#14b8a6" stopOpacity={0.02} />
             </linearGradient>
           </defs>
 
@@ -202,7 +202,7 @@ export default function GlucoseChart({ data, mostraOttimizzata }) {
             strokeDasharray="3 3"
             strokeWidth={1.5}
             label={{
-              value: '🍽️ Inizio Pasto',
+              value: 'Inizio Pasto',
               fill: '#38bdf8',
               position: 'top',
               fontSize: 11,
@@ -223,18 +223,18 @@ export default function GlucoseChart({ data, mostraOttimizzata }) {
             activeDot={{ r: 5, fill: '#f43f5e', stroke: '#fff', strokeWidth: 2 }}
           />
 
-          {/* Curva Ottimizzata (Verde) */}
+          {/* Curva Ottimizzata (Teal) */}
           {mostraOttimizzata && (
             <Area
               type="monotone"
               dataKey="ottimizzata"
-              name="Con Hack Gluco"
-              stroke="#10b981"
+              name="Con consigli Gluco"
+              stroke="#14b8a6"
               strokeWidth={3.5}
               fillOpacity={1}
               fill="url(#colorOpt)"
               dot={false}
-              activeDot={{ r: 6, fill: '#10b981', stroke: '#fff', strokeWidth: 2 }}
+              activeDot={{ r: 6, fill: '#14b8a6', stroke: '#fff', strokeWidth: 2 }}
             />
           )}
         </AreaChart>

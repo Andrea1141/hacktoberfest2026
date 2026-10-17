@@ -1,4 +1,4 @@
-# 🩸 Gluco — Documentazione Tecnica Modifiche Frontend
+# Gluco — Documentazione Tecnica Modifiche Frontend
 
 Questo documento descrive in dettaglio tutte le implementazioni, le scelte architetturali e i componenti realizzati per il front-end di **Gluco** all'interno della cartella `frontend/`.
 
@@ -13,7 +13,7 @@ Questo documento descrive in dettaglio tutte le implementazioni, le scelte archi
 | **Tailwind CSS** | `v4.0.9` | Engine CSS nativo con il plugin ufficiale `@tailwindcss/vite`, direttiva `@import "tailwindcss"` e zero file di configurazione legacy. |
 | **Recharts** | `v2.15.1` | Rendering reattivo dei grafici SVG per la cinetica glicemica post-prandiale. |
 | **KaTeX** | `v0.16.21` | Motore di rendering matematico ad alte prestazioni per visualizzare formule LaTeX ($\LaTeX$) sia inline ($...$) che in blocco ($$...$$) nella chat del bot. |
-| **Lucide React** | `v1.16.0` | Iconografia moderna medical & digital health. |
+| **Lucide React** | `v1.16.0` | Iconografia moderna medical & digital health: Utensils, Pizza, Sandwich, Salad, Footprints, Syringe, HeartPulse, Activity, Check, Bot. |
 
 ---
 
@@ -28,136 +28,94 @@ frontend/
 │   ├── BolusCalculator.jsx   # Modulo di calcolo matematico trasparente del bolo insulinico
 │   ├── ChatCoach.jsx         # Chat con Gluco Coach con motore di rendering LaTeX (KaTeX)
 │   ├── GlucoseChart.jsx      # Grafico cinetico Recharts (curve glicemiche e Time-in-Range)
-│   ├── index.css             # Configurazione Tailwind v4, glassmorphism e design system
+│   ├── index.css             # Configurazione Tailwind v4, design system e palette sanitaria
 │   └── main.jsx              # Entry point React 19 con importazione stili KaTeX (katex.min.css)
-├── index.html                # Template HTML5 con metadati SEO e font Google (Plus Jakarta Sans)
+├── index.html                # Template HTML5 con metadati SEO, font Google e favicon SVG medica
 ├── package.json              # Configurazione dipendenze e script npm
 └── vite.config.js            # Configurazione Vite con plugin React e Tailwind CSS v4
 ```
 
 ---
 
-## 3. Dettaglio dei Singoli File e Modifiche
+## 3. Design System Umano & Palette Colori Non-Tech
 
-### 3.1. `package.json`
-- Configurato il progetto in modalità ES Modules (`"type": "module"`).
-- Aggiunti script per:
-  - `npm run dev`: Avvio del server locale di sviluppo su porta 5173.
-  - `npm run build`: Compilazione bundle ottimizzato con Vite e Rollup.
-  - `npm run preview`: Ispezione locale della build di produzione.
-- Installate le dipendenze essenziali: `react`, `react-dom`, `recharts`, `katex`, `lucide-react`, `@tailwindcss/vite`, `tailwindcss`, `@vitejs/plugin-react` e `vite`.
-
-### 3.2. `vite.config.js`
-- Integrato il plugin nativo `@tailwindcss/vite` insieme a `@vitejs/plugin-react`.
-- Impostata la configurazione server con porta standard `5173` e supporto per accesso host.
-
-### 3.3. `index.html`
-- **SEO & Accessibilità:** Tag semantici, metadati `description` focalizzati su digital twin metabolico e monitoraggio CGM, lingua italiana (`lang="it"`).
-- **Tipografia:** Integrazione dei font Google ad alta leggibilità **Plus Jakarta Sans** (stile moderno e clinico) e **JetBrains Mono** (per valori numerici e metriche di laboratorio).
-- **Dark Mode di default:** Classe `dark` sull'elemento `<html>` e favicon dinamica SVG con goccia ematica 🩸.
-
-### 3.4. `src/index.css` & `src/main.jsx`
-- Importazione moderna di Tailwind CSS v4 con `@import "tailwindcss";`.
-- Importazione foglio di stile KaTeX `katex/dist/katex.min.css` in `main.jsx` con bundle automatico dei font matematici WOFF/WOFF2.
-- Definizione di token di design ed effetti visivi ad alto impatto estetico:
-  - `.glass-panel` e `.glass-panel-glow`: Effetti di glassmorphism con sfocatura (`backdrop-filter: blur(16px)`), bordi semi-trasparenti `slate-800` e bagliori al neon color smeraldo (`#10b981`), ciano (`#06b6d4`) e rosa (`#f43f5e`).
-  - Stili custom per la visualizzazione di KaTeX (`.katex-display`) con scroll orizzontale automatico e background scuro elegante.
-  - Scrollbar custom minimalista scura.
-  - Animazione `@keyframes pulseGlow` per lo stato attivo dei sensori e degli agenti.
+In risposta all'esigenza di rendere l'interfaccia **più umana, intuitiva e accessibile**, lontana da un'estetica sterile o da "hacker/cyberpunk":
+1. **Eliminazione Totale delle Emoji:**
+   - Tutte le emoji (piatti, gocce, siringhe, omini, faccine) sono state rimosse dall'interfaccia, dalle intestazioni, dai selettori e dai messaggi del bot.
+   - Sostituite con un'iconografia professionale, uniforme e accessibile tramite **Lucide React** (`Utensils`, `Pizza`, `Sandwich`, `Salad`, `Footprints`, `Check`, `HeartPulse`, `Bot`).
+2. **Palette Cromatica Medical-Grade e Rassicurante:**
+   - **Sfondo Base:** Transizione da nero puro OLED/cyberpunk (`#030712`) a un ardesia profondo e morbido (`#0f172a` / `slate-900`), riducendo l'affaticamento visivo.
+   - **Tonalità Guida (Calm Teal):** Adozione del verde petrolio/teal medico (`#14b8a6` / `teal-400`/`teal-300`) per identificare lo stato di salute ottimale, la curva consigliata e gli accenti primari, sostituendo i verdi fosforescenti/neon.
+   - **Stati Glicemici Intuitivi:**
+     - **Ottimale (70 - 140 mg/dL):** Soft teal rassicurante.
+     - **Normale post-pasto (140 - 180 mg/dL):** Grigio ardesia neutro discreto.
+     - **Bassa / Attenzione (< 70 mg/dL):** Ambra caldo per richiamare attenzione senza generare panico.
+     - **Alta (> 180 mg/dL):** Corallo morbido tenue.
+   - **Bolo e Carboidrati:** Tonalità cielo polveroso (`sky-300`) e ardesia, eliminando il ciano elettrico ad alto contrasto.
+3. **Rimozione dei Bagliori Neon:**
+   - Eliminati i glow neon fluttuanti (`blur-3xl`, `.glow-emerald`, `.pulse-glow`), sostituendoli con pannelli puliti con bordi sottili e ombre morbide.
 
 ---
 
-### 3.5. `src/GlucoseChart.jsx`
-Il componente grafico è stato riprogettato per fornire una rappresentazione fisiologica ad alta precisione:
-1. **Finestra Temporale Estesa:** Da $t = -45\text{ min}$ (glicemia basale pre-pasto) fino a $t = +180\text{ min}$ (coda glicemica post-prandiale) con campionamento continuo ogni 5 minuti.
-2. **Zona Bersaglio Time-In-Range (TIR):** Area ombreggiata morbida tra **$70\text{ mg/dL}$** e **$180\text{ mg/dL}$** visualizzata tramite `ReferenceArea` per verificare visivamente quando la glicemia rientra nei limiti terapeutici.
-3. **Doppia Curva di Risposta:**
-   - **Curva Standard (Rossa / Rose):** Riflette la cinetica classica non ottimizzata con picco massimo a $t_{\text{picco}}$ e ampiezza calcolata sulla base dei carboidrati, dell'indice glicemico e del contenuto di fibre.
-   - **Curva Ottimizzata (Verde Smeraldo):** Ricalcolata dinamicamente a 60 FPS all'attivazione dei toggle What-If (riduzione dell'indice glicemico per pre-carico fibre e traslocazione GLUT4 per camminata).
-4. **Modellazione della Coda dei Grassi (Effetto Pizza):** Se i lipidi del pasto superano i $20\text{g}$, la funzione matematica modella una persistenza glicemica tardiva oltre i $100\text{ minuti}$.
-5. **Linee di Riferimento Clinico:**
-   - Soglia Iperglicemia a $180\text{ mg/dL}$ tratteggiata rossa.
-   - Soglia Ipoglicemia a $70\text{ mg/dL}$ tratteggiata ambra.
-   - Marcatore temporale per il consumo del pasto a $t = 0\text{ min}$.
-6. **Tooltip Interattivo Avanzato:** Mostra i valori esatti di entrambe le curve e calcola automaticamente il **Delta di escursione risparmiato** (in $\text{mg/dL}$).
+## 4. Dettaglio dei Singoli File e Modifiche
+
+### 4.1. `index.html`
+- **Favicon Medica Vettoriale:** Sostituita l'emoji con una goccia medica stilizzata in SVG a tonalità teal.
+- **Accessibilità & SEO:** Metadati italiani, tipografia **Plus Jakarta Sans** (stile moderno e clinico) e **JetBrains Mono** per la lettura nitida delle metriche numeriche.
+
+### 4.2. `src/index.css`
+- Configurazione Tailwind v4 con base background `#0f172a`.
+- Rimozione di utility neon artificiali a favore di pannelli puliti con ombreggiatura naturale (`shadow-sm`, `shadow-xl`).
+- Foglio di stile per KaTeX integrato e scrollbar minimalista non invasiva.
+
+### 4.3. `src/GlucoseChart.jsx`
+- **Curva Ottimizzata in Medical Teal:** Gradiente morbido `#14b8a6` per la traiettoria post-pasto consigliata.
+- **Area Time-In-Range (TIR 70–180 mg/dL):** Campitura delicata in teal con soglie tratteggiate intuitive.
+- **Marcatore Pasto Discreto:** Linea cielo a $t = 0\text{m}$ con etichetta pulita `Inizio Pasto`.
+- **Tooltip Umano:** Visualizza il confronto esatto con il dato `Differenza glicemica: -X mg/dL` e `Con consigli Gluco`.
+
+### 4.4. `src/BolusCalculator.jsx`
+- Palette ricalibrata su toni teal e sky per eliminare l'aspetto "software da sviluppatore".
+- Scomposizione chiara a 4 fasi:
+  - **Bolo Pasto:** $\text{Carboidrati (g)} / \text{Rapporto I:C}$
+  - **Bolo Correzione:** $\max\left(0, \frac{\text{Glicemia} - \text{Target}}{\text{FSI}}\right)$
+  - **Insulina Attiva (IOB):** $-\text{IOB}$
+  - **Attività Fisica (GLUT4):** Riduzione protettiva del $20\%$ all'attivazione del moto post-pasto.
+- Alert "Effetto Pizza / Coda Grassi" spiegato in linguaggio comprensibile con ripartizione consigliata (65% subito + 35% prolungato).
+- Cassetto parametri paziente (Target, I:C, FSI, IOB) e disclaimer medico trasparente.
+
+### 4.5. `src/ChatCoach.jsx` (con Motore $\LaTeX$ KaTeX & Tono Umano)
+- **Zero Emoji:** Rimossi tutti i simboli grafici da messaggi di sistema, avatar, quick prompts e risposte del bot.
+- **Linguaggio Empatico e Chiaro:** Il messaggio di benvenuto accoglie calorosamente l'utente, riepiloga il pasto corrente e spiega le opzioni con chiarezza colloquiale.
+- **Motore di Rendering $\LaTeX$:**
+  - Formule in blocco `$$ ... $$` con scroll orizzontale automatico.
+  - Formule inline `$ ... $` armonizzate con il testo discorsivo.
+- **Pulsanti Rapidi Umani:** `Calcola Bolo`, `Picco Glicemico`, `Camminata post-pasto`, `Verdure prima del pasto`.
+
+### 4.6. `src/App.jsx`
+- **Header:** Brand "Gluco" in bianco nitido con badge discreto "Assistente Glicemico" e stato connessione rassicurante ("Sensore collegato" / "Modalità demo").
+- **Home Rapida Quotidiana:**
+  - **Pasto Attuale come Tasto:** Grande pulsante interattivo con icona vettoriale Lucide (`Utensils`, `Pizza`, `Sandwich`, `Salad`), nome, carboidrati e indicatore "Cambia".
+  - **4 Micro-tasti Veloci:** Selezione rapida a 1-tap con icone pulite e stato attivo in teal solido.
+  - **Stima Rapida Bolo Compatta:** Dose consigliata in grande (`U`), riepilogo rapido e link diretto al calcolatore.
+  - **Consigli per la Stabilità Glicemica:** Toggle What-If riformulati in abitudini quotidiane ("Verdura prima del pasto" e "15 min di camminata post-pasto") con icone `Salad` e `Footprints`.
+  - **KPI Intuitivi:** "Picco Normale", "Picco con Consigli", "Differenza Glicemica", "Tempo nel Range".
+- **Analisi Pasto:** Selettore 4 pasti quotidiani con icone dedicate, uploader fotografico e scheda macronutrienti bilanciata.
+- **Curva & Trend:** Vista cinetica ad alta risoluzione da $t = -45\text{m}$ a $+180\text{m}$.
+- **Layout Responsivo Chat Coach:**
+  - **Desktop (`lg:`):** Chat laterale sticky sul lato destro, collassabile con pulsante dock discreto.
+  - **Mobile (`< lg`):** Barra flottante in rilievo in basso (`fixed bottom-4`) con icona e apertura immediata di un Bottom Sheet ergonomico a tutto schermo.
 
 ---
 
-### 3.6. `src/BolusCalculator.jsx`
-Implementato il modulo per il calcolo trasparente del bolo insulinico in conformità alle linee guida cliniche definite in `prompt_chat.txt`:
-1. **Formula a 4 Fasi:**
-   - **Bolo Pasto:** $\text{Carboidrati (g)} / \text{Rapporto I:C}$
-   - **Bolo Correzione:** $\max\left(0, \frac{\text{Glicemia Attuale} - \text{Target Glicemico}}{\text{FSI}}\right)$
-   - **Sottrazione Insulina Attiva (IOB):** $-\text{IOB}$
-   - **Adattamento Attività Fisica (GLUT4):** Quando il toggle camminata è attivo, applica una **riduzione prudenziale del $20\%$** sul bolo per prevenire ipoglicemie post-esercizio.
-2. **Alert Speciale Effetto Pizza / Coda Grassi:**
-   - Attivo se $\text{grassi} \ge 20\text{g}$.
-   - Fornisce la raccomandazione di valutare un **Bolo Dual-Wave (Onda Doppia)**: $65\%$ come dose immediata (Normal Wave) + $35\%$ distribuito su 2–3 ore (Square Wave).
-3. **Cassetto Configurazione Parametri Paziente:**
-   - Permette all'utente di modificare in tempo reale: Target Glicemico (default $100\text{ mg/dL}$), Rapporto I:C (default $10\text{ g/U}$), Fattore di Sensibilità FSI (default $40\text{ mg/dL/U}$) e Insulina Attiva IOB (default $0.8\text{ U}$).
-4. **Disclaimer Medico:** Esplicita avvertenza sulla natura di simulazione matematica a supporto educativo.
+## 5. Validazione e Risultati del Collaudo
 
----
-
-### 3.7. `src/ChatCoach.jsx` (con Motore di Rendering $\LaTeX$ Nativo)
-Completamente riprogettato con supporto nativo al rendering formale matematico **$\LaTeX$** tramite **KaTeX**:
-1. **Parser & Tokenizer KaTeX integrato (`renderLatex`):**
-   - Supporto per **formule in blocco (display mode)**: `$$ ... $$` con scroll orizzontale e box evidenziato.
-   - Supporto per **formule inline**: `$ ... $` renderizzate perfettamente allineate con il testo clinico.
-   - Fallback automatico testuale in caso di sintassi non valida.
-2. **Formule Matematiche Cliniche Formalizzate in $\LaTeX$:**
-   - **Calcolo Bolo Totale:**
-     $$\text{Bolo}_{\text{totale}} = \left( \frac{\text{CHO}}{\text{I:C}} + \max\left(0, \frac{\text{BG}_{\text{curr}} - \text{BG}_{\text{target}}}{\text{FSI}}\right) - \text{IOB} \right) \times (1 - \delta_{\text{GLUT4}})$$
-   - **Ripartizione Bolo Dual-Wave (Onda Doppia):**
-     $$\text{Bolo}_{\text{normale}} = 0.65 \times \text{Bolo}_{\text{totale}}, \quad \text{Bolo}_{\text{onda quadra}} = 0.35 \times \text{Bolo}_{\text{totale}}$$
-   - **Cinetica Glicemica ed Escursione:**
-     $$\Delta G(t) = G(t) - G_{\text{basale}}, \quad \text{TIR} = [70, 180]\, \text{mg/dL}$$
-3. **Messaggio di Benvenuto Semplice e Intuitivo:**
-   - Il messaggio iniziale non sovraccarica l'utente con gergo clinico o formule matematiche complesse: saluta calorosamente, conferma il pasto selezionato e il valore glicemico attuale in formato colloquiale chiaro.
-   - Fornisce un elenco immediato a 3 punti sulle azioni possibili: calcolare il bolo, prevedere il picco glicemico o scoprire strategie di mitigazione con camminata/fibre.
-4. **Pulsanti di Suggerimento Rapido (Quick Prompts) Naturali:**
-   - `💉 Calcola Bolo` (attiva lo scorporo analitico rigoroso con equazioni $\LaTeX$)
-   - `📈 Picco Glicemico` (richiede la proiezione temporale $G(t)$ e $G_{\max}$)
-   - `🚶‍♂️ Camminata post-pasto` (spiega la traslocazione GLUT4 e lo sconto del $20\%$)
-   - `🥗 Effetto Fibre` (spiega il ritardo dell'assorbimento gastrico)
-5. **Supporto Markdown Ibrido & KaTeX:** Intestazioni `### `, grassetto `**...**`, citazioni cliniche `> ` ed elenchi puntati con formule $\LaTeX$ inline e in blocco.
-
----
-
-### 3.8. `src/App.jsx`
-Il componente radice che coordina l'intera dashboard con architettura a schede e layout responsivo per la chat:
-1. **Navigazione a Schede / Pagine Ordinata:**
-   - **⚡ Home Rapida (Daily Semplificata & Human-Friendly):** Riprogettata per eliminare il sovraccarico clinico e renderla intuitiva per qualsiasi utente:
-     - **Pasto Attuale a forma di Tasto:** Un elegante pulsante interattivo unico con emoji, nome piatto, carboidrati e indicatore "Cambia", affiancato da 4 micro-tasti pasto rapidi a 1-tap.
-     - **Stima Rapida Bolo Compatta:** Box essenziale con dose consigliata in grande (`U`), scorporo inline chiaro (`Pasto`, `Corr`, `IOB`) e alert compatto discreto per l'onda doppia.
-     - **Consiglio Intelligente Gluco:** Sostituzione delle allerte mediche allarmistiche ("allerta clinica proattiva", "telemetria live") con un consiglio amichevole in italiano colloquiale e attivazione a 1-tap.
-     - **Abitudini Quotidiane:** Semplificazione dei toggle What-If in abitudini facili da comprendere ("🥗 Verdura prima di mangiare", "🚶 15 min di camminata").
-     - **Previsione 3 Ore & KPI Umani:** Grafico cinetico accompagnato da 4 KPI con etichette chiare ("Picco Normale", "Picco con Consigli", "Glicemia Risparmiata", "Nel Range Bersaglio").
-   - **🍽️ Analisi Pasto:** Selettore pasti con 4 opzioni quotidiane, uploader drag & drop con Vision Agent multimodale Gemma 4, scheda bromatologica completa (Carbs, Fibre, Grassi, Proteine, Indice Glicemico).
-   - **📈 Curva & Trend:** Vista immersiva e ingrandita della cinetica post-prandiale ($-45\text{m} \dots +180\text{m}$), soglie di ipo/iperglicemia e Time-in-Range ($70 - 180\text{ mg/dL}$), e spiegazione fisiologica approfondita.
-   - **💉 Calcolatore Bolo:** Modulo trasparente interattivo con formule matematiche a 4 fasi, adattamento all'attività GLUT4 ($-20\%$), cassetto configurazione parametri paziente (Target, I:C, FSI, IOB) e alert Onda Doppia per cibi ricchi di lipidi.
-
-2. **Disposizione Responsiva della Chat AI ("Gluco Coach"):**
-   - **Modalità Desktop (`lg:`):** Chat laterale sticky sul lato destro dello schermo (`sticky top-24`), costantemente accessibile durante la navigazione tra le schede. Include pulsante di apertura/chiusura nell'header e dock flottante discreto in basso a destra quando compressa.
-   - **Modalità Mobile (`< lg`):** Barra flottante in rilievo in basso (`fixed bottom-4 left-4 right-4`) con effetto glassmorphism e bagliore neon. Con un tap si apre un elegante **Bottom Sheet** a tutto schermo con maniglia di trascinamento e tasto di chiusura, garantendo la massima usabilità su smartphone.
-
-3. **Resilienza e Fallback Offline:**
-   - In caso di assenza o ritardo del backend FastAPI, l'applicazione non si blocca mai e attiva automaticamente il dataset demo locale garantendo il 100% dell'interattività deterministica.
-
----
-
-## 4. Validazione e Risultati del Collaudo
-
-- **Installazione pacchetti (`npm install`):**
-  - Eseguita con esito positivo: installato `katex` (v0.16.21), 0 vulnerabilità rilevate.
+- **Verifica Assenza Emoji:** Eseguita scansione automatica regex su tutti i file sorgente in `frontend/src/` con esito: **0 emoji rilevate**.
 - **Compilazione di Produzione (`npm run build`):**
-  - Esito: `Exit Code 0`.
-  - Generati con successo i bundle ottimizzati in `dist/assets/`:
-    - `dist/index.html` ($1.26\text{ kB}$)
-    - `dist/assets/index-xv4rsuyH.css` ($89.06\text{ kB}$ inclusi font e stili KaTeX)
-    - `dist/assets/index-CThAG2Se.js` ($977.00\text{ kB}$ inclusi motori KaTeX, Recharts e React 19)
+  - Esito: `Exit Code 0` in $13.06\text{s}$.
+  - Asset ottimizzati pronti per il deploy:
+    - `dist/index.html` ($1.36\text{ kB}$)
+    - `dist/assets/index-C0tyPO98.css` ($77.37\text{ kB}$)
+    - `dist/assets/index-D6EWuWTy.js` ($976.61\text{ kB}$)
 - **Dev Server locale (`npm run dev`):**
-  - Attivo e funzionante su **`http://localhost:5173/`**.
-- **Igiene Repository & Git:**
-  - File `.gitignore` aggiornato con regole ricorsive per escludere automaticamente `node_modules/`, directory di build (`dist/`), file di ambiente locali (`.env.*`), cache di bundling (`.vite/`, `.cache/`, `.turbo/`) e file spazzatura del sistema operativo.
-  - Risolti i conflitti di tracciamento e rimosse le copie duplicate legacy dalla radice di `frontend/`.
+  - Attivo su **`http://localhost:5173/`**.

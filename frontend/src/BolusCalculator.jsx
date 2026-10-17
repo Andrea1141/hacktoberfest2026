@@ -45,13 +45,13 @@ export default function BolusCalculator({
       {/* Header del Calcolatore */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2.5">
-          <div className="p-2 rounded-xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+          <div className="p-2 rounded-xl bg-teal-500/10 text-teal-300 border border-teal-500/20">
             <Syringe className="w-5 h-5" />
           </div>
           <div>
             <h3 className="font-bold text-slate-100 flex items-center gap-2 text-base">
               Calcolatore Bolo Trasparente
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-300 border border-cyan-500/20">
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-300 border border-teal-500/20">
                 Formula I:C + FSI
               </span>
             </h3>
@@ -61,7 +61,7 @@ export default function BolusCalculator({
 
         <button
           onClick={() => setMostraConfig(!mostraConfig)}
-          className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-cyan-400 transition bg-slate-800/80 hover:bg-slate-800 px-3 py-1.5 rounded-xl border border-slate-700/60"
+          className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-teal-300 transition bg-slate-800/80 hover:bg-slate-800 px-3 py-1.5 rounded-xl border border-slate-700/60"
         >
           <Settings2 className="w-3.5 h-3.5" />
           <span>Parametri Paziente</span>
@@ -135,7 +135,7 @@ export default function BolusCalculator({
             <span>Bolo Pasto</span>
             <span className="font-mono text-[10px] text-slate-500">{carbs}g/{rapportoIC}</span>
           </div>
-          <div className="text-lg font-bold font-mono text-cyan-400 mt-1">
+          <div className="text-lg font-bold font-mono text-sky-300 mt-1">
             +{boloPasto.toFixed(2)} <span className="text-xs font-normal text-slate-400">U</span>
           </div>
         </div>
@@ -147,7 +147,7 @@ export default function BolusCalculator({
               {deltaGlicemia > 0 ? `+${deltaGlicemia}` : '0'}/{fsi}
             </span>
           </div>
-          <div className="text-lg font-bold font-mono text-amber-400 mt-1">
+          <div className="text-lg font-bold font-mono text-amber-300 mt-1">
             +{boloCorrezione.toFixed(2)} <span className="text-xs font-normal text-slate-400">U</span>
           </div>
         </div>
@@ -157,7 +157,7 @@ export default function BolusCalculator({
             <span>Insulina Attiva</span>
             <span className="font-mono text-[10px] text-slate-500">IOB</span>
           </div>
-          <div className="text-lg font-bold font-mono text-rose-400 mt-1">
+          <div className="text-lg font-bold font-mono text-rose-300 mt-1">
             -{iobEffettivo.toFixed(2)} <span className="text-xs font-normal text-slate-400">U</span>
           </div>
         </div>
@@ -165,24 +165,24 @@ export default function BolusCalculator({
         <div className="bg-slate-950/70 p-3 rounded-xl border border-slate-800">
           <div className="text-slate-400 flex items-center justify-between">
             <span>Captazione GLUT4</span>
-            <span className={`font-mono text-[10px] ${usaHackMoto ? 'text-emerald-400' : 'text-slate-500'}`}>
+            <span className={`font-mono text-[10px] ${usaHackMoto ? 'text-teal-300' : 'text-slate-500'}`}>
               {usaHackMoto ? '-20%' : 'Disattivato'}
             </span>
           </div>
-          <div className={`text-lg font-bold font-mono mt-1 ${usaHackMoto ? 'text-emerald-400' : 'text-slate-500'}`}>
+          <div className={`text-lg font-bold font-mono mt-1 ${usaHackMoto ? 'text-teal-300' : 'text-slate-500'}`}>
             {usaHackMoto ? `-${scontoMoto.toFixed(2)}` : '0.00'} <span className="text-xs font-normal text-slate-400">U</span>
           </div>
         </div>
       </div>
 
       {/* Risultato Finale In Evidenza */}
-      <div className="bg-gradient-to-r from-slate-950 via-cyan-950/20 to-slate-950 p-4 rounded-xl border border-cyan-500/30 flex flex-wrap items-center justify-between gap-4">
+      <div className="bg-slate-900/90 p-4 rounded-xl border border-teal-500/30 flex flex-wrap items-center justify-between gap-4 shadow-sm">
         <div>
-          <span className="text-xs uppercase tracking-wider text-cyan-300 font-semibold block">
+          <span className="text-xs uppercase tracking-wider text-teal-300 font-semibold block">
             Bolo Consigliato Stimato
           </span>
           <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-extrabold font-mono text-cyan-300">
+            <span className="text-3xl font-extrabold font-mono text-teal-300">
               {boloTotaleArrotondato} <span className="text-lg font-normal text-slate-300">Unità (U)</span>
             </span>
             <span className="text-xs font-mono text-slate-400">
@@ -192,8 +192,8 @@ export default function BolusCalculator({
         </div>
 
         {usaHackMoto && (
-          <div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 px-3 py-1.5 rounded-xl text-xs">
-            <Activity className="w-4 h-4 shrink-0 text-emerald-400 animate-pulse" />
+          <div className="flex items-center gap-2 bg-teal-500/10 border border-teal-500/20 text-teal-300 px-3 py-1.5 rounded-xl text-xs">
+            <Activity className="w-4 h-4 shrink-0 text-teal-400" />
             <span>Riduzione prudenziale applicata: salvaguardia da ipoglicemia da esercizio.</span>
           </div>
         )}

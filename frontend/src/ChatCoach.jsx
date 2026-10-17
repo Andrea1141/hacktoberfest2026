@@ -161,14 +161,14 @@ export default function ChatCoach({
     {
       id: 'welcome',
       mittente: 'coach',
-      testo: `Ciao! 👋 Sono **Gluco Coach**.
+      testo: `Ciao! Sono **Gluco Coach**.
 
 Ho registrato il tuo pasto (**${meal?.nome_piatto || 'Pasto'}**) e la tua glicemia attuale (**${glicemia} mg/dL**).
 
 Come posso aiutarti?
-* 💉 **Calcolare il bolo** consigliato passo-passo
-* 📈 **Prevedere il picco** della glicemia e i tempi
-* 🚶‍♂️ Scoprire come **ridurre il picco** con una camminata o fibre
+* **Calcolare il bolo** consigliato passo-passo
+* **Prevedere il picco** della glicemia e i tempi
+* Scoprire come **ridurre il picco** con una camminata o verdure
 
 Tocca uno dei suggerimenti rapidi qui sotto oppure scrivimi direttamente!`,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
@@ -206,8 +206,8 @@ Tocca uno dei suggerimenti rapidi qui sotto oppure scrivimi direttamente!`,
       const scontoMoto = usaHack2 ? (subtot * 0.20) : 0;
       const boloTot = Math.max(0, subtot - iob - scontoMoto);
 
-      let resp = `### 💉 Calcolo Matematico del Bolo (Formule $\\LaTeX$)\n\n`;
-      resp += `Ecco lo scorporo analitico rigoroso per **${meal?.nome_piatto}**:\n\n`;
+      let resp = `### Calcolo del Bolo (Formule $\\LaTeX$)\n\n`;
+      resp += `Ecco lo scorporo analitico per **${meal?.nome_piatto}**:\n\n`;
 
       resp += `* **1. Bolo Carboidrati (Pasto):**\n`;
       resp += `$$ \\text{Bolo}_{\\text{pasto}} = \\frac{\\text{Carboidrati (g)}}{\\text{Rapporto I:C}} = \\frac{${carbs}\\text{ g}}{${rapportoIC}\\text{ g/U}} = ${boloPasto.toFixed(2)}\\text{ U} $$\n\n`;
@@ -223,7 +223,7 @@ Tocca uno dei suggerimenti rapidi qui sotto oppure scrivimi direttamente!`,
       resp += `$$ \\text{IOB}_{\\text{attiva}} = -${iob.toFixed(2)}\\text{ U} $$\n\n`;
 
       if (usaHack2) {
-        resp += `* **4. Adattamento Esercizio GLUT4 (Camminata 15 min attiva):**\n`;
+        resp += `* **4. Adattamento Attività Fisica (Camminata attiva):**\n`;
         resp += `$$ \\text{Sconto}_{\\text{GLUT4}} = -20\\% \\times (\\text{Bolo}_{\\text{pasto}} + \\text{Bolo}_{\\text{corr}}) = -${scontoMoto.toFixed(2)}\\text{ U} $$\n\n`;
       } else {
         resp += `* **4. Adattamento Attività Fisica:** Nessuno sconto applicato ($0.00\\text{ U}$). Attivando la camminata post-pasto potrai ridurre il bolo del $20\\%$.\n\n`;
@@ -236,12 +236,12 @@ Tocca uno dei suggerimenti rapidi qui sotto oppure scrivimi direttamente!`,
       if (grassi >= 20) {
         const rapida = (boloTot * 0.65).toFixed(1);
         const lenta = (boloTot * 0.35).toFixed(1);
-        resp += `⚠️ **Strategia Dual-Wave (Effetto Pizza, Grassi = $${grassi}\\text{g} \\ge 20\\text{g}$):**\n`;
-        resp += `I lipidi dilatano lo svuotamento gastrico. È consigliato valutare un **Bolo a Onda Doppia**:\n`;
-        resp += `$$ \\text{Bolo Dual-Wave} = \\begin{cases} \\text{Dose Immediata (65\\%)} = ${rapida}\\text{ U} & \\text{(alla prima forchettata)} \\\\[4pt] \\text{Dose Quadra (35\\%)} = ${lenta}\\text{ U} & \\text{(spalmata su 2–3 ore)} \\end{cases} $$\n\n`;
+        resp += `**Strategia a Rilascio Prolungato (Pasto ricco di grassi, $${grassi}\\text{g} \\ge 20\\text{g}$):**\n`;
+        resp += `I lipidi ritardano lo svuotamento gastrico. È consigliato valutare un **Bolo a Onda Doppia**:\n`;
+        resp += `$$ \\text{Bolo Prolungato} = \\begin{cases} \\text{Dose Immediata (65\\%)} = ${rapida}\\text{ U} & \\text{(all'inizio del pasto)} \\\\[4pt] \\text{Dose Dilazionata (35\\%)} = ${lenta}\\text{ U} & \\text{(distribuita su 2–3 ore)} \\end{cases} $$\n\n`;
       }
 
-      resp += `> 🩺 *Disclaimer Clinico:* Calcolo basato sui parametri $I:C=${rapportoIC}$, $FSI=${fsi}$ e $IOB=${iob}$. Verificare sempre con il proprio piano terapeutico.`;
+      resp += `> *Nota:* Calcolo basato sui parametri $I:C=${rapportoIC}$, $FSI=${fsi}$ e $IOB=${iob}$. Verificare sempre con il proprio piano terapeutico.`;
       return resp;
     }
 
@@ -250,25 +250,25 @@ Tocca uno dei suggerimenti rapidi qui sotto oppure scrivimi direttamente!`,
       const deltaPicco = piccoStd - piccoOpt;
       const gainTir = tirOpt - tirStd;
 
-      let resp = `### 📊 Cinetica e Traiettoria Temporale $G(t)$\n\n`;
-      resp += `Ecco la proiezione cinematica post-prandiale per **${meal?.nome_piatto}**:\n\n`;
+      let resp = `### Andamento e Picco nel Tempo $G(t)$\n\n`;
+      resp += `Ecco la proiezione post-prandiale per **${meal?.nome_piatto}**:\n\n`;
       resp += `* **Punto di Partenza:** $G(0) = ${punto0}\\text{ mg/dL}$\n`;
       resp += `* **Curva Standard:** $G_{\\max}^{\\text{std}} = ${piccoStd}\\text{ mg/dL}$ al minuto $t = +${tPiccoStd}\\text{ min}$\n`;
 
       if (usaHack1 || usaHack2) {
-        resp += `* **Curva Ottimizzata (What-If):** $G_{\\max}^{\\text{opt}} = ${piccoOpt}\\text{ mg/dL}$ al minuto $t = +${tPiccoOpt}\\text{ min}$\n\n`;
+        resp += `* **Curva con Consigli Applicati:** $G_{\\max}^{\\text{opt}} = ${piccoOpt}\\text{ mg/dL}$ al minuto $t = +${tPiccoOpt}\\text{ min}$\n\n`;
         resp += `$$ \\Delta G_{\\text{risparmiato}} = G_{\\max}^{\\text{std}} - G_{\\max}^{\\text{opt}} = -${deltaPicco}\\text{ mg/dL} $$\n\n`;
-        resp += `$$ \\text{Time-in-Range (70–180)}: \\quad ${tirStd}\\% \\xrightarrow{\\text{What-If}} \\mathbf{${tirOpt}\\%} \\quad (\\Delta = +${gainTir}\\%) $$\n\n`;
+        resp += `$$ \\text{Tempo nel bersaglio (70–180)}: \\quad ${tirStd}\\% \\rightarrow \\mathbf{${tirOpt}\\%} \\quad (\\Delta = +${gainTir}\\%) $$\n\n`;
       } else {
-        resp += `* **Margine di Miglioramento:** Attivando i 2 What-If il picco cala a $G_{\\max}^{\\text{opt}} = ${piccoOpt}\\text{ mg/dL}$ ($-${deltaPicco}\\text{ mg/dL}$).\n\n`;
+        resp += `* **Margine di Miglioramento:** Applicando i consigli il picco cala a $G_{\\max}^{\\text{opt}} = ${piccoOpt}\\text{ mg/dL}$ ($-${deltaPicco}\\text{ mg/dL}$).\n\n`;
       }
 
-      resp += `* **Coda Temporale a 2h e 3h:**\n`;
+      resp += `* **Andamento a 2h e 3h:**\n`;
       resp += `$$ G(+120\\text{m}): \\ ${punto120Std}\\text{ mg/dL} \\rightarrow ${punto120Opt}\\text{ mg/dL} $$\n`;
       resp += `$$ G(+180\\text{m}): \\ ${punto180Std}\\text{ mg/dL} \\rightarrow ${punto180Opt}\\text{ mg/dL} $$\n\n`;
 
       if (grassi >= 20) {
-        resp += `💡 **Effetto Coda Lipidica:** Con $${grassi}\\text{g}$ di grassi, gli acidi grassi liberi prolungano la resistenza insulinica ritardata oltre i 120 minuti.`;
+        resp += `**Effetto dei grassi:** Con $${grassi}\\text{g}$ di grassi, gli acidi grassi liberi prolungano l'assorbimento oltre i 120 minuti.`;
       }
 
       return resp;
@@ -276,18 +276,18 @@ Tocca uno dei suggerimenti rapidi qui sotto oppure scrivimi direttamente!`,
 
     // 3. Domanda su camminata / GLUT4
     if (q.includes('cammin') || q.includes('glut4') || q.includes('moto') || q.includes('attivit')) {
-      return `### 🚶‍♂️ Equazione di Traslocazione GLUT4\n\nL'attività muscolare post-prandiale sfrutta una via biochimica indipendente dall'insulina:\n\n$$ \\text{Contrazione Muscolare} \\implies \\text{Traslocazione GLUT4} \\implies \\frac{\\mathrm{d}G}{\\mathrm{d}t} \\downarrow 30\\% $$\n\n* **Assorbimento Glucosio:** I trasportatori GLUT4 migrano dalle vescicole intracellulari alla superficie del miocita.\n* **Fattore di Riduzione:** Nel tuo pasto attuale, abbatte il picco di circa il **$30\\%$**.\n* **Sicurezza Terapeutica:**\n$$ \\text{Bolo}_{\\text{adattato}} = \\text{Bolo}_{\\text{lordo}} \\times (1 - 0.20) $$\nper evitare ipoglicemie improvvise da sforzo.`;
+      return `### Attività Fisica e Sensibilità all'Insulina\n\nL'attività muscolare dopo mangiato attiva una via fisiologica naturale che aiuta le cellule ad assorbire il glucosio:\n\n$$ \\text{Attività Fisica} \\implies \\text{Traslocazione GLUT4} \\implies \\text{Riduzione picco} \\approx 30\\% $$\n\n* **Assorbimento Glucosio:** I muscoli in movimento prelevano zucchero dal sangue in modo diretto.\n* **Fattore di Riduzione:** Nel tuo pasto attuale, riduce il picco di circa il **$30\\%$**.\n* **Sicurezza:**\n$$ \\text{Bolo Adattato} = \\text{Bolo Normale} \\times 0.80 $$\nper evitare che la glicemia scenda troppo dopo lo sforzo.`;
     }
 
     // 4. Domanda su fibre / ordine cibi
     if (q.includes('fib') || q.includes('ordine') || q.includes('insalat') || q.includes('verdura')) {
       const igOriginale = meal?.indice_glicemico ?? 68;
       const igModificato = Math.max(25, igOriginale - 15);
-      return `### 🥗 Cinetica del Pre-carico di Fibre Solubili\n\nConsumare fibre 10 minuti prima dei carboidrati forma un gel viscoso endoluminale:\n\n$$ \\text{IG}_{\\text{effettivo}} = \\text{IG}_{\\text{base}} - \\Delta\\text{IG}_{\\text{fibre}} = ${igOriginale} - 15 = \\mathbf{${igModificato}} $$\n\n$$ v_{\\text{assorbimento intestinale}} \\downarrow 22\\% $$\n\n* **Rallentamento Svuotamento Gastrico:** La barriera viscoelastica ritarda il contatto tra enzimi amilasici e carboidrati.\n* **Appiattimento Curva:** L'incremento glicemico $\\Delta G$ risulta progressivo anziché impulsivo.`;
+      return `### Effetto delle Fibre prima del Pasto\n\nMangiare verdura o fibre 10 minuti prima dei carboidrati rallenta l'assorbimento gastrico:\n\n$$ \\text{Indice Glicemico Effettivo} = ${igOriginale} - 15 = \\mathbf{${igModificato}} $$\n\n* **Rallentamento Svuotamento Gastrico:** Le fibre creano una barriera naturale che modera la digestione degli amidi.\n* **Curva più Dolce:** La glicemia sale con gradualità invece di creare un'impennata improvvisa.`;
     }
 
     // Risposta generica clinica
-    return `### 🩺 Valutazione Clinica in $\\LaTeX$ per **${meal?.nome_piatto}**\n\nParametri attuali:\n* $G_0 = ${glicemia}\\text{ mg/dL}$\n* $\\text{Carboidrati} = ${carbs}\\text{g}$, $\\text{Fibre} = ${fibre}\\text{g}$, $\\text{Grassi} = ${grassi}\\text{g}$\n\n$$ G_{\\max}^{\\text{std}} = ${piccoStd}\\text{ mg/dL} \\xrightarrow{\\text{What-If}} G_{\\max}^{\\text{opt}} = ${piccoOpt}\\text{ mg/dL} $$\n\nPuoi chiedermi il calcolo del bolo insulinico o l'analisi dettagliata delle formule matematiche.`;
+    return `### Valutazione per **${meal?.nome_piatto}**\n\nParametri attuali:\n* Glicemia iniziale: $${glicemia}\\text{ mg/dL}$\n* Carboidrati: $${carbs}\\text{g}$, Fibre: $${fibre}\\text{g}$, Grassi: $${grassi}\\text{g}$\n\n$$ G_{\\max}^{\\text{std}} = ${piccoStd}\\text{ mg/dL} \\rightarrow G_{\\max}^{\\text{con consigli}} = ${piccoOpt}\\text{ mg/dL} $$\n\nPuoi chiedermi il calcolo del bolo insulinico o maggiori dettagli sull'andamento.`;
   };
 
   const inviaMessaggio = async (testo) => {
@@ -365,28 +365,28 @@ Tocca uno dei suggerimenti rapidi qui sotto oppure scrivimi direttamente!`,
   };
 
   const quickPrompts = [
-    { label: '💉 Calcola Bolo', query: 'Quanto bolo devo fare per questo pasto? Mostrami le formule di calcolo.' },
-    { label: '📈 Picco Glicemico', query: 'Quando avrò il picco e come andrà la glicemia?' },
-    { label: '🚶‍♂️ Camminata post-pasto', query: 'Cosa succede se faccio una camminata di 15 minuti?' },
-    { label: '🥗 Effetto Fibre', query: 'Come agiscono le fibre prima del pasto?' }
+    { label: 'Calcola Bolo', query: 'Quanto bolo devo fare per questo pasto? Mostrami le formule di calcolo.' },
+    { label: 'Picco Glicemico', query: 'Quando avrò il picco e come andrà la glicemia?' },
+    { label: 'Camminata post-pasto', query: 'Cosa succede se faccio una camminata di 15 minuti?' },
+    { label: 'Verdure prima del pasto', query: 'Come agiscono le fibre prima del pasto?' }
   ];
 
   return (
-    <div className={`bg-slate-900/70 border border-slate-800 rounded-2xl flex flex-col shadow-2xl backdrop-blur-md overflow-hidden ${className}`}>
+    <div className={`bg-slate-900 border border-slate-800 rounded-2xl flex flex-col shadow-xl overflow-hidden ${className}`}>
       {/* Header Chat */}
-      <div className="p-3.5 sm:p-4 bg-slate-950/80 border-b border-slate-800 flex items-center justify-between shrink-0">
+      <div className="p-3.5 sm:p-4 bg-slate-950 border-b border-slate-800 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-2.5 sm:gap-3">
           <div className="relative">
-            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-tr from-emerald-500 to-cyan-500 flex items-center justify-center text-slate-950 font-bold shadow-lg shadow-emerald-500/20">
-              <Bot className="w-4 h-4 sm:w-5 sm:h-5 text-slate-950" />
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-teal-600/20 border border-teal-500/30 flex items-center justify-center text-teal-300 font-bold shadow-sm">
+              <Bot className="w-4 h-4 sm:w-5 sm:h-5 text-teal-300" />
             </div>
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 absolute -bottom-0.5 -right-0.5 border-2 border-slate-950"></span>
+            <span className="w-2.5 h-2.5 rounded-full bg-teal-400 absolute -bottom-0.5 -right-0.5 border-2 border-slate-950"></span>
           </div>
           <div>
             <div className="flex items-center gap-1.5 sm:gap-2">
-              <h3 className="font-bold text-xs sm:text-sm text-slate-100">Gluco Coach AI</h3>
-              <span className="text-[9px] sm:text-[10px] px-1.5 sm:px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 font-medium">
-                Online
+              <h3 className="font-bold text-xs sm:text-sm text-slate-100">Gluco Coach</h3>
+              <span className="text-[9px] sm:text-[10px] px-1.5 sm:px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-300 border border-teal-500/30 font-medium">
+                Attivo
               </span>
             </div>
             <p className="text-[10px] sm:text-[11px] text-slate-400">
@@ -402,7 +402,7 @@ Tocca uno dei suggerimenti rapidi qui sotto oppure scrivimi direttamente!`,
                 {
                   id: 'welcome_reset',
                   mittente: 'coach',
-                  testo: `Chat reimpostata! 👋\n\nSono pronto ad aiutarti con **${meal?.nome_piatto || 'il pasto'}** e la glicemia a **${glicemia} mg/dL**.\n\nTocca un suggerimento rapido o fammi una domanda!`,
+                  testo: `Chat reimpostata.\n\nSono pronto ad aiutarti con **${meal?.nome_piatto || 'il pasto'}** e la glicemia a **${glicemia} mg/dL**.\n\nTocca un suggerimento rapido o fammi una domanda!`,
                   timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
                 }
               ]);
@@ -432,16 +432,16 @@ Tocca uno dei suggerimenti rapidi qui sotto oppure scrivimi direttamente!`,
             className={`flex gap-3 ${msg.mittente === 'utente' ? 'justify-end' : 'justify-start'}`}
           >
             {msg.mittente === 'coach' && (
-              <div className="w-7 h-7 rounded-lg bg-emerald-500/20 text-emerald-300 flex items-center justify-center shrink-0 border border-emerald-500/30 mt-0.5">
+              <div className="w-7 h-7 rounded-lg bg-teal-600/20 text-teal-300 flex items-center justify-center shrink-0 border border-teal-500/30 mt-0.5">
                 <Bot className="w-4 h-4" />
               </div>
             )}
 
             <div
-              className={`max-w-[88%] rounded-2xl p-3.5 leading-relaxed shadow-md ${
+              className={`max-w-[88%] rounded-2xl p-3.5 leading-relaxed shadow-sm ${
                 msg.mittente === 'utente'
-                  ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-tr-none'
-                  : 'bg-slate-950/90 text-slate-200 border border-slate-800/90 rounded-tl-none space-y-1.5'
+                  ? 'bg-teal-700 text-white rounded-tr-none'
+                  : 'bg-slate-950 text-slate-100 border border-slate-800 rounded-tl-none space-y-1.5'
               }`}
             >
               <FormattedMessageContent text={msg.testo} />
@@ -481,12 +481,12 @@ Tocca uno dei suggerimenti rapidi qui sotto oppure scrivimi direttamente!`,
       </div>
 
       {/* Quick Prompts Suggestions */}
-      <div className="px-3 py-2 bg-slate-950/60 border-t border-slate-800/80 overflow-x-auto flex gap-1.5 scrollbar-none">
+      <div className="px-3 py-2 bg-slate-950/80 border-t border-slate-800/80 overflow-x-auto flex gap-1.5 scrollbar-none">
         {quickPrompts.map((qp, idx) => (
           <button
             key={idx}
             onClick={() => inviaMessaggio(qp.query)}
-            className="shrink-0 text-[11px] bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-emerald-300 px-2.5 py-1.5 rounded-lg border border-slate-800 hover:border-emerald-500/40 transition whitespace-nowrap"
+            className="shrink-0 text-[11px] bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-teal-200 px-3 py-1.5 rounded-lg border border-slate-800 hover:border-teal-500/40 transition whitespace-nowrap"
           >
             {qp.label}
           </button>
@@ -499,19 +499,19 @@ Tocca uno dei suggerimenti rapidi qui sotto oppure scrivimi direttamente!`,
           e.preventDefault();
           inviaMessaggio();
         }}
-        className="p-3 bg-slate-950/90 border-t border-slate-800 flex items-center gap-2"
+        className="p-3 bg-slate-950 border-t border-slate-800 flex items-center gap-2"
       >
         <input
           type="text"
           value={inputTesto}
           onChange={(e) => setInputTesto(e.target.value)}
           placeholder="Fai una domanda (es. 'quanto bolo fare?', 'quando ho il picco?')..."
-          className="flex-1 bg-slate-900 text-xs text-slate-100 placeholder-slate-500 px-3.5 py-2.5 rounded-xl border border-slate-800 focus:outline-none focus:border-emerald-500/60"
+          className="flex-1 bg-slate-900 text-xs text-slate-100 placeholder-slate-500 px-3.5 py-2.5 rounded-xl border border-slate-800 focus:outline-none focus:border-teal-500/60"
         />
         <button
           type="submit"
           disabled={!inputTesto.trim() || staScrivendo}
-          className="p-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed transition font-bold"
+          className="p-2.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white disabled:opacity-40 disabled:cursor-not-allowed transition font-medium shadow-sm"
         >
           <Send className="w-4 h-4" />
         </button>
