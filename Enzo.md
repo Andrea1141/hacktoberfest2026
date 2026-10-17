@@ -127,7 +127,12 @@ Completamente riprogettato con supporto nativo al rendering formale matematico *
 ### 3.8. `src/App.jsx`
 Il componente radice che coordina l'intera dashboard con architettura a schede e layout responsivo per la chat:
 1. **Navigazione a Schede / Pagine Ordinata:**
-   - **⚡ Home Rapida (Daily):** Schermata principale per l'uso quotidiano con controller rapido CGM ($\pm 5\text{ mg/dL}$ e preset rapidi $90, 115, 140, 175$), scelta pasto a 1-tap, stima immediata del bolo consigliato con scorporo, mini-toggle What-If e anteprima diretta della curva glicemica con i 4 KPI.
+   - **⚡ Home Rapida (Daily Semplificata & Human-Friendly):** Riprogettata per eliminare il sovraccarico clinico e renderla intuitiva per qualsiasi utente:
+     - **Pasto Attuale a forma di Tasto:** Un elegante pulsante interattivo unico con emoji, nome piatto, carboidrati e indicatore "Cambia", affiancato da 4 micro-tasti pasto rapidi a 1-tap.
+     - **Stima Rapida Bolo Compatta:** Box essenziale con dose consigliata in grande (`U`), scorporo inline chiaro (`Pasto`, `Corr`, `IOB`) e alert compatto discreto per l'onda doppia.
+     - **Consiglio Intelligente Gluco:** Sostituzione delle allerte mediche allarmistiche ("allerta clinica proattiva", "telemetria live") con un consiglio amichevole in italiano colloquiale e attivazione a 1-tap.
+     - **Abitudini Quotidiane:** Semplificazione dei toggle What-If in abitudini facili da comprendere ("🥗 Verdura prima di mangiare", "🚶 15 min di camminata").
+     - **Previsione 3 Ore & KPI Umani:** Grafico cinetico accompagnato da 4 KPI con etichette chiare ("Picco Normale", "Picco con Consigli", "Glicemia Risparmiata", "Nel Range Bersaglio").
    - **🍽️ Analisi Pasto:** Selettore pasti con 4 opzioni quotidiane, uploader drag & drop con Vision Agent multimodale Gemma 4, scheda bromatologica completa (Carbs, Fibre, Grassi, Proteine, Indice Glicemico).
    - **📈 Curva & Trend:** Vista immersiva e ingrandita della cinetica post-prandiale ($-45\text{m} \dots +180\text{m}$), soglie di ipo/iperglicemia e Time-in-Range ($70 - 180\text{ mg/dL}$), e spiegazione fisiologica approfondita.
    - **💉 Calcolatore Bolo:** Modulo trasparente interattivo con formule matematiche a 4 fasi, adattamento all'attività GLUT4 ($-20\%$), cassetto configurazione parametri paziente (Target, I:C, FSI, IOB) e alert Onda Doppia per cibi ricchi di lipidi.
@@ -149,8 +154,8 @@ Il componente radice che coordina l'intera dashboard con architettura a schede e
   - Esito: `Exit Code 0`.
   - Generati con successo i bundle ottimizzati in `dist/assets/`:
     - `dist/index.html` ($1.26\text{ kB}$)
-    - `dist/assets/index-B2w_giva.css` ($87.89\text{ kB}$ inclusi font e stili KaTeX)
-    - `dist/assets/index-C8-zuvd-.js` ($978.76\text{ kB}$ inclusi motori KaTeX, Recharts e React 19)
+    - `dist/assets/index-xv4rsuyH.css` ($89.06\text{ kB}$ inclusi font e stili KaTeX)
+    - `dist/assets/index-CThAG2Se.js` ($977.00\text{ kB}$ inclusi motori KaTeX, Recharts e React 19)
 - **Dev Server locale (`npm run dev`):**
   - Attivo e funzionante su **`http://localhost:5173/`**.
 - **Igiene Repository & Git:**
