@@ -112,12 +112,15 @@ Completamente riprogettato con supporto nativo al rendering formale matematico *
      $$\text{Bolo}_{\text{normale}} = 0.65 \times \text{Bolo}_{\text{totale}}, \quad \text{Bolo}_{\text{onda quadra}} = 0.35 \times \text{Bolo}_{\text{totale}}$$
    - **Cinetica Glicemica ed Escursione:**
      $$\Delta G(t) = G(t) - G_{\text{basale}}, \quad \text{TIR} = [70, 180]\, \text{mg/dL}$$
-3. **Pulsanti di Suggerimento Rapido (Quick Prompts) con Label $\LaTeX$:**
-   - `💉 Bolo Totale: $\text{Bolo} = \frac{\text{CHO}}{\text{I:C}} + \text{Bolo}_{\text{corr}} - \text{IOB}$`
-   - `📊 Curva & Picco: $G(t)$ e $\Delta G_{\max}$ a $+75\text{m}$`
-   - `🚶‍♂️ GLUT4 & Attività: Sconto $-20\%$ sul bolo`
-   - `🥗 Precarico Fibre: Riduzione $\Delta G$ e assorbimento`
-4. **Supporto Markdown Ibrido:** Intestazioni `### `, grassetto `**...**`, citazioni cliniche `> ` ed elenchi puntati combinati con KaTeX.
+3. **Messaggio di Benvenuto Semplice e Intuitivo:**
+   - Il messaggio iniziale non sovraccarica l'utente con gergo clinico o formule matematiche complesse: saluta calorosamente, conferma il pasto selezionato e il valore glicemico attuale in formato colloquiale chiaro.
+   - Fornisce un elenco immediato a 3 punti sulle azioni possibili: calcolare il bolo, prevedere il picco glicemico o scoprire strategie di mitigazione con camminata/fibre.
+4. **Pulsanti di Suggerimento Rapido (Quick Prompts) Naturali:**
+   - `💉 Calcola Bolo` (attiva lo scorporo analitico rigoroso con equazioni $\LaTeX$)
+   - `📈 Picco Glicemico` (richiede la proiezione temporale $G(t)$ e $G_{\max}$)
+   - `🚶‍♂️ Camminata post-pasto` (spiega la traslocazione GLUT4 e lo sconto del $20\%$)
+   - `🥗 Effetto Fibre` (spiega il ritardo dell'assorbimento gastrico)
+5. **Supporto Markdown Ibrido & KaTeX:** Intestazioni `### `, grassetto `**...**`, citazioni cliniche `> ` ed elenchi puntati con formule $\LaTeX$ inline e in blocco.
 
 ---
 

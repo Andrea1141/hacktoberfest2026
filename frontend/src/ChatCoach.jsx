@@ -161,7 +161,16 @@ export default function ChatCoach({
     {
       id: 'welcome',
       mittente: 'coach',
-      testo: `Ciao! Sono **Gluco Coach**, il tuo assistente clinico predittivo con supporto $\\LaTeX$. Ho analizzato il tuo pasto (**${meal?.nome_piatto || 'Pasto'}**) e la tua glicemia basale ($G_0 = ${glicemia}\\text{ mg/dL}$).\n\nPuoi chiedermi il calcolo dettagliato del bolo con formule matematiche in $\\LaTeX$, l'analisi cinetica di picco $G(t)$ o la simulazione What-If. Di cosa hai bisogno?`,
+      testo: `Ciao! 👋 Sono **Gluco Coach**.
+
+Ho registrato il tuo pasto (**${meal?.nome_piatto || 'Pasto'}**) e la tua glicemia attuale (**${glicemia} mg/dL**).
+
+Come posso aiutarti?
+* 💉 **Calcolare il bolo** consigliato passo-passo
+* 📈 **Prevedere il picco** della glicemia e i tempi
+* 🚶‍♂️ Scoprire come **ridurre il picco** con una camminata o fibre
+
+Tocca uno dei suggerimenti rapidi qui sotto oppure scrivimi direttamente!`,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }
   ]);
@@ -356,10 +365,10 @@ export default function ChatCoach({
   };
 
   const quickPrompts = [
-    { label: '💉 Calcola Bolo in LaTeX', query: 'Mostrami il calcolo matematico trasparente del bolo in LaTeX' },
-    { label: '📊 Formula Cinetica G(t)', query: 'Analisi cinetica temporale del picco glicemico e Time-in-Range' },
-    { label: '🚶‍♂️ Equazione GLUT4', query: 'Spiegami l\'equazione e la traslocazione dei GLUT4 muscolari' },
-    { label: '🥗 Cinetica Fibre & IG', query: 'Come agisce il pre-carico di fibre sull\'indice glicemico?' }
+    { label: '💉 Calcola Bolo', query: 'Quanto bolo devo fare per questo pasto? Mostrami le formule di calcolo.' },
+    { label: '📈 Picco Glicemico', query: 'Quando avrò il picco e come andrà la glicemia?' },
+    { label: '🚶‍♂️ Camminata post-pasto', query: 'Cosa succede se faccio una camminata di 15 minuti?' },
+    { label: '🥗 Effetto Fibre', query: 'Come agiscono le fibre prima del pasto?' }
   ];
 
   return (
@@ -376,12 +385,12 @@ export default function ChatCoach({
           <div>
             <div className="flex items-center gap-1.5 sm:gap-2">
               <h3 className="font-bold text-xs sm:text-sm text-slate-100">Gluco Coach AI</h3>
-              <span className="text-[9px] sm:text-[10px] px-1.5 sm:px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 font-mono font-bold">
-                LaTeX Enabled
+              <span className="text-[9px] sm:text-[10px] px-1.5 sm:px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 font-medium">
+                Online
               </span>
             </div>
             <p className="text-[10px] sm:text-[11px] text-slate-400">
-              Formulazioni matematiche rigorose KaTeX
+              Guida metabolica e calcolo bolo
             </p>
           </div>
         </div>
@@ -393,7 +402,7 @@ export default function ChatCoach({
                 {
                   id: 'welcome_reset',
                   mittente: 'coach',
-                  testo: `Chat reimpostata. Sono pronto per una nuova analisi in $\\LaTeX$ per **${meal?.nome_piatto}** o per la glicemia ($G_0 = ${glicemia}\\text{ mg/dL}$)!`,
+                  testo: `Chat reimpostata! 👋\n\nSono pronto ad aiutarti con **${meal?.nome_piatto || 'il pasto'}** e la glicemia a **${glicemia} mg/dL**.\n\nTocca un suggerimento rapido o fammi una domanda!`,
                   timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
                 }
               ]);
@@ -463,7 +472,7 @@ export default function ChatCoach({
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-bounce"></span>
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-bounce [animation-delay:0.2s]"></span>
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-bounce [animation-delay:0.4s]"></span>
-              <span className="text-[10px] ml-1.5 text-slate-400 font-mono">Compilazione equazioni LaTeX in corso...</span>
+              <span className="text-[10px] ml-1.5 text-slate-400 font-medium">Gluco Coach sta rispondendo...</span>
             </div>
           </div>
         )}
@@ -496,7 +505,7 @@ export default function ChatCoach({
           type="text"
           value={inputTesto}
           onChange={(e) => setInputTesto(e.target.value)}
-          placeholder="Chiedi a Gluco Coach (es. 'calcola il bolo', 'cinetica del picco')..."
+          placeholder="Fai una domanda (es. 'quanto bolo fare?', 'quando ho il picco?')..."
           className="flex-1 bg-slate-900 text-xs text-slate-100 placeholder-slate-500 px-3.5 py-2.5 rounded-xl border border-slate-800 focus:outline-none focus:border-emerald-500/60"
         />
         <button
