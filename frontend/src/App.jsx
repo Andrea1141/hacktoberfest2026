@@ -481,9 +481,9 @@ export default function App() {
                 SCHEDA 1: HOME (PANORAMICA QUOTIDIANA & FUNZIONALITÀ RAPIDE)
                 =================================================================== */}
             {schedaAttiva === 'home' && (
-              <div className="space-y-6">
-                {/* 1. Quick CGM Speed Controller Card */}
-                <div className="bg-gradient-to-br from-slate-900/90 via-slate-900/70 to-slate-950/90 border border-slate-800/90 rounded-2xl p-5 shadow-xl backdrop-blur-md">
+              <div className="space-y-5">
+                {/* 1. Controller Glicemia Semplificato & Umano */}
+                <div className="bg-gradient-to-br from-slate-900/90 via-slate-900/70 to-slate-950/90 border border-slate-800/90 rounded-2xl p-4 sm:p-5 shadow-xl backdrop-blur-md">
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div className="flex items-center gap-3.5">
                       <div className="p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 shadow-sm shadow-emerald-500/10">
@@ -491,7 +491,7 @@ export default function App() {
                       </div>
                       <div>
                         <div className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">
-                          Sensore CGM Glicemia di Partenza
+                          La tua Glicemia Attuale
                         </div>
                         <div className="flex items-baseline gap-2">
                           <span className="text-3xl font-black font-mono text-slate-100">{glicemia}</span>
@@ -503,7 +503,7 @@ export default function App() {
                       </div>
                     </div>
 
-                    {/* Stepper rapido [-5] [+5] e preset */}
+                    {/* Controlli Rapidi: Step [-5] [+5] e Preset */}
                     <div className="flex flex-wrap items-center gap-2">
                       <div className="flex items-center bg-slate-950 rounded-xl border border-slate-800 p-1">
                         <button
@@ -523,7 +523,7 @@ export default function App() {
                         </button>
                       </div>
 
-                      {/* Preset Glicemici Rapidi */}
+                      {/* Valori Frequenti */}
                       <div className="flex items-center gap-1">
                         {[90, 115, 140, 175].map(val => (
                           <button
@@ -531,7 +531,7 @@ export default function App() {
                             onClick={() => setGlicemia(val)}
                             className={`px-2.5 py-1.5 rounded-lg text-xs font-mono font-semibold transition border ${
                               glicemia === val
-                                ? 'bg-emerald-500 text-slate-950 border-emerald-400 font-bold'
+                                ? 'bg-emerald-500 text-slate-950 border-emerald-400 font-bold shadow-sm'
                                 : 'bg-slate-950 border-slate-800 text-slate-400 hover:text-slate-200'
                             }`}
                           >
@@ -540,7 +540,7 @@ export default function App() {
                         ))}
                       </div>
 
-                      {/* Selettore Trend Cinetico Sensore */}
+                      {/* Tendenza Sensore */}
                       <div className="flex items-center bg-slate-950 rounded-xl border border-slate-800 p-1">
                         {TREND_OPTIONS.map(opt => (
                           <button
@@ -558,33 +558,33 @@ export default function App() {
                         ))}
                       </div>
 
-                      {/* Toggle Simulazione Stream Continuo */}
+                      {/* Toggle Simulatore Flusso */}
                       <button
                         onClick={() => setSimulatoreCgm(!simulatoreCgm)}
-                        title={simulatoreCgm ? "Metti in pausa simulazione flusso CGM" : "Simula flusso sensore continuo ogni 3.5s"}
+                        title={simulatoreCgm ? "Ferma flusso simulato" : "Simula andamento sensore continuo"}
                         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-semibold transition ${
                           simulatoreCgm
-                            ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/50 shadow-md shadow-emerald-500/20'
+                            ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/50 shadow-sm'
                             : 'bg-slate-950 border-slate-800 text-slate-400 hover:text-slate-200'
                         }`}
                       >
                         {simulatoreCgm ? (
                           <>
                             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-                            <span>Stream Attivo</span>
+                            <span>Simula ON</span>
                           </>
                         ) : (
                           <>
                             <Play className="w-3.5 h-3.5 text-slate-400" />
-                            <span>Simula Stream</span>
+                            <span>Simula</span>
                           </>
                         )}
                       </button>
                     </div>
                   </div>
 
-                  {/* Slider esteso per regolazione fine */}
-                  <div className="mt-4 pt-3 border-t border-slate-800/80 flex items-center gap-3">
+                  {/* Slider per regolazione fine */}
+                  <div className="mt-3 pt-3 border-t border-slate-800/80 flex items-center gap-3">
                     <span className="text-[10px] text-slate-400 font-mono">70</span>
                     <input
                       type="range"
@@ -598,137 +598,114 @@ export default function App() {
                   </div>
                 </div>
 
-                {/* Card Predizione Automatica AI dal Sensore CGM (Gemma 4) */}
+                {/* 2. Consiglio del Coach AI (Linguaggio Semplice e Umano) */}
                 {(() => {
-                  const livelloRischio = predizioneAi?.livello_rischio || (piccoStd > 220 ? 'CRITICO' : piccoStd > 180 ? 'ELEVATO' : piccoStd > 140 ? 'MEDIO' : 'BASSO');
-                  const { pill, alertBox, glow, Icon: RiskIcon } = getRischioDetails(livelloRischio);
-                  const allerta = predizioneAi?.allerta_proattiva || `Sensore a ${glicemia} mg/dL (${trendCgm}): picco previsto a ${piccoStd} mg/dL.`;
-                  const consiglio = predizioneAi?.consiglio_prioritario || (piccoStd > 180 ? "Attiva la camminata attiva o il pre-carico di fibre per limitare l'escursione glicemica." : "Risposta glicemica controllata nel target bersaglio.");
-                  const spiegazione = predizioneAi?.spiegazione_cinetica;
+                  const consiglio = predizioneAi?.consiglio_prioritario || (piccoStd > 180 ? "Una camminata di 15 min dopo mangiato aiuterà a mantenere la glicemia stabile." : "La risposta glicemica per questo piatto è ottimale.");
                   const hackSuggerito = predizioneAi?.hack_consigliato_prioritario;
-
                   const puoAttivareHack2 = (hackSuggerito === 'HACK_2' || hackSuggerito === 'ENTRAMBI') && !usaHack2;
                   const puoAttivareHack1 = (hackSuggerito === 'HACK_1' || hackSuggerito === 'ENTRAMBI') && !usaHack1;
                   const tuttiAttivi = usaHack1 && usaHack2;
 
                   return (
-                    <div className="relative overflow-hidden bg-slate-900/70 border border-slate-800/90 rounded-2xl p-5 shadow-2xl backdrop-blur-md space-y-3.5">
-                      <div className={`absolute top-0 right-0 w-80 h-32 bg-gradient-to-l ${glow} pointer-events-none rounded-tr-2xl`}></div>
-
-                      {/* Header Scheda AI Predizione */}
-                      <div className="flex flex-wrap items-center justify-between gap-3 relative z-10 border-b border-slate-800/80 pb-3">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center shrink-0">
-                            <RiskIcon className="w-5 h-5 text-emerald-400" />
-                          </div>
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <h3 className="text-sm font-bold text-slate-100 flex items-center gap-1.5">
-                                <span>Predizione AI Sensore CGM</span>
-                              </h3>
-                              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">
-                                Gemma 4
+                    <div className="bg-gradient-to-r from-slate-900/90 via-slate-900/70 to-slate-950/90 border border-slate-800/90 rounded-2xl p-4 shadow-xl backdrop-blur-md flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                      <div className="flex items-start sm:items-center gap-3">
+                        <div className="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shrink-0">
+                          <Sparkles className="w-5 h-5" />
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs font-bold text-slate-200">Consiglio Intelligente Gluco</span>
+                            {loadingPredizione && (
+                              <span className="text-[10px] text-cyan-400 font-mono flex items-center gap-1 animate-pulse">
+                                <RefreshCw className="w-3 h-3 animate-spin" />
+                                Ricalcolo...
                               </span>
-                              {loadingPredizione && (
-                                <span className="inline-flex items-center gap-1 text-[10px] font-mono text-cyan-400 animate-pulse">
-                                  <RefreshCw className="w-3 h-3 animate-spin" />
-                                  <span>Ricalcolo AI...</span>
-                                </span>
-                              )}
-                            </div>
-                            <p className="text-[11px] text-slate-400 mt-0.5">
-                              Telemetria live: <span className="font-mono text-slate-200 font-semibold">{glicemia} mg/dL</span> ({trendCgm}) • Pasto: <span className="text-slate-300">{meal.nome_piatto}</span>
-                            </p>
+                            )}
                           </div>
+                          <p className="text-xs text-slate-300 mt-0.5 leading-relaxed">
+                            Con <strong className="text-slate-100">{meal.nome_piatto}</strong> la glicemia raggiungerà circa <strong className="text-rose-400 font-mono">{piccoStd} mg/dL</strong>. {consiglio}
+                          </p>
                         </div>
+                      </div>
 
-                        {/* Badge Livello di Rischio */}
-                        <div className="flex items-center gap-2">
-                          <span className="text-[11px] uppercase tracking-wider text-slate-400 font-bold">Rischio Metabolico:</span>
-                          <span className={`text-xs font-mono font-black px-3 py-1 rounded-xl border ${pill}`}>
-                            {livelloRischio}
+                      {/* Azione rapida a 1 tap */}
+                      <div className="shrink-0 flex items-center gap-2">
+                        {puoAttivareHack2 && (
+                          <button
+                            onClick={() => setUsaHack2(true)}
+                            className="px-3.5 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs flex items-center gap-1.5 transition shadow-md shadow-emerald-500/20"
+                          >
+                            <Footprints className="w-3.5 h-3.5" />
+                            <span>Attiva Camminata</span>
+                          </button>
+                        )}
+                        {puoAttivareHack1 && !puoAttivareHack2 && (
+                          <button
+                            onClick={() => setUsaHack1(true)}
+                            className="px-3.5 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs flex items-center gap-1.5 transition shadow-md shadow-emerald-500/20"
+                          >
+                            <Salad className="w-3.5 h-3.5" />
+                            <span>Attiva Fibre</span>
+                          </button>
+                        )}
+                        {tuttiAttivi && (
+                          <span className="text-xs font-semibold px-3 py-1.5 rounded-xl bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 flex items-center gap-1.5">
+                            <CheckCircle2 className="w-3.5 h-3.5" />
+                            <span>Consigli attivi (-{deltaPicco} mg/dL)</span>
                           </span>
-                        </div>
+                        )}
                       </div>
-
-                      {/* Allerta Proattiva Calcolata */}
-                      <div className={`p-3.5 rounded-xl border flex items-start gap-3 relative z-10 ${alertBox}`}>
-                        <Zap className="w-4 h-4 shrink-0 mt-0.5" />
-                        <div className="text-xs space-y-1">
-                          <div className="font-bold uppercase tracking-wider text-[10px]">Allerta Clinica Proattiva</div>
-                          <div className="leading-relaxed font-medium">{allerta}</div>
-                        </div>
-                      </div>
-
-                      {/* Azione Raccomandata & One-Click Trigger */}
-                      <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 bg-slate-950/80 border border-slate-800/90 rounded-xl relative z-10 text-xs">
-                        <div className="flex items-start sm:items-center gap-2.5 flex-1 min-w-[240px]">
-                          <Sparkles className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5 sm:mt-0" />
-                          <div>
-                            <span className="text-slate-400 font-medium">Azione Raccomandata dall'AI: </span>
-                            <span className="text-slate-100 font-semibold">{consiglio}</span>
-                          </div>
-                        </div>
-
-                        {/* Pulsante Azione Rapida */}
-                        <div className="shrink-0">
-                          {puoAttivareHack2 && (
-                            <button
-                              onClick={() => setUsaHack2(true)}
-                              className="px-3 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs flex items-center gap-1.5 transition shadow-lg shadow-emerald-500/20"
-                            >
-                              <Footprints className="w-3.5 h-3.5" />
-                              <span>Attiva Camminata GLUT4</span>
-                            </button>
-                          )}
-                          {puoAttivareHack1 && !puoAttivareHack2 && (
-                            <button
-                              onClick={() => setUsaHack1(true)}
-                              className="px-3 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs flex items-center gap-1.5 transition shadow-lg shadow-emerald-500/20"
-                            >
-                              <Salad className="w-3.5 h-3.5" />
-                              <span>Attiva Pre-carico Fibre</span>
-                            </button>
-                          )}
-                          {tuttiAttivi && (
-                            <span className="text-[11px] font-mono font-semibold px-2.5 py-1 rounded-md bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">
-                              ✓ Hack protettivi già attivi
-                            </span>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Spiegazione Fisiologica Cinetica */}
-                      {spiegazione && (
-                        <div className="text-[11px] text-slate-400 flex items-start gap-2 pt-1 border-t border-slate-800/60">
-                          <Info className="w-3.5 h-3.5 text-slate-500 shrink-0 mt-0.5" />
-                          <span className="leading-relaxed">{spiegazione}</span>
-                        </div>
-                      )}
                     </div>
                   );
                 })()}
 
-                {/* 2. Selezione Rapida Pasto (1-Tap Fast Choice) & Widget Bolo */}
+                {/* 3. Pasto Attuale (a forma di Tasto) & Stima Rapida Bolo Compatta */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {/* Card Pasto Rapido */}
-                  <div className="bg-slate-900/60 border border-slate-800/90 rounded-2xl p-5 shadow-xl backdrop-blur-md space-y-3.5">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Utensils className="w-4 h-4 text-emerald-400" />
-                        <h3 className="text-xs font-bold uppercase tracking-wider text-slate-300">Pasto Attuale</h3>
-                      </div>
+                  {/* Pasto Attuale - Semplificato come un grande tasto interattivo */}
+                  <div className="bg-slate-900/60 border border-slate-800/90 rounded-2xl p-4 shadow-xl backdrop-blur-md flex flex-col justify-between gap-3">
+                    <div className="flex items-center justify-between text-xs px-0.5">
+                      <span className="font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                        <Utensils className="w-3.5 h-3.5 text-emerald-400" />
+                        Pasto Attuale
+                      </span>
                       <button
                         onClick={() => setSchedaAttiva('pasto')}
-                        className="text-[11px] text-emerald-400 hover:text-emerald-300 flex items-center gap-1 font-semibold"
+                        className="text-[11px] text-emerald-400 hover:text-emerald-300 font-semibold flex items-center gap-0.5"
                       >
-                        <span>Personalizza</span>
-                        <ChevronRight className="w-3.5 h-3.5" />
+                        <span>Tutti i pasti</span>
+                        <ChevronRight className="w-3 h-3" />
                       </button>
                     </div>
 
-                    {/* Griglia 4 Pasti Veloci */}
-                    <div className="grid grid-cols-2 gap-2">
+                    {/* Il grande tasto pasto */}
+                    <button
+                      onClick={() => setSchedaAttiva('pasto')}
+                      className="w-full bg-slate-950/80 hover:bg-slate-900/90 border border-slate-800 hover:border-emerald-500/50 rounded-xl p-3 flex items-center justify-between transition-all group text-left shadow-sm"
+                      title="Tocca per cambiare pasto o analizzare con foto"
+                    >
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="w-11 h-11 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-2xl shrink-0 group-hover:scale-105 transition shadow-inner">
+                          {meal.emoji}
+                        </div>
+                        <div className="min-w-0">
+                          <div className="font-bold text-sm text-slate-100 truncate group-hover:text-emerald-300 transition">
+                            {meal.nome_piatto}
+                          </div>
+                          <div className="text-xs text-slate-400 flex items-center gap-2 mt-0.5 font-medium">
+                            <span className="text-emerald-400 font-mono font-bold">{meal.carboidrati_g}g carboidrati</span>
+                            <span>•</span>
+                            <span className="text-slate-400">{meal.grassi_g}g grassi</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="shrink-0 ml-2 px-2.5 py-1 rounded-lg bg-slate-800/80 group-hover:bg-emerald-500 group-hover:text-slate-950 text-slate-300 text-xs font-semibold flex items-center gap-1 transition">
+                        <span>Cambia</span>
+                        <ChevronRight className="w-3.5 h-3.5" />
+                      </div>
+                    </button>
+
+                    {/* 4 micro-tasti pasto veloci */}
+                    <div className="grid grid-cols-4 gap-1.5">
                       {Object.entries(DEMO_MEALS_DATA).map(([id, info]) => (
                         <button
                           key={id}
@@ -738,111 +715,83 @@ export default function App() {
                             setUsaHack2(false);
                             setAnteprimaFoto(null);
                           }}
-                          className={`p-2.5 rounded-xl text-left transition flex items-center gap-2.5 border ${
+                          title={`${info.nome_piatto} (${info.carboidrati_g}g carb)`}
+                          className={`py-1.5 px-2 rounded-lg text-xs font-medium transition flex items-center justify-center gap-1 border truncate ${
                             demoId === id && !anteprimaFoto
-                              ? 'bg-emerald-500/20 border-emerald-500 text-emerald-200 shadow-md shadow-emerald-500/10'
-                              : 'bg-slate-950/80 border-slate-800 text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+                              ? 'bg-emerald-500 text-slate-950 border-emerald-400 font-bold shadow-sm'
+                              : 'bg-slate-950/70 border-slate-800 text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
                           }`}
                         >
-                          <span className="text-2xl">{info.emoji}</span>
-                          <div className="min-w-0">
-                            <div className="font-bold text-xs truncate text-slate-100">{info.etichetta}</div>
-                            <div className="text-[10px] font-mono text-slate-400">{info.carboidrati_g}g CHO</div>
-                          </div>
+                          <span>{info.emoji}</span>
+                          <span className="truncate hidden sm:inline">{info.etichetta.split(' ')[0]}</span>
                         </button>
                       ))}
                     </div>
-
-                    {/* Pillola Riepilogo Pasto Selezionato */}
-                    <div className="p-3 bg-slate-950/90 rounded-xl border border-slate-800 flex items-center justify-between text-xs">
-                      <div className="flex items-center gap-2.5">
-                        <span className="text-2xl">{meal.emoji}</span>
-                        <div>
-                          <div className="font-bold text-slate-100">{meal.nome_piatto}</div>
-                          <div className="text-[10px] text-slate-400 flex items-center gap-2">
-                            <span>Carbs: <strong className="text-cyan-400 font-mono">{meal.carboidrati_g}g</strong></span>
-                            <span>•</span>
-                            <span>Grassi: <strong className="text-amber-400 font-mono">{meal.grassi_g}g</strong></span>
-                            <span>•</span>
-                            <span>Fibre: <strong className="text-emerald-400 font-mono">{meal.fibre_g}g</strong></span>
-                          </div>
-                        </div>
-                      </div>
-                      {richiedeDualWave && (
-                        <span className="text-[9px] font-mono px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/30 font-bold shrink-0">
-                          Coda Grassi
-                        </span>
-                      )}
-                    </div>
                   </div>
 
-                  {/* Card Suggerimento Bolo Istantaneo */}
-                  <div className="bg-slate-900/60 border border-slate-800/90 rounded-2xl p-5 shadow-xl backdrop-blur-md space-y-3.5 flex flex-col justify-between">
-                    <div>
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-2">
-                          <Syringe className="w-4 h-4 text-cyan-400" />
-                          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-300">Stima Rapida Bolo</h3>
-                        </div>
-                        <button
-                          onClick={() => setSchedaAttiva('bolo')}
-                          className="text-[11px] text-cyan-400 hover:text-cyan-300 flex items-center gap-1 font-semibold"
-                        >
-                          <span>Dettagli Calcolo</span>
-                          <ChevronRight className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
+                  {/* Stima Rapida Bolo Compatta */}
+                  <div className="bg-slate-900/60 border border-slate-800/90 rounded-2xl p-4 shadow-xl backdrop-blur-md flex flex-col justify-between gap-3">
+                    <div className="flex items-center justify-between text-xs px-0.5">
+                      <span className="font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                        <Syringe className="w-3.5 h-3.5 text-cyan-400" />
+                        Stima Rapida Bolo
+                      </span>
+                      <button
+                        onClick={() => setSchedaAttiva('bolo')}
+                        className="text-[11px] text-cyan-400 hover:text-cyan-300 font-semibold flex items-center gap-0.5"
+                      >
+                        <span>Vedi dettagli</span>
+                        <ChevronRight className="w-3 h-3" />
+                      </button>
+                    </div>
 
-                      {/* Valore Bolo in Grande */}
-                      <div className="bg-slate-950/90 p-3.5 rounded-xl border border-slate-800">
-                        <div className="text-[10px] uppercase font-bold text-slate-400">Dose Totale Consigliata</div>
+                    {/* Box valore dose compatto e pulito */}
+                    <div className="bg-slate-950/80 border border-slate-800 rounded-xl p-3 flex items-center justify-between">
+                      <div>
+                        <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Dose Consigliata</div>
                         <div className="flex items-baseline gap-2 mt-0.5">
                           <span className="text-3xl font-black font-mono text-cyan-400">{boloRapidoArrotondato}</span>
                           <span className="text-xs text-slate-400 font-mono">Unità (U)</span>
                           {usaHack2 && (
                             <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">
-                              -20% Moto GLUT4
+                              -20% Moto
                             </span>
                           )}
                         </div>
+                      </div>
 
-                        {/* Scorporo Rapido */}
-                        <div className="grid grid-cols-3 gap-1.5 mt-3 pt-2.5 border-t border-slate-800/80 text-[10px] font-mono text-center">
-                          <div className="bg-slate-900/60 p-1.5 rounded-lg">
-                            <span className="text-slate-400 block">Pasto</span>
-                            <span className="font-bold text-slate-200">{boloPasto.toFixed(1)} U</span>
-                          </div>
-                          <div className="bg-slate-900/60 p-1.5 rounded-lg">
-                            <span className="text-slate-400 block">Corr.</span>
-                            <span className="font-bold text-slate-200">+{boloCorrezione.toFixed(1)} U</span>
-                          </div>
-                          <div className="bg-slate-900/60 p-1.5 rounded-lg">
-                            <span className="text-slate-400 block">IOB</span>
-                            <span className="font-bold text-slate-200">-{impostazioni.iob} U</span>
-                          </div>
-                        </div>
+                      <div className="text-right text-[11px] font-mono text-slate-400 border-l border-slate-800/80 pl-3 space-y-0.5">
+                        <div>Pasto: <strong className="text-slate-200">{boloPasto.toFixed(1)}U</strong></div>
+                        <div>Corr: <strong className="text-slate-200">+{boloCorrezione.toFixed(1)}U</strong></div>
+                        <div>IOB: <strong className="text-slate-200">-{impostazioni.iob}U</strong></div>
                       </div>
                     </div>
 
-                    {richiedeDualWave && (
-                      <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-[11px] text-amber-300 flex items-center gap-2">
-                        <AlertCircle className="w-4 h-4 shrink-0" />
-                        <span>Pasto ricco di grassi ({meal.grassi_g}g): suggerito <strong>Bolo Dual-Wave</strong> (65% subito + 35% a 2-3h).</span>
+                    {/* Avviso o parametri paziente in una riga */}
+                    {richiedeDualWave ? (
+                      <div className="text-[11px] text-amber-300 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1.5 rounded-lg flex items-center gap-2">
+                        <AlertCircle className="w-3.5 h-3.5 shrink-0 text-amber-400" />
+                        <span className="truncate">Pasto ricco di grassi: consigliata dose prolungata.</span>
+                      </div>
+                    ) : (
+                      <div className="text-[11px] text-slate-400 flex items-center justify-between px-1">
+                        <span>Target: <strong className="text-slate-300 font-mono">{impostazioni.targetGlicemico}</strong> mg/dL</span>
+                        <span>1U ogni <strong className="text-slate-300 font-mono">{impostazioni.rapportoIC}g</strong></span>
                       </div>
                     )}
                   </div>
                 </div>
 
-                {/* 3. Toggles Rapidi What-If (Fibre & Moto) */}
+                {/* 4. Abitudini Semplici per Abbassare la Glicemia */}
                 <div className="bg-slate-900/60 border border-slate-800/90 rounded-2xl p-4 sm:p-5 shadow-xl backdrop-blur-md space-y-3">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Sparkles className="w-4 h-4 text-emerald-400" />
-                      <h3 className="text-xs font-bold uppercase tracking-wider text-slate-200">
-                        Micro-Interventi Rapidi What-If
+                    <div>
+                      <h3 className="text-xs font-bold uppercase tracking-wider text-slate-200 flex items-center gap-2">
+                        <Sparkles className="w-4 h-4 text-emerald-400" />
+                        Consigli per Appiattire la Curva
                       </h3>
+                      <p className="text-[11px] text-slate-400 mt-0.5">Due abitudini quotidiane semplici per evitare picchi alti</p>
                     </div>
-                    <span className="text-[10px] text-slate-400 font-mono">Appiattisci la curva</span>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -860,16 +809,16 @@ export default function App() {
                           <Salad className="w-4 h-4" />
                         </div>
                         <div>
-                          <div className="font-bold text-xs text-slate-100">🥗 Pre-carico Fibre</div>
-                          <div className="text-[10px] text-slate-400">Verdura 10m prima del pasto</div>
+                          <div className="font-bold text-xs text-slate-100">🥗 Verdura prima di mangiare</div>
+                          <div className="text-[10px] text-slate-400">Rallenta l'assorbimento (-22% picco)</div>
                         </div>
                       </div>
                       <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded ${usaHack1 ? 'bg-emerald-500 text-slate-950' : 'bg-slate-800 text-slate-400'}`}>
-                        {usaHack1 ? 'ON (-22%)' : 'OFF'}
+                        {usaHack1 ? 'ATTIVO' : 'DISATTIVO'}
                       </span>
                     </button>
 
-                    {/* Toggle Moto GLUT4 */}
+                    {/* Toggle Camminata */}
                     <button
                       onClick={() => setUsaHack2(!usaHack2)}
                       className={`p-3 rounded-xl border text-left transition flex items-center justify-between gap-3 ${
@@ -883,51 +832,51 @@ export default function App() {
                           <Footprints className="w-4 h-4" />
                         </div>
                         <div>
-                          <div className="font-bold text-xs text-slate-100">🚶 15m Camminata GLUT4</div>
-                          <div className="text-[10px] text-slate-400">30 min post-pasto</div>
+                          <div className="font-bold text-xs text-slate-100">🚶 15 min di camminata</div>
+                          <div className="text-[10px] text-slate-400">Muscoli attivi dopo mangiato (-30% picco)</div>
                         </div>
                       </div>
                       <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded ${usaHack2 ? 'bg-emerald-500 text-slate-950' : 'bg-slate-800 text-slate-400'}`}>
-                        {usaHack2 ? 'ON (-30%)' : 'OFF'}
+                        {usaHack2 ? 'ATTIVO' : 'DISATTIVO'}
                       </span>
                     </button>
                   </div>
 
-                  {/* Impact feedback */}
+                  {/* Risultato risparmiato */}
                   {(usaHack1 || usaHack2) && (
                     <div className="p-2.5 bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border border-emerald-500/30 rounded-xl text-xs flex items-center justify-between text-emerald-300 font-mono">
-                      <span>✓ Risparmiati <strong>-{deltaPicco} mg/dL</strong> sul picco</span>
-                      <span>Time-in-Range: <strong>+{gainTir}%</strong></span>
+                      <span>✓ Risparmiati circa <strong>-{deltaPicco} mg/dL</strong> sul picco</span>
+                      <span>Nel bersaglio: <strong>{tirOpt}%</strong> (+{gainTir}%)</span>
                     </div>
                   )}
                 </div>
 
-                {/* 4. Grafico Glicemia Istantaneo & 4 KPI in Evidenza */}
-                <div className="bg-slate-900/60 border border-slate-800/90 rounded-2xl p-5 shadow-2xl backdrop-blur-md space-y-4">
-                  {/* KPI Bar */}
+                {/* 5. Grafico e Valori Chiave Comprensibili */}
+                <div className="bg-slate-900/60 border border-slate-800/90 rounded-2xl p-4 sm:p-5 shadow-2xl backdrop-blur-md space-y-4">
+                  {/* Valori Chiave (KPI) Semplificati */}
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                     <div className="bg-slate-950/80 p-3 rounded-xl border border-slate-800">
-                      <div className="text-[10px] uppercase font-bold text-slate-400">Picco Standard</div>
+                      <div className="text-[10px] uppercase font-bold text-slate-400">Picco Normale</div>
                       <div className="text-xl font-black font-mono text-rose-400 mt-0.5">{piccoStd} <span className="text-xs font-normal text-slate-400">mg/dL</span></div>
-                      <div className="text-[9px] text-slate-500 font-mono">al min +{tPiccoStd}</div>
+                      <div className="text-[9px] text-slate-500 font-mono">tra circa {tPiccoStd} min</div>
                     </div>
 
                     <div className="bg-slate-950/80 p-3 rounded-xl border border-slate-800">
-                      <div className="text-[10px] uppercase font-bold text-slate-400">Picco Ottimizzato</div>
+                      <div className="text-[10px] uppercase font-bold text-slate-400">Picco con Consigli</div>
                       <div className="text-xl font-black font-mono text-emerald-400 mt-0.5">{piccoOpt} <span className="text-xs font-normal text-slate-400">mg/dL</span></div>
-                      <div className="text-[9px] text-slate-500 font-mono">al min +{tPiccoOpt}</div>
+                      <div className="text-[9px] text-slate-500 font-mono">tra circa {tPiccoOpt} min</div>
                     </div>
 
                     <div className="bg-slate-950/80 p-3 rounded-xl border border-slate-800">
-                      <div className="text-[10px] uppercase font-bold text-slate-400">Escursione Meno</div>
+                      <div className="text-[10px] uppercase font-bold text-slate-400">Glicemia Risparmiata</div>
                       <div className="text-xl font-black font-mono text-cyan-400 mt-0.5">-{deltaPicco} <span className="text-xs font-normal text-slate-400">mg/dL</span></div>
-                      <div className="text-[9px] text-cyan-400/80 font-mono">{deltaPicco > 0 ? 'Curva smorzata' : 'Nessun hack'}</div>
+                      <div className="text-[9px] text-cyan-400/80 font-mono">{deltaPicco > 0 ? 'Curva più dolce' : 'Nessun consiglio attivo'}</div>
                     </div>
 
                     <div className="bg-slate-950/80 p-3 rounded-xl border border-slate-800">
-                      <div className="text-[10px] uppercase font-bold text-slate-400">Time-In-Range</div>
+                      <div className="text-[10px] uppercase font-bold text-slate-400">Nel Range Bersaglio</div>
                       <div className="text-xl font-black font-mono text-teal-300 mt-0.5">{tirOpt}%</div>
-                      <div className="text-[9px] text-emerald-400 font-mono">+{gainTir}% con hack</div>
+                      <div className="text-[9px] text-emerald-400 font-mono">{gainTir > 0 ? `+${gainTir}% con consigli` : 'Valore standard'}</div>
                     </div>
                   </div>
 
@@ -936,7 +885,7 @@ export default function App() {
                     <div className="flex items-center gap-2">
                       <TrendingUp className="w-4 h-4 text-emerald-400" />
                       <h3 className="font-bold text-xs uppercase tracking-wider text-slate-200">
-                        Proiezione Glicemica Cinetica (-45m a +180m)
+                        Come andrà la tua glicemia nelle prossime ore
                       </h3>
                     </div>
                     <div className="flex items-center gap-3 text-xs">
@@ -944,7 +893,7 @@ export default function App() {
                         <span className="w-2 h-2 rounded-full bg-rose-500"></span> Standard
                       </span>
                       <span className="flex items-center gap-1.5 text-emerald-400">
-                        <span className="w-2 h-2 rounded-full bg-emerald-500"></span> Con Hack Gluco
+                        <span className="w-2 h-2 rounded-full bg-emerald-500"></span> Con consigli Gluco
                       </span>
                     </div>
                   </div>

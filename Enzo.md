@@ -12,6 +12,7 @@ Questo documento descrive in dettaglio tutte le implementazioni, le scelte archi
 | **React** | `v19.0.0` | Libreria UI per la gestione dello stato reattivo e del rendering a 60 FPS. |
 | **Tailwind CSS** | `v4.0.9` | Engine CSS nativo con il plugin ufficiale `@tailwindcss/vite`, direttiva `@import "tailwindcss"` e zero file di configurazione legacy. |
 | **Recharts** | `v2.15.1` | Rendering reattivo dei grafici SVG per la cinetica glicemica post-prandiale. |
+| **KaTeX** | `v0.16.21` | Motore di rendering matematico ad alte prestazioni per visualizzare formule LaTeX ($\LaTeX$) sia inline ($...$) che in blocco ($$...$$) nella chat del bot. |
 | **Lucide React** | `v1.16.0` | Iconografia moderna medical & digital health. |
 
 ---
@@ -21,14 +22,14 @@ Questo documento descrive in dettaglio tutte le implementazioni, le scelte archi
 ```text
 frontend/
 ├── dist/                     # Bundle di produzione compilato e ottimizzato
-├── node_modules/             # Dipendenze installate (React, Recharts, Tailwind v4, Lucide)
+├── node_modules/             # Dipendenze installate (React, Recharts, KaTeX, Tailwind v4, Lucide)
 ├── src/
 │   ├── App.jsx               # Dashboard principale, gestione stato e layout responsive
 │   ├── BolusCalculator.jsx   # Modulo di calcolo matematico trasparente del bolo insulinico
-│   ├── ChatCoach.jsx         # Chat conversazionale con GlucoTwin Coach AI
+│   ├── ChatCoach.jsx         # Chat con Gluco Coach con motore di rendering LaTeX (KaTeX)
 │   ├── GlucoseChart.jsx      # Grafico cinetico Recharts (curve glicemiche e Time-in-Range)
 │   ├── index.css             # Configurazione Tailwind v4, glassmorphism e design system
-│   └── main.jsx              # Entry point React 19 collegato al DOM
+│   └── main.jsx              # Entry point React 19 con importazione stili KaTeX (katex.min.css)
 ├── index.html                # Template HTML5 con metadati SEO e font Google (Plus Jakarta Sans)
 ├── package.json              # Configurazione dipendenze e script npm
 └── vite.config.js            # Configurazione Vite con plugin React e Tailwind CSS v4
@@ -44,7 +45,7 @@ frontend/
   - `npm run dev`: Avvio del server locale di sviluppo su porta 5173.
   - `npm run build`: Compilazione bundle ottimizzato con Vite e Rollup.
   - `npm run preview`: Ispezione locale della build di produzione.
-- Installate le dipendenze essenziali: `react`, `react-dom`, `recharts`, `lucide-react`, `@tailwindcss/vite`, `tailwindcss`, `@vitejs/plugin-react` e `vite`.
+- Installate le dipendenze essenziali: `react`, `react-dom`, `recharts`, `katex`, `lucide-react`, `@tailwindcss/vite`, `tailwindcss`, `@vitejs/plugin-react` e `vite`.
 
 ### 3.2. `vite.config.js`
 - Integrato il plugin nativo `@tailwindcss/vite` insieme a `@vitejs/plugin-react`.
@@ -55,10 +56,12 @@ frontend/
 - **Tipografia:** Integrazione dei font Google ad alta leggibilità **Plus Jakarta Sans** (stile moderno e clinico) e **JetBrains Mono** (per valori numerici e metriche di laboratorio).
 - **Dark Mode di default:** Classe `dark` sull'elemento `<html>` e favicon dinamica SVG con goccia ematica 🩸.
 
-### 3.4. `src/index.css`
+### 3.4. `src/index.css` & `src/main.jsx`
 - Importazione moderna di Tailwind CSS v4 con `@import "tailwindcss";`.
+- Importazione foglio di stile KaTeX `katex/dist/katex.min.css` in `main.jsx` con bundle automatico dei font matematici WOFF/WOFF2.
 - Definizione di token di design ed effetti visivi ad alto impatto estetico:
   - `.glass-panel` e `.glass-panel-glow`: Effetti di glassmorphism con sfocatura (`backdrop-filter: blur(16px)`), bordi semi-trasparenti `slate-800` e bagliori al neon color smeraldo (`#10b981`), ciano (`#06b6d4`) e rosa (`#f43f5e`).
+  - Stili custom per la visualizzazione di KaTeX (`.katex-display`) con scroll orizzontale automatico e background scuro elegante.
   - Scrollbar custom minimalista scura.
   - Animazione `@keyframes pulseGlow` per lo stato attivo dei sensori e degli agenti.
 
@@ -96,27 +99,40 @@ Implementato il modulo per il calcolo trasparente del bolo insulinico in conform
 
 ---
 
-### 3.7. `src/ChatCoach.jsx`
-Implementato l'agente conversazionale "GlucoTwin Coach" integrato direttamente nell'interfaccia:
-1. **Accesso Completo al Contesto:**
-   - Riceve in tempo reale lo stato del CGM, i parametri I:C/FSI/IOB, il JSON completo del piatto analizzato, i punti della curva e lo stato dei toggle What-If.
-2. **Generatore di Risposte Cliniche Dedicato (Compatibile con `prompt_chat.txt`):**
-   - **Domande sul Bolo:** Calcola e mostra l'intero scorporo matematico trasparente, la correzione, l'IOB e la strategia Dual-Wave.
-   - **Domande sull'Andamento Glicemico:** Cita valori numerici reali (partenza a $t=0$, picco standard con minuto esatto es. $+75\text{m}$, picco ottimizzato, valori a $+120\text{m}$ e $+180\text{m}$, guadagno percentuale di Time-in-Range).
-   - **Domande sui Meccanismi d'Azione:** Spiega la traslocazione indipendente da insulina dei GLUT4 muscolari e il gel viscoso indotto dalle fibre solubili pre-pasto.
-3. **Pulsanti di Suggerimento Rapido (Quick Prompts):**
-   - `💉 Calcola Bolo per questo pasto`
-   - `📊 Quando avrò il picco glicemico?`
-   - `🚶‍♂️ Perché camminare riduce il picco?`
-   - `🥗 Effetto fibre pre-pasto`
-4. **Supporto Formattazione:** Titoli, elenchi puntati, blocchi di citazione clinica e messaggi utente/coach distinti.
+### 3.7. `src/ChatCoach.jsx` (con Motore di Rendering $\LaTeX$ Nativo)
+Completamente riprogettato con supporto nativo al rendering formale matematico **$\LaTeX$** tramite **KaTeX**:
+1. **Parser & Tokenizer KaTeX integrato (`renderLatex`):**
+   - Supporto per **formule in blocco (display mode)**: `$$ ... $$` con scroll orizzontale e box evidenziato.
+   - Supporto per **formule inline**: `$ ... $` renderizzate perfettamente allineate con il testo clinico.
+   - Fallback automatico testuale in caso di sintassi non valida.
+2. **Formule Matematiche Cliniche Formalizzate in $\LaTeX$:**
+   - **Calcolo Bolo Totale:**
+     $$\text{Bolo}_{\text{totale}} = \left( \frac{\text{CHO}}{\text{I:C}} + \max\left(0, \frac{\text{BG}_{\text{curr}} - \text{BG}_{\text{target}}}{\text{FSI}}\right) - \text{IOB} \right) \times (1 - \delta_{\text{GLUT4}})$$
+   - **Ripartizione Bolo Dual-Wave (Onda Doppia):**
+     $$\text{Bolo}_{\text{normale}} = 0.65 \times \text{Bolo}_{\text{totale}}, \quad \text{Bolo}_{\text{onda quadra}} = 0.35 \times \text{Bolo}_{\text{totale}}$$
+   - **Cinetica Glicemica ed Escursione:**
+     $$\Delta G(t) = G(t) - G_{\text{basale}}, \quad \text{TIR} = [70, 180]\, \text{mg/dL}$$
+3. **Messaggio di Benvenuto Semplice e Intuitivo:**
+   - Il messaggio iniziale non sovraccarica l'utente con gergo clinico o formule matematiche complesse: saluta calorosamente, conferma il pasto selezionato e il valore glicemico attuale in formato colloquiale chiaro.
+   - Fornisce un elenco immediato a 3 punti sulle azioni possibili: calcolare il bolo, prevedere il picco glicemico o scoprire strategie di mitigazione con camminata/fibre.
+4. **Pulsanti di Suggerimento Rapido (Quick Prompts) Naturali:**
+   - `💉 Calcola Bolo` (attiva lo scorporo analitico rigoroso con equazioni $\LaTeX$)
+   - `📈 Picco Glicemico` (richiede la proiezione temporale $G(t)$ e $G_{\max}$)
+   - `🚶‍♂️ Camminata post-pasto` (spiega la traslocazione GLUT4 e lo sconto del $20\%$)
+   - `🥗 Effetto Fibre` (spiega il ritardo dell'assorbimento gastrico)
+5. **Supporto Markdown Ibrido & KaTeX:** Intestazioni `### `, grassetto `**...**`, citazioni cliniche `> ` ed elenchi puntati con formule $\LaTeX$ inline e in blocco.
 
 ---
 
 ### 3.8. `src/App.jsx`
 Il componente radice che coordina l'intera dashboard con architettura a schede e layout responsivo per la chat:
 1. **Navigazione a Schede / Pagine Ordinata:**
-   - **⚡ Home Rapida (Daily):** Schermata principale per l'uso quotidiano con controller rapido CGM ($\pm 5\text{ mg/dL}$ e preset rapidi $90, 115, 140, 175$), scelta pasto a 1-tap, stima immediata del bolo consigliato con scorporo, mini-toggle What-If e anteprima diretta della curva glicemica con i 4 KPI.
+   - **⚡ Home Rapida (Daily Semplificata & Human-Friendly):** Riprogettata per eliminare il sovraccarico clinico e renderla intuitiva per qualsiasi utente:
+     - **Pasto Attuale a forma di Tasto:** Un elegante pulsante interattivo unico con emoji, nome piatto, carboidrati e indicatore "Cambia", affiancato da 4 micro-tasti pasto rapidi a 1-tap.
+     - **Stima Rapida Bolo Compatta:** Box essenziale con dose consigliata in grande (`U`), scorporo inline chiaro (`Pasto`, `Corr`, `IOB`) e alert compatto discreto per l'onda doppia.
+     - **Consiglio Intelligente Gluco:** Sostituzione delle allerte mediche allarmistiche ("allerta clinica proattiva", "telemetria live") con un consiglio amichevole in italiano colloquiale e attivazione a 1-tap.
+     - **Abitudini Quotidiane:** Semplificazione dei toggle What-If in abitudini facili da comprendere ("🥗 Verdura prima di mangiare", "🚶 15 min di camminata").
+     - **Previsione 3 Ore & KPI Umani:** Grafico cinetico accompagnato da 4 KPI con etichette chiare ("Picco Normale", "Picco con Consigli", "Glicemia Risparmiata", "Nel Range Bersaglio").
    - **🍽️ Analisi Pasto:** Selettore pasti con 4 opzioni quotidiane, uploader drag & drop con Vision Agent multimodale Gemma 4, scheda bromatologica completa (Carbs, Fibre, Grassi, Proteine, Indice Glicemico).
    - **📈 Curva & Trend:** Vista immersiva e ingrandita della cinetica post-prandiale ($-45\text{m} \dots +180\text{m}$), soglie di ipo/iperglicemia e Time-in-Range ($70 - 180\text{ mg/dL}$), e spiegazione fisiologica approfondita.
    - **💉 Calcolatore Bolo:** Modulo trasparente interattivo con formule matematiche a 4 fasi, adattamento all'attività GLUT4 ($-20\%$), cassetto configurazione parametri paziente (Target, I:C, FSI, IOB) e alert Onda Doppia per cibi ricchi di lipidi.
@@ -133,13 +149,13 @@ Il componente radice che coordina l'intera dashboard con architettura a schede e
 ## 4. Validazione e Risultati del Collaudo
 
 - **Installazione pacchetti (`npm install`):**
-  - Eseguita con esito positivo: 0 vulnerabilità rilevate.
+  - Eseguita con esito positivo: installato `katex` (v0.16.21), 0 vulnerabilità rilevate.
 - **Compilazione di Produzione (`npm run build`):**
   - Esito: `Exit Code 0`.
   - Generati con successo i bundle ottimizzati in `dist/assets/`:
     - `dist/index.html` ($1.26\text{ kB}$)
-    - `dist/assets/index-DOMu_CJD.css` ($49.43\text{ kB}$)
-    - `dist/assets/index-CqukCEyL.js` ($702.86\text{ kB}$)
+    - `dist/assets/index-xv4rsuyH.css` ($89.06\text{ kB}$ inclusi font e stili KaTeX)
+    - `dist/assets/index-CThAG2Se.js` ($977.00\text{ kB}$ inclusi motori KaTeX, Recharts e React 19)
 - **Dev Server locale (`npm run dev`):**
   - Attivo e funzionante su **`http://localhost:5173/`**.
 - **Igiene Repository & Git:**
