@@ -136,9 +136,12 @@ Il componente radice che coordina l'intera dashboard con architettura a schede e
   - Eseguita con esito positivo: 0 vulnerabilità rilevate.
 - **Compilazione di Produzione (`npm run build`):**
   - Esito: `Exit Code 0`.
-  - Generati con successo i bundle in `frontend/dist/`:
-    - `dist/index.html` ($1.29\text{ kB}$)
-    - `dist/assets/index.css` ($43.06\text{ kB}$)
-    - `dist/assets/index.js` ($682.15\text{ kB}$)
+  - Generati con successo i bundle ottimizzati in `dist/assets/`:
+    - `dist/index.html` ($1.26\text{ kB}$)
+    - `dist/assets/index-DOMu_CJD.css` ($49.43\text{ kB}$)
+    - `dist/assets/index-CqukCEyL.js` ($702.86\text{ kB}$)
 - **Dev Server locale (`npm run dev`):**
   - Attivo e funzionante su **`http://localhost:5173/`**.
+- **Igiene Repository & Git:**
+  - File `.gitignore` aggiornato con regole ricorsive per escludere automaticamente `node_modules/`, directory di build (`dist/`), file di ambiente locali (`.env.*`), cache di bundling (`.vite/`, `.cache/`, `.turbo/`) e file spazzatura del sistema operativo.
+  - Risolti i conflitti di tracciamento e rimosse le copie duplicate legacy dalla radice di `frontend/`.
