@@ -51,6 +51,8 @@ yarn-error.log*
 pnpm-debug.log*
 
 # Build output & Vite Cache
+dist/
+dist-ssr/
 frontend/dist/
 frontend/dist-ssr/
 .vite/
