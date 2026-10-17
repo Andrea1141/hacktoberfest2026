@@ -409,9 +409,9 @@ export default function App() {
                   </span>
                 </div>
                 <div className="flex items-center gap-2 text-[11px] text-slate-500 font-medium">
-                  <span className={`inline-flex items-center gap-1.5 ${backendConnesso ? 'text-teal-700' : 'text-amber-700'}`}>
-                    <span className={`w-1.5 h-1.5 rounded-full ${backendConnesso ? 'bg-teal-600' : 'bg-amber-500'}`}></span>
-                    {backendConnesso ? 'Sensore collegato' : 'Modalità demo'}
+                  <span className="inline-flex items-center gap-1.5 text-teal-700">
+                    <span className="w-1.5 h-1.5 rounded-full bg-teal-600"></span>
+                    Monitoraggio attivo
                   </span>
                 </div>
               </div>
@@ -445,25 +445,6 @@ export default function App() {
               <span className={`text-[9px] font-medium px-1.5 py-0.5 rounded border ${glicemiaInfo.classe}`}>
                 {glicemiaInfo.testo}
               </span>
-            </div>
-
-            {/* Input Chiave OpenRouter (Compatto) */}
-            <div className="relative flex items-center bg-slate-100 rounded-xl border border-slate-200 px-2.5 py-1 text-xs">
-              <Key className="w-3 h-3 text-slate-400 mr-1.5" />
-              <input
-                type={mostraKey ? "text" : "password"}
-                placeholder="Chiave API (Opzionale)"
-                value={apiKey}
-                onChange={e => setApiKey(e.target.value)}
-                className="bg-transparent text-[11px] text-slate-800 placeholder-slate-400 focus:outline-none w-28 sm:w-36 font-medium"
-              />
-              <button
-                onClick={() => setMostraKey(!mostraKey)}
-                className="text-slate-400 hover:text-slate-600 ml-1 p-0.5"
-                title={mostraKey ? "Nascondi chiave" : "Mostra chiave"}
-              >
-                {mostraKey ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
-              </button>
             </div>
           </div>
         </div>
@@ -516,44 +497,44 @@ export default function App() {
                 {/* ===================================================================
                     HERO: CALCOLO GLICEMIA STIMATA DOPO TOT TEMPO
                     =================================================================== */}
-                <div className="relative overflow-hidden bg-gradient-to-br from-slate-900/95 via-slate-900/85 to-slate-950/95 border-2 border-emerald-500/40 rounded-3xl p-5 sm:p-7 shadow-2xl backdrop-blur-xl space-y-6 ring-1 ring-emerald-500/20">
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-800/80 pb-4">
+                <div className="relative overflow-hidden bg-white border border-slate-200 rounded-3xl p-5 sm:p-7 shadow-sm space-y-6">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-100 pb-4">
                     <div>
                       <div className="flex items-center gap-2">
-                        <div className="p-2 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                        <div className="p-2 rounded-xl bg-teal-50 text-teal-600 border border-teal-200">
                           <Clock className="w-5 h-5" />
                         </div>
-                        <h2 className="text-base sm:text-lg font-black text-slate-100 tracking-tight">
+                        <h2 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight">
                           Previsione Glicemica a Tempo
                         </h2>
-                        <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">
-                          Modello AI Cinetico
+                        <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-teal-50 text-teal-800 border border-teal-200">
+                          Modello Cinetico
                         </span>
                       </div>
-                      <p className="text-xs text-slate-400 mt-1">
+                      <p className="text-xs text-slate-500 mt-1">
                         Calcola la glicemia stimata dopo tot tempo in base al sensore CGM, al pasto e agli interventi attivi.
                       </p>
                     </div>
 
                     {/* Indicatore Orizzonte Temporale */}
-                    <div className="flex items-center gap-2 bg-slate-950/90 px-3.5 py-1.5 rounded-xl border border-slate-800 shrink-0">
-                      <span className="text-xs text-slate-400">Tempo scelto:</span>
-                      <span className="text-base font-black font-mono text-cyan-400">+{tempoTargetMin} min</span>
+                    <div className="flex items-center gap-2 bg-slate-50 px-3.5 py-1.5 rounded-xl border border-slate-200 shrink-0">
+                      <span className="text-xs text-slate-500">Tempo scelto:</span>
+                      <span className="text-base font-extrabold font-mono text-teal-700">+{tempoTargetMin} min</span>
                     </div>
                   </div>
 
                   {/* Griglia: Risultato a Grande Display + Selettore Tempo */}
                   <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
                     {/* Grande Box Risultato */}
-                    <div className="lg:col-span-7 bg-slate-950/90 rounded-2xl p-5 sm:p-6 border border-slate-800 flex flex-col justify-between space-y-4 shadow-inner">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs uppercase font-bold text-slate-400 tracking-wider">
+                    <div className="lg:col-span-7 bg-slate-50 rounded-2xl p-5 sm:p-6 border border-slate-200 flex flex-col justify-between space-y-4 shadow-xs">
+                      <div className="flex items-center justify-between flex-wrap gap-2">
+                        <span className="text-xs uppercase font-bold text-slate-500 tracking-wider">
                           Glicemia Prevista a +{tempoTargetMin} minuti
                         </span>
-                        <span className={`text-xs font-mono font-bold px-2.5 py-1 rounded-full border ${
+                        <span className={`text-xs font-semibold px-2.5 py-1 rounded-full border ${
                           stimaPuntuale.in_target_ottimizzata
-                            ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
-                            : (stimaPuntuale.ottimizzata > 180 ? 'bg-rose-500/20 text-rose-300 border-rose-500/40' : 'bg-amber-500/20 text-amber-300 border-amber-500/40')
+                            ? 'bg-teal-50 text-teal-800 border-teal-300'
+                            : (stimaPuntuale.ottimizzata > 180 ? 'bg-rose-50 text-rose-800 border-rose-300' : 'bg-amber-50 text-amber-800 border-amber-300')
                         }`}>
                           {stimaPuntuale.in_target_ottimizzata ? '✓ Nel Target Bersaglio (70-180)' : (stimaPuntuale.ottimizzata > 180 ? '⚠ Oltre Soglia Iperglicemica' : '⚠ Rischio Ipoglicemia')}
                         </span>
@@ -561,33 +542,33 @@ export default function App() {
 
                       {/* Valore Gigante */}
                       <div className="flex items-baseline gap-3 flex-wrap">
-                        <span className={`text-6xl sm:text-7xl font-black font-mono tracking-tight ${
-                          usaHack1 || usaHack2 ? 'text-emerald-400' : 'text-slate-100'
+                        <span className={`text-6xl sm:text-7xl font-extrabold font-mono tracking-tight ${
+                          usaHack1 || usaHack2 ? 'text-teal-700' : 'text-slate-900'
                         }`}>
                           {usaHack1 || usaHack2 ? stimaPuntuale.ottimizzata : stimaPuntuale.standard}
                         </span>
-                        <span className="text-lg text-slate-400 font-mono font-bold">mg/dL</span>
+                        <span className="text-lg text-slate-500 font-mono font-bold">mg/dL</span>
 
                         {/* Variazione da inizio pasto */}
-                        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-xs font-mono">
-                          <span className="text-slate-400">da inizio ({glicemia}):</span>
-                          <strong className={stimaPuntuale.delta_standard >= 0 ? 'text-rose-400 font-bold' : 'text-emerald-400 font-bold'}>
+                        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-slate-200 text-xs font-mono shadow-xs">
+                          <span className="text-slate-500">da inizio ({glicemia}):</span>
+                          <strong className={stimaPuntuale.delta_standard >= 0 ? 'text-rose-600 font-bold' : 'text-teal-700 font-bold'}>
                             {stimaPuntuale.delta_standard >= 0 ? `+${stimaPuntuale.delta_standard}` : stimaPuntuale.delta_standard} mg/dL
                           </strong>
                         </div>
                       </div>
 
                       {/* Confronto Dettagliato Senza vs Con Interventi */}
-                      <div className="pt-3 border-t border-slate-800/80 grid grid-cols-2 gap-3 text-xs">
-                        <div className="bg-slate-900/70 p-3 rounded-xl border border-slate-800">
-                          <span className="text-slate-400 block text-[11px] mb-0.5">Senza Interventi (Standard):</span>
-                          <span className="text-rose-400 font-mono font-black text-lg">{stimaPuntuale.standard} mg/dL</span>
+                      <div className="pt-3 border-t border-slate-200 grid grid-cols-2 gap-3 text-xs">
+                        <div className="bg-white p-3 rounded-xl border border-slate-200 shadow-xs">
+                          <span className="text-slate-500 block text-[11px] mb-0.5">Senza Interventi (Standard):</span>
+                          <span className="text-rose-600 font-mono font-black text-lg">{stimaPuntuale.standard} mg/dL</span>
                         </div>
-                        <div className="bg-emerald-950/30 p-3 rounded-xl border border-emerald-500/40">
-                          <span className="text-emerald-300 block text-[11px] mb-0.5">Con Interventi Metabolici:</span>
-                          <span className="text-emerald-400 font-mono font-black text-lg">{stimaPuntuale.ottimizzata} mg/dL</span>
+                        <div className="bg-teal-50/80 p-3 rounded-xl border border-teal-200 shadow-xs">
+                          <span className="text-teal-800 block text-[11px] mb-0.5 font-medium">Con Interventi Metabolici:</span>
+                          <span className="text-teal-700 font-mono font-black text-lg">{stimaPuntuale.ottimizzata} mg/dL</span>
                           {stimaPuntuale.risparmio_mg_dl > 0 && (
-                            <span className="text-[11px] text-emerald-300 font-mono block mt-0.5 font-bold">
+                            <span className="text-[11px] text-teal-800 font-mono block mt-0.5 font-bold">
                               (-{stimaPuntuale.risparmio_mg_dl} mg/dL risparmiati!)
                             </span>
                           )}
@@ -596,14 +577,14 @@ export default function App() {
                     </div>
 
                     {/* Box Selettore Tempo: Slider + Bottoni Rapidi */}
-                    <div className="lg:col-span-5 bg-slate-950/80 rounded-2xl p-5 border border-slate-800 flex flex-col justify-between space-y-4">
+                    <div className="lg:col-span-5 bg-slate-50 rounded-2xl p-5 border border-slate-200 flex flex-col justify-between space-y-4 shadow-xs">
                       <div>
                         <div className="flex items-center justify-between mb-2.5">
-                          <span className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
-                            <Timer className="w-3.5 h-3.5 text-cyan-400" />
+                          <span className="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
+                            <Timer className="w-3.5 h-3.5 text-teal-600" />
                             Scegli tra quanto tempo:
                           </span>
-                          <span className="text-xs font-mono font-bold text-cyan-400 bg-cyan-500/10 border border-cyan-500/30 px-2 py-0.5 rounded-lg">
+                          <span className="text-xs font-mono font-bold text-teal-800 bg-teal-50 border border-teal-200 px-2 py-0.5 rounded-lg">
                             +{tempoTargetMin} min
                           </span>
                         </div>
@@ -616,8 +597,8 @@ export default function App() {
                               onClick={() => setTempoTargetMin(min)}
                               className={`py-2 px-1 rounded-xl text-xs font-mono font-bold transition border ${
                                 tempoTargetMin === min
-                                  ? 'bg-cyan-500 text-slate-950 border-cyan-400 shadow-md shadow-cyan-500/20 font-black scale-105'
-                                  : 'bg-slate-900 border-slate-800 text-slate-300 hover:text-white hover:bg-slate-800'
+                                  ? 'bg-teal-600 text-white border-teal-600 shadow-xs scale-105'
+                                  : 'bg-white border-slate-200 text-slate-700 hover:text-slate-900 hover:bg-slate-100'
                               }`}
                             >
                               +{min}m
@@ -627,9 +608,9 @@ export default function App() {
 
                         {/* Slider Fluido Continuo */}
                         <div className="space-y-1.5 pt-1">
-                          <div className="flex items-center justify-between text-[11px] text-slate-400 font-mono">
+                          <div className="flex items-center justify-between text-[11px] text-slate-500 font-mono">
                             <span>+5 min</span>
-                            <span className="text-slate-300">Scorri per tempo preciso</span>
+                            <span className="text-slate-700 font-medium">Scorri per tempo preciso</span>
                             <span>+180 min (3h)</span>
                           </div>
                           <input
@@ -639,18 +620,18 @@ export default function App() {
                             step="5"
                             value={tempoTargetMin}
                             onChange={(e) => setTempoTargetMin(Number(e.target.value))}
-                            className="w-full accent-cyan-400 cursor-pointer h-2 bg-slate-900 rounded-lg"
+                            className="w-full accent-teal-600 cursor-pointer h-2 bg-slate-200 rounded-lg"
                           />
                         </div>
                       </div>
 
                       {/* Commento Clinico per questo tempo */}
-                      <div className="p-3 bg-slate-900/90 rounded-xl border border-slate-800 text-xs text-slate-300 leading-relaxed">
-                        <div className="flex items-center gap-1.5 text-cyan-400 font-semibold mb-1">
+                      <div className="p-3 bg-white rounded-xl border border-slate-200 text-xs text-slate-700 leading-relaxed shadow-xs">
+                        <div className="flex items-center gap-1.5 text-teal-700 font-semibold mb-1">
                           <Sparkles className="w-3.5 h-3.5" />
                           <span>Cinetica al minuto +{tempoTargetMin}:</span>
                         </div>
-                        <p className="text-[11px] text-slate-400">
+                        <p className="text-[11px] text-slate-600">
                           {predizioneAi?.spiegazione_cinetica || 
                             `A +${tempoTargetMin} minuti, i ${meal.carboidrati_g}g di carboidrati portano la stima a ${stimaPuntuale.standard} mg/dL (oppure ${stimaPuntuale.ottimizzata} mg/dL con interventi metabolici).`}
                         </p>
