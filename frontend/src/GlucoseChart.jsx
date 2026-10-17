@@ -76,31 +76,31 @@ const CustomTooltip = ({ active, payload, label }) => {
     const diff = (stdVal && optVal) ? stdVal - optVal : 0;
 
     return (
-      <div className="bg-slate-900/95 border border-slate-700/80 rounded-xl p-3.5 shadow-2xl backdrop-blur-md text-xs space-y-1.5 min-w-[210px]">
-        <div className="font-semibold text-slate-300 border-b border-slate-800 pb-1.5 flex justify-between items-center">
+      <div className="bg-white/95 border border-slate-200 rounded-2xl p-3.5 shadow-xl backdrop-blur-md text-xs space-y-1.5 min-w-[210px]">
+        <div className="font-semibold text-slate-800 border-b border-slate-100 pb-1.5 flex justify-between items-center">
           <span>Tempo: {label}</span>
-          <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 font-mono">Simulazione CGM</span>
+          <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 font-medium">Andamento</span>
         </div>
         <div className="flex items-center justify-between gap-4">
-          <span className="flex items-center gap-1.5 text-rose-400 font-medium">
-            <span className="w-2 h-2 rounded-full bg-rose-500 inline-block shadow-sm shadow-rose-500/50"></span>
-            Curva Standard:
+          <span className="flex items-center gap-1.5 text-rose-600 font-medium">
+            <span className="w-2 h-2 rounded-full bg-rose-500 inline-block shadow-xs"></span>
+            Senza consigli:
           </span>
-          <span className="font-mono font-bold text-slate-100">{stdVal} mg/dL</span>
+          <span className="font-bold text-slate-900">{stdVal} mg/dL</span>
         </div>
         {optVal !== undefined && (
           <div className="flex items-center justify-between gap-4">
-            <span className="flex items-center gap-1.5 text-emerald-400 font-medium">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block shadow-sm"></span>
+            <span className="flex items-center gap-1.5 text-teal-700 font-medium">
+              <span className="w-2 h-2 rounded-full bg-teal-600 inline-block shadow-xs"></span>
               Con consigli Gluco:
             </span>
-            <span className="font-mono font-bold text-emerald-300">{optVal} mg/dL</span>
+            <span className="font-bold text-teal-700">{optVal} mg/dL</span>
           </div>
         )}
         {diff > 0 && (
-          <div className="pt-1 border-t border-slate-800/80 flex items-center justify-between text-teal-300 font-semibold">
+          <div className="pt-1.5 border-t border-slate-100 flex items-center justify-between text-teal-800 font-semibold">
             <span>Differenza glicemica:</span>
-            <span className="bg-teal-500/10 px-1.5 py-0.5 rounded">-{diff} mg/dL</span>
+            <span className="bg-teal-50 px-2 py-0.5 rounded-full border border-teal-200">-{diff} mg/dL</span>
           </div>
         )}
       </div>
@@ -121,22 +121,22 @@ export default function GlucoseChart({ data, mostraOttimizzata }) {
         <AreaChart data={data} margin={{ top: 20, right: 15, left: -10, bottom: 0 }}>
           <defs>
             <linearGradient id="colorStd" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#f43f5e" stopOpacity={0.45} />
-              <stop offset="60%" stopColor="#f43f5e" stopOpacity={0.12} />
+              <stop offset="5%" stopColor="#f43f5e" stopOpacity={0.25} />
+              <stop offset="60%" stopColor="#f43f5e" stopOpacity={0.06} />
               <stop offset="95%" stopColor="#f43f5e" stopOpacity={0} />
             </linearGradient>
             <linearGradient id="colorOpt" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#14b8a6" stopOpacity={0.5} />
-              <stop offset="60%" stopColor="#14b8a6" stopOpacity={0.15} />
-              <stop offset="95%" stopColor="#14b8a6" stopOpacity={0} />
+              <stop offset="5%" stopColor="#0d9488" stopOpacity={0.35} />
+              <stop offset="60%" stopColor="#0d9488" stopOpacity={0.08} />
+              <stop offset="95%" stopColor="#0d9488" stopOpacity={0} />
             </linearGradient>
             <linearGradient id="tirFill" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#14b8a6" stopOpacity={0.06} />
-              <stop offset="100%" stopColor="#14b8a6" stopOpacity={0.02} />
+              <stop offset="0%" stopColor="#14b8a6" stopOpacity={0.12} />
+              <stop offset="100%" stopColor="#14b8a6" stopOpacity={0.04} />
             </linearGradient>
           </defs>
 
-          <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" opacity={0.6} />
+          <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" opacity={0.8} />
 
           {/* Range Bersaglio Time-In-Range (70 - 180 mg/dL) */}
           <ReferenceArea
@@ -148,18 +148,18 @@ export default function GlucoseChart({ data, mostraOttimizzata }) {
 
           <XAxis
             dataKey="tempo"
-            stroke="#64748b"
-            tick={{ fill: '#94a3b8', fontSize: 11 }}
-            axisLine={{ stroke: '#334155' }}
+            stroke="#94a3b8"
+            tick={{ fill: '#64748b', fontSize: 11 }}
+            axisLine={{ stroke: '#cbd5e1' }}
             tickLine={false}
             interval={3}
           />
           <YAxis
             domain={[Math.floor(minVal / 10) * 10, Math.ceil(maxVal / 10) * 10]}
-            stroke="#64748b"
-            tick={{ fill: '#94a3b8', fontSize: 11 }}
+            stroke="#94a3b8"
+            tick={{ fill: '#64748b', fontSize: 11 }}
             unit=" mg"
-            axisLine={{ stroke: '#334155' }}
+            axisLine={{ stroke: '#cbd5e1' }}
             tickLine={false}
           />
 
@@ -172,8 +172,8 @@ export default function GlucoseChart({ data, mostraOttimizzata }) {
             strokeDasharray="4 4"
             strokeWidth={1.5}
             label={{
-              value: 'Soglia Iperglicemia (180 mg/dL)',
-              fill: '#fb7185',
+              value: 'Soglia Alta (180 mg/dL)',
+              fill: '#e11d48',
               position: 'insideTopRight',
               fontSize: 10,
               fontWeight: 600
@@ -183,12 +183,12 @@ export default function GlucoseChart({ data, mostraOttimizzata }) {
           {/* Linea Soglia Ipoglicemia (70 mg/dL) */}
           <ReferenceLine
             y={70}
-            stroke="#eab308"
+            stroke="#d97706"
             strokeDasharray="4 4"
             strokeWidth={1.2}
             label={{
-              value: 'Target Min (70 mg/dL)',
-              fill: '#facc15',
+              value: 'Bersaglio Min (70 mg/dL)',
+              fill: '#b45309',
               position: 'insideBottomRight',
               fontSize: 10,
               fontWeight: 600
@@ -198,12 +198,12 @@ export default function GlucoseChart({ data, mostraOttimizzata }) {
           {/* Linea Momento Pasto (t = 0m) */}
           <ReferenceLine
             x="0m"
-            stroke="#38bdf8"
+            stroke="#0284c7"
             strokeDasharray="3 3"
             strokeWidth={1.5}
             label={{
               value: 'Inizio Pasto',
-              fill: '#38bdf8',
+              fill: '#0369a1',
               position: 'top',
               fontSize: 11,
               fontWeight: 600
@@ -229,12 +229,12 @@ export default function GlucoseChart({ data, mostraOttimizzata }) {
               type="monotone"
               dataKey="ottimizzata"
               name="Con consigli Gluco"
-              stroke="#14b8a6"
+              stroke="#0d9488"
               strokeWidth={3.5}
               fillOpacity={1}
               fill="url(#colorOpt)"
               dot={false}
-              activeDot={{ r: 6, fill: '#14b8a6', stroke: '#fff', strokeWidth: 2 }}
+              activeDot={{ r: 6, fill: '#0d9488', stroke: '#fff', strokeWidth: 2 }}
             />
           )}
         </AreaChart>

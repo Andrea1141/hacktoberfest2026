@@ -3,47 +3,60 @@
 @layer base {
   :root {
     --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    --font-mono: 'JetBrains Mono', monospace;
+    --font-mono: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   }
 
   body {
     font-family: var(--font-sans);
-    background-color: #0f172a;
-    color: #f8fafc;
+    background-color: #f8fafc;
+    color: #0f172a;
     overflow-x: hidden;
   }
 }
 
-/* Pannelli morbidi e accoglienti (meno da tech, più umani) */
+/* Card accoglienti stile Consumer Health (Apple Health / Dexcom) */
 .glass-panel {
-  background: rgba(30, 41, 59, 0.7);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(51, 65, 85, 0.6);
+  background: #ffffff;
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.04), 0 1px 2px -1px rgba(15, 23, 42, 0.03);
 }
 
 .glass-panel-glow {
-  background: rgba(30, 41, 59, 0.85);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(45, 212, 191, 0.3);
-  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.5);
+  background: #ffffff;
+  border: 1px solid rgba(20, 184, 166, 0.3);
+  box-shadow: 0 4px 14px -2px rgba(20, 184, 166, 0.12);
 }
 
-/* Custom Scrollbar pulita */
+/* Formule KaTeX pulite su sfondo chiaro */
+.katex-display {
+  padding: 0.65rem 0.85rem !important;
+  margin: 0.5rem 0 !important;
+  background-color: #f1f5f9 !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 0.75rem !important;
+  overflow-x: auto !important;
+  color: #0f172a !important;
+}
+
+.katex {
+  color: #0f172a !important;
+}
+
+/* Custom Scrollbar leggera e discreta */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #0f172a;
+  background: #f1f5f9;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #334155;
+  background: #cbd5e1;
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #475569;
+  background: #94a3b8;
 }
