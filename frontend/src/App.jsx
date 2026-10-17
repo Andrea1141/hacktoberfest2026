@@ -36,9 +36,14 @@ import {
   Plus,
   Minus,
   Zap,
-  Camera,
   ArrowRight,
-  Sliders
+  Sliders,
+  ArrowUpRight,
+  ArrowDownRight,
+  AlertTriangle,
+  Play,
+  Pause,
+  RefreshCw
 } from 'lucide-react';
 
 const DEMO_MEALS_DATA = {
@@ -124,6 +129,10 @@ export default function App() {
 
   // Stato Clinico e Pasto
   const [glicemia, setGlicemia] = useState(115);
+  const [trendCgm, setTrendCgm] = useState('STABILE');
+  const [simulatoreCgm, setSimulatoreCgm] = useState(false);
+  const [predizioneAi, setPredizioneAi] = useState(null);
+  const [loadingPredizione, setLoadingPredizione] = useState(false);
   const [demoId, setDemoId] = useState('pasta');
   const [apiKey, setApiKey] = useState('');
   const [mostraKey, setMostraKey] = useState(false);
@@ -295,6 +304,41 @@ export default function App() {
   };
 
   const glicemiaInfo = getGlicemiaInfo(glicemia);
+
+  // Stili e dettagli per i livelli di rischio metabolico AI (Gemma 4)
+  const getRischioDetails = (livello) => {
+    switch (livello) {
+      case 'CRITICO':
+        return {
+          pill: 'bg-rose-500/20 text-rose-400 border-rose-500/50 shadow-lg shadow-rose-500/20 animate-pulse',
+          alertBox: 'bg-rose-950/50 border-rose-500/50 text-rose-200',
+          glow: 'from-rose-500/15 via-rose-500/5 to-transparent',
+          Icon: AlertTriangle
+        };
+      case 'ELEVATO':
+        return {
+          pill: 'bg-amber-500/20 text-amber-400 border-amber-500/50 shadow-md shadow-amber-500/20',
+          alertBox: 'bg-amber-950/40 border-amber-500/40 text-amber-200',
+          glow: 'from-amber-500/15 via-amber-500/5 to-transparent',
+          Icon: AlertCircle
+        };
+      case 'MEDIO':
+        return {
+          pill: 'bg-cyan-500/20 text-cyan-400 border-cyan-500/40',
+          alertBox: 'bg-cyan-950/30 border-cyan-500/30 text-cyan-200',
+          glow: 'from-cyan-500/10 via-cyan-500/5 to-transparent',
+          Icon: Info
+        };
+      case 'BASSO':
+      default:
+        return {
+          pill: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40',
+          alertBox: 'bg-emerald-950/30 border-emerald-500/30 text-emerald-200',
+          glow: 'from-emerald-500/10 via-emerald-500/5 to-transparent',
+          Icon: CheckCircle2
+        };
+    }
+  };
 
   // Definizioni Schede / Pagine
   const SCHEDE = [
@@ -495,6 +539,47 @@ export default function App() {
                           </button>
                         ))}
                       </div>
+
+                      {/* Selettore Trend Cinetico Sensore */}
+                      <div className="flex items-center bg-slate-950 rounded-xl border border-slate-800 p-1">
+                        {TREND_OPTIONS.map(opt => (
+                          <button
+                            key={opt.id}
+                            onClick={() => setTrendCgm(opt.id)}
+                            title={`${opt.label} - ${opt.desc}`}
+                            className={`px-2 py-1 rounded-lg text-xs font-mono font-bold transition ${
+                              trendCgm === opt.id
+                                ? 'bg-emerald-500 text-slate-950 shadow-sm'
+                                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+                            }`}
+                          >
+                            {opt.freccia}
+                          </button>
+                        ))}
+                      </div>
+
+                      {/* Toggle Simulazione Stream Continuo */}
+                      <button
+                        onClick={() => setSimulatoreCgm(!simulatoreCgm)}
+                        title={simulatoreCgm ? "Metti in pausa simulazione flusso CGM" : "Simula flusso sensore continuo ogni 3.5s"}
+                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-semibold transition ${
+                          simulatoreCgm
+                            ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/50 shadow-md shadow-emerald-500/20'
+                            : 'bg-slate-950 border-slate-800 text-slate-400 hover:text-slate-200'
+                        }`}
+                      >
+                        {simulatoreCgm ? (
+                          <>
+                            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                            <span>Stream Attivo</span>
+                          </>
+                        ) : (
+                          <>
+                            <Play className="w-3.5 h-3.5 text-slate-400" />
+                            <span>Simula Stream</span>
+                          </>
+                        )}
+                      </button>
                     </div>
                   </div>
 
@@ -512,6 +597,117 @@ export default function App() {
                     <span className="text-[10px] text-slate-400 font-mono">220</span>
                   </div>
                 </div>
+
+                {/* Card Predizione Automatica AI dal Sensore CGM (Gemma 4) */}
+                {(() => {
+                  const livelloRischio = predizioneAi?.livello_rischio || (piccoStd > 220 ? 'CRITICO' : piccoStd > 180 ? 'ELEVATO' : piccoStd > 140 ? 'MEDIO' : 'BASSO');
+                  const { pill, alertBox, glow, Icon: RiskIcon } = getRischioDetails(livelloRischio);
+                  const allerta = predizioneAi?.allerta_proattiva || `Sensore a ${glicemia} mg/dL (${trendCgm}): picco previsto a ${piccoStd} mg/dL.`;
+                  const consiglio = predizioneAi?.consiglio_prioritario || (piccoStd > 180 ? "Attiva la camminata attiva o il pre-carico di fibre per limitare l'escursione glicemica." : "Risposta glicemica controllata nel target bersaglio.");
+                  const spiegazione = predizioneAi?.spiegazione_cinetica;
+                  const hackSuggerito = predizioneAi?.hack_consigliato_prioritario;
+
+                  const puoAttivareHack2 = (hackSuggerito === 'HACK_2' || hackSuggerito === 'ENTRAMBI') && !usaHack2;
+                  const puoAttivareHack1 = (hackSuggerito === 'HACK_1' || hackSuggerito === 'ENTRAMBI') && !usaHack1;
+                  const tuttiAttivi = usaHack1 && usaHack2;
+
+                  return (
+                    <div className="relative overflow-hidden bg-slate-900/70 border border-slate-800/90 rounded-2xl p-5 shadow-2xl backdrop-blur-md space-y-3.5">
+                      <div className={`absolute top-0 right-0 w-80 h-32 bg-gradient-to-l ${glow} pointer-events-none rounded-tr-2xl`}></div>
+
+                      {/* Header Scheda AI Predizione */}
+                      <div className="flex flex-wrap items-center justify-between gap-3 relative z-10 border-b border-slate-800/80 pb-3">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center shrink-0">
+                            <RiskIcon className="w-5 h-5 text-emerald-400" />
+                          </div>
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <h3 className="text-sm font-bold text-slate-100 flex items-center gap-1.5">
+                                <span>Predizione AI Sensore CGM</span>
+                              </h3>
+                              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">
+                                Gemma 4
+                              </span>
+                              {loadingPredizione && (
+                                <span className="inline-flex items-center gap-1 text-[10px] font-mono text-cyan-400 animate-pulse">
+                                  <RefreshCw className="w-3 h-3 animate-spin" />
+                                  <span>Ricalcolo AI...</span>
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-[11px] text-slate-400 mt-0.5">
+                              Telemetria live: <span className="font-mono text-slate-200 font-semibold">{glicemia} mg/dL</span> ({trendCgm}) • Pasto: <span className="text-slate-300">{meal.nome_piatto}</span>
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Badge Livello di Rischio */}
+                        <div className="flex items-center gap-2">
+                          <span className="text-[11px] uppercase tracking-wider text-slate-400 font-bold">Rischio Metabolico:</span>
+                          <span className={`text-xs font-mono font-black px-3 py-1 rounded-xl border ${pill}`}>
+                            {livelloRischio}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Allerta Proattiva Calcolata */}
+                      <div className={`p-3.5 rounded-xl border flex items-start gap-3 relative z-10 ${alertBox}`}>
+                        <Zap className="w-4 h-4 shrink-0 mt-0.5" />
+                        <div className="text-xs space-y-1">
+                          <div className="font-bold uppercase tracking-wider text-[10px]">Allerta Clinica Proattiva</div>
+                          <div className="leading-relaxed font-medium">{allerta}</div>
+                        </div>
+                      </div>
+
+                      {/* Azione Raccomandata & One-Click Trigger */}
+                      <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 bg-slate-950/80 border border-slate-800/90 rounded-xl relative z-10 text-xs">
+                        <div className="flex items-start sm:items-center gap-2.5 flex-1 min-w-[240px]">
+                          <Sparkles className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5 sm:mt-0" />
+                          <div>
+                            <span className="text-slate-400 font-medium">Azione Raccomandata dall'AI: </span>
+                            <span className="text-slate-100 font-semibold">{consiglio}</span>
+                          </div>
+                        </div>
+
+                        {/* Pulsante Azione Rapida */}
+                        <div className="shrink-0">
+                          {puoAttivareHack2 && (
+                            <button
+                              onClick={() => setUsaHack2(true)}
+                              className="px-3 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs flex items-center gap-1.5 transition shadow-lg shadow-emerald-500/20"
+                            >
+                              <Footprints className="w-3.5 h-3.5" />
+                              <span>Attiva Camminata GLUT4</span>
+                            </button>
+                          )}
+                          {puoAttivareHack1 && !puoAttivareHack2 && (
+                            <button
+                              onClick={() => setUsaHack1(true)}
+                              className="px-3 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs flex items-center gap-1.5 transition shadow-lg shadow-emerald-500/20"
+                            >
+                              <Salad className="w-3.5 h-3.5" />
+                              <span>Attiva Pre-carico Fibre</span>
+                            </button>
+                          )}
+                          {tuttiAttivi && (
+                            <span className="text-[11px] font-mono font-semibold px-2.5 py-1 rounded-md bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">
+                              ✓ Hack protettivi già attivi
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Spiegazione Fisiologica Cinetica */}
+                      {spiegazione && (
+                        <div className="text-[11px] text-slate-400 flex items-start gap-2 pt-1 border-t border-slate-800/60">
+                          <Info className="w-3.5 h-3.5 text-slate-500 shrink-0 mt-0.5" />
+                          <span className="leading-relaxed">{spiegazione}</span>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
 
                 {/* 2. Selezione Rapida Pasto (1-Tap Fast Choice) & Widget Bolo */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -918,6 +1114,28 @@ export default function App() {
                       </span>
                     </div>
                   </div>
+
+                  {/* Banner Sintesi Predizione AI CGM */}
+                  {(() => {
+                    const livelloRischio = predizioneAi?.livello_rischio || (piccoStd > 220 ? 'CRITICO' : piccoStd > 180 ? 'ELEVATO' : piccoStd > 140 ? 'MEDIO' : 'BASSO');
+                    const { pill, alertBox, Icon: RiskIcon } = getRischioDetails(livelloRischio);
+                    const allerta = predizioneAi?.allerta_proattiva || `Sensore a ${glicemia} mg/dL (${trendCgm}): picco previsto a ${piccoStd} mg/dL.`;
+
+                    return (
+                      <div className={`p-3.5 rounded-xl border flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 ${alertBox}`}>
+                        <div className="flex items-center gap-3">
+                          <RiskIcon className="w-5 h-5 shrink-0" />
+                          <div className="text-xs">
+                            <span className="font-bold uppercase tracking-wider text-[10px] block text-slate-400">Allerta AI Gemma 4 (Sensore CGM {glicemia} mg/dL • {trendCgm})</span>
+                            <span className="font-medium text-slate-100">{allerta}</span>
+                          </div>
+                        </div>
+                        <span className={`text-[11px] font-mono font-bold px-2.5 py-1 rounded-lg border uppercase self-start sm:self-center shrink-0 ${pill}`}>
+                          {livelloRischio}
+                        </span>
+                      </div>
+                    );
+                  })()}
 
                   {/* 4 KPI Completi */}
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
