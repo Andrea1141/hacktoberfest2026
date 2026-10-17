@@ -1,0 +1,296 @@
+================================================================================
+AZT1D 2025 — COMPREHENSIVE DATASET SUMMARY & INTEGRATION GUIDE FOR GLUCOTWIN AI
+================================================================================
+Target Directory: C:\Users\ricky\Downloads\AZT1D  A Real-World Dataset for Type 1 Diabetes\AZT1D  A Real-World Dataset for Type 1 Diabetes\AZT1D 2025\AZT1D 2025
+File Type: Reference Knowledge & AI Integration Guide
+Intended Consumer: AI Agents (Gemma 4 / Llama 3 / Claude / GPT-4), FastAPI Backend & React Frontend
+
+
+--------------------------------------------------------------------------------
+1. EXECUTIVE SUMMARY & DATASET OVERVIEW
+--------------------------------------------------------------------------------
+Il dataset "AZT1D 2025" (A Real-World Dataset for Type 1 Diabetes) è un archivio clinico ad altissima risoluzione contenente dati del mondo reale raccolti da 25 individui affetti da Diabete di Tipo 1 (T1D).
+Tutti i pazienti utilizzano sistemi avanzati di erogazione automatica di insulina (AID - Automated Insulin Delivery, es. Tandem Control-IQ, Medtronic 780G o similari ad anello chiuso ibrido).
+
+Caratteristiche Chiave:
+- Totale Pazienti: 25 soggetti anonimizzati (Subject 1 -> Subject 25).
+- Volume Complessivo: 306.712 record campionati ogni 5 minuti (~40-55 giorni continui di telemetria per paziente).
+- Finestra Temporale Globale: Dicembre 2023 – Aprile 2024.
+- Fuso Orario: Ora locale Arizona (MST, Mountain Standard Time, UTC-7, senza ora legale).
+- Dati Monitorati: Glucosio continuo da sensore CGM (mg/dL), bolo insulina suddiviso per pasto e correzione (U), velocità basale (U/h o U), grammi di carboidrati assunti (g), modalità operativa del dispositivo (Normal, Sleep, Exercise).
+
+
+--------------------------------------------------------------------------------
+2. STRUTTURA DELLE CARTELLE & INVENTARIO FILE
+--------------------------------------------------------------------------------
+Il dataset è organizzato in due directory principali:
+
+AZT1D 2025/
+├── README.txt                     # Note ufficiali sull'anagrafica e sulla citazione
+├── Manuscript.pdf                 # Pubblicazione scientifica di validazione clinica
+│
+├── CGM Records/                   # DATI GREZZI TABELLARI (Core Dataset per l'AI)
+│   ├── Subject 1/Subject 1.csv    # 11.042 righe (08/12/2023 - 15/01/2024)
+│   ├── Subject 2/Subject 2.csv    # 11.194 righe (10/12/2023 - 17/01/2024)
+│   ├── Subject 3/Subject 3.csv    # 11.605 righe (09/12/2023 - 16/01/2024)
+│   ├── ...
+│   └── Subject 25/Subject 25.csv  # 10.920 righe (01/03/2024 - 07/04/2024)
+│
+└── Visual Statistics/             # GRAFICI CLINICI PRE-GENERATI (PNG ad alta risoluzione)
+    ├── Subject 1/
+    │   ├── Full_Statistical_Summary.png    # Distribuzione globale, medie, variabilità
+    │   ├── Full_Zone_Count_Summary.png     # Conteggio campioni per fascia glicemica
+    │   ├── Full_Zone_Duration_Summary.png  # Tempo speso nelle fasce TIR (ore / minuti)
+    │   ├── Readings_2023-12-08.png         # Tracciato giornaliero continuo con marker pasti/boli
+    │   ├── ... (un grafico PNG per ogni singolo giorno monitorato)
+    └── Subject 2 -> Subject 25/            # Stessa struttura visuale per tutti i 25 soggetti
+
+
+--------------------------------------------------------------------------------
+3. DIZIONARIO DATI DETTAGLIATO (COLONNE DI SUBJECT X.CSV)
+--------------------------------------------------------------------------------
+Ogni riga corrisponde a un ciclo di campionamento del sensore CGM (ogni 5 minuti):
+
+1. EventDateTime (String, Formato: "YYYY-MM-DD HH:MM:SS")
+   - Timestamp esatto dell'evento o lettura.
+   - Es: "2023-12-08 06:44:00".
+
+2. DeviceMode (String, Opzionale)
+   - Stato operativo dell'algoritmo AID:
+     * vuoto / "Normal": funzionamento ordinario ad anello chiuso (target ~110-120 mg/dL).
+     * "sleep": modalità sonno notturno (target più rigido ~112.5 mg/dL, disattiva boli automatici aggressivi).
+     * "exercise": modalità attività fisica (target rialzato a 140-160 mg/dL e riduzione/sospensione basale per prevenire ipoglicemie da sforzo muscolare GLUT4).
+
+3. BolusType (String, Opzionale)
+   - Tipologia del bolo di insulina somministrato:
+     * "Standard": bolo immediato per la copertura del pasto.
+     * "Standard/Correction": bolo combinato pasto + correzione di iperglicemia.
+     * "Automatic Bolus/Correction": micro-bolo erogato autonomamente dall'algoritmo AID senza intervento del paziente.
+     * "Extended XX.00%/YY.YY": bolo prolungato (es. "Extended 65.00%/3.18" = 65% erogato subito, 35% spalmato). Corrisponde esattamente all'alert "Effetto Pizza / Grassi Elevati" implementato nel sito GlucoTwin!
+
+4. Basal (Float, Opzionale)
+   - Velocità o quantità di insulina basale programmata o modulata in tempo reale dalla pompa.
+
+5. CorrectionDelivered (Float, Unità: U)
+   - Quota parte del bolo erogata specificamente per abbattere la glicemia al di sopra del target.
+   - Corrisponde esattamente alla formula: `(Glicemia - Target) / FSI`.
+
+6. TotalBolusInsulinDelivered (Float, Unità: U)
+   - Somma complessiva del bolo somministrato (`FoodDelivered` + `CorrectionDelivered`).
+
+7. FoodDelivered (Float, Unità: U)
+   - Quota parte del bolo erogata specificamente per coprire i grammi di carboidrati.
+   - Corrisponde esattamente alla formula: `Carboidrati (g) / Rapporto I:C`.
+
+8. CarbSize (Float, Unità: grammi)
+   - Quantità di carboidrati netti dichiarati dal paziente al momento del pasto.
+
+9. CGM / Readings (CGM / BGM) (Float / Int, Unità: mg/dL)
+   - Valore glicemico istantaneo rilevato dal sensore continuo.
+   - ATTENZIONE PER IL PARSER AI: Nei soggetti 1-13 e 15-25 la colonna si chiama "CGM". Nel "Subject 14" si chiama "Readings (CGM / BGM)" ed è posizionata prima di TotalBolusInsulinDelivered.
+
+
+--------------------------------------------------------------------------------
+4. MAPPING DIRETTO CON L'ARCHITETTURA GLUCOTWIN (BACKEND, AI & FRONTEND)
+--------------------------------------------------------------------------------
+L'AI che utilizzerà questo dataset per popolare o simulare il sito GlucoTwin deve applicare questa corrispondenza 1-a-1:
+
+A. Corrispondenza con Backend (`backend/sito/routes.py` & `backend/sito/schemas.py`):
+   - Valore `CGM` -> parametro `glicemia_base` (in `/api/analyze`) e `glicemia` (in `/api/chat`).
+   - Valore `CarbSize` -> campo `meal["carboidrati_g"]`.
+   - Valore `FoodDelivered` e `CarbSize` -> permettono di calcolare il rapporto I:C reale del paziente:
+     `Rapporto I:C = CarbSize / FoodDelivered` (es. 51g / 5.1U = 10 g/U).
+   - Valore `CorrectionDelivered` -> permette di calcolare il Fattore di Sensibilità Insulinica (FSI/ISF):
+     `FSI = (Glicemia - Target) / CorrectionDelivered`.
+
+B. Corrispondenza con AI Coach (`backend/ai/coach.py` & Gemma 4):
+   - Quando `CarbSize > 0`: attiva `genera_hack_coach(meal, glicemia, api_key)` generando gli interventi metabolici (pre-carico fibre + camminata).
+   - Quando `DeviceMode == "exercise"`: valida clinicamente il toggle "Hack Attività Post-Pasto" (`usa_hack2 = True`), dimostrando l'abbattimento del picco glicemico via GLUT4.
+   - Quando `BolusType` contiene "Extended": dimostra la raccomandazione clinica dell'agente Gemma ("Effetto Pizza con bolo prolungato per i grassi").
+
+C. Corrispondenza con Frontend (`frontend/src/BolusCalculator.jsx`):
+   - `boloPasto` = `CarbSize / rapportoIC` (identico a `FoodDelivered` nel dataset).
+   - `boloCorrezione` = `(CGM - target) / fsi` (identico a `CorrectionDelivered` nel dataset).
+   - `boloTotale` = `TotalBolusInsulinDelivered`.
+   - `scontoMoto (-20%)` = abilitato quando `DeviceMode == "exercise"`.
+
+D. Corrispondenza con Frontend Chart (`frontend/src/GlucoseChart.jsx`):
+   - Serie temporale a intervalli di 5 minuti da $t = -45$ min a $t = +180$ min centrata sull'evento pasto (`CarbSize > 0`).
+   - Linee di riferimento: Target Range 70-180 mg/dL, soglia Iperglicemia (180 mg/dL), soglia Ipoglicemia (70 mg/dL).
+
+
+--------------------------------------------------------------------------------
+5. ESEMPI CONCRETI DI CSV SALIENTI (DATASET SNIPPETS PER L'AI)
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+SNIPPET 1: STATO NOTTURNO CIRCOLARE BASALE (Modalità Euglicemica Stabile)
+Contesto: Ore 00:00 - 01:30. Il paziente dorme, nessuna assunzione di cibo né correzioni manuali.
+Glicemia stabilizzata in perfetto target range (104 - 108 mg/dL) con erogazione basale minima.
+
+EventDateTime,DeviceMode,BolusType,Basal,CorrectionDelivered,TotalBolusInsulinDelivered,FoodDelivered,CarbSize,CGM
+2023-12-20 23:59:11,sleep,,0.04,,,,,108
+2023-12-21 00:04:12,sleep,,0.04,,,,,105
+2023-12-21 00:09:12,sleep,,0.04,,,,,104
+2023-12-21 00:14:12,sleep,,0.04,,,,,104
+2023-12-21 00:19:12,sleep,,0.04,,,,,106
+2023-12-21 00:24:12,sleep,,0.04,,,,,107
+2023-12-21 00:29:12,sleep,,0.04,,,,,108
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+SNIPPET 2: EVENTO PASTO REALE CON BOLO STANDARD (Colazione da 51g Carboidrati)
+Contesto: Il paziente assume 51g di carboidrati alle 07:24 con glicemia di partenza a 136 mg/dL.
+La pompa eroga un bolo standard di 5.1 U interamente dedicato al cibo (FoodDelivered = 5.1).
+Ne consegue un Rapporto Insulina:Carboidrati (I:C) esatto di 10 g/U (51 / 5.1 = 10).
+Nei 35 minuti successivi si osserva la tipica salita glicemica post-prandiale da 136 fino a 160 mg/dL.
+
+EventDateTime,DeviceMode,BolusType,Basal,CorrectionDelivered,TotalBolusInsulinDelivered,FoodDelivered,CarbSize,CGM
+2023-12-10 07:14:54,,,,,,,,148
+2023-12-10 07:19:55,,,,,,,,147
+2023-12-10 07:24:54,,Standard,,0.0,5.1,5.1,51.0,136
+2023-12-10 07:29:54,,,,,,,,129
+2023-12-10 07:34:56,,,,,,,,131
+2023-12-10 07:39:54,,,,,,,,137
+2023-12-10 07:44:54,,,,,,,,143
+2023-12-10 07:49:54,,,,,,,,147
+2023-12-10 07:54:54,,,,,,,,156
+2023-12-10 07:59:54,,,,,,,,160
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+SNIPPET 3: BOLO COMBINATO (PASTO + CORREZIONE IPERGLICEMICA)
+Contesto: Il paziente si trova a 183 mg/dL (sopra la soglia di 180 mg/dL) e consuma 55g di carboidrati.
+La pompa AID eroga un bolo totale di 20.44 U così scomposto:
+- FoodDelivered: 18.33 U (per i 55g di carboidrati)
+- CorrectionDelivered: 2.11 U (per correggere l'iperglicemia di 183 mg/dL)
+- TotalBolusInsulinDelivered: 20.44 U (18.33 + 2.11)
+
+EventDateTime,DeviceMode,BolusType,Basal,CorrectionDelivered,TotalBolusInsulinDelivered,FoodDelivered,CarbSize,CGM
+2023-12-08 13:09:00,,,,,,,,176
+2023-12-08 13:14:00,,,,,,,,180
+2023-12-08 13:19:00,,Standard/Correction,,2.11,20.44,18.33,55.0,183
+2023-12-08 13:24:00,,,,,,,,185
+2023-12-08 13:29:00,,,,,,,,186
+2023-12-08 13:34:00,,,,,,,,188
+2023-12-08 13:39:00,,,,,,,,185
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+SNIPPET 4: EFFETTO ESERCIZIO FISICO (MODALITÀ "EXERCISE" & CALO GLUT4)
+Contesto: Il paziente attiva la modalità "exercise" alle 11:29 con glicemia elevata a 250 mg/dL.
+Grazie all'attivazione muscolare dei recettori GLUT4, la glicemia scende rapidamente:
+250 -> 235 -> 223 -> 219 mg/dL in soli 15 minuti (-31 mg/dL senza boli correttivi!).
+
+EventDateTime,DeviceMode,BolusType,Basal,CorrectionDelivered,TotalBolusInsulinDelivered,FoodDelivered,CarbSize,CGM
+2023-12-21 11:24:09,exercise,,0.421,,,,,250
+2023-12-21 11:29:09,exercise,,0.421,,,,,250
+2023-12-21 11:34:09,exercise,,0.421,,,,,235
+2023-12-21 11:39:09,exercise,,0.421,,,,,223
+2023-12-21 11:44:09,exercise,,0.421,,,,,219
+2023-12-21 11:49:09,exercise,,0.421,,,,,215
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+SNIPPET 5: BOLO PROLUNGATO / DUAL-WAVE ("EFFETTO PIZZA")
+Contesto: Assunzione di pasto ricco di grassi e carboidrati lenti.
+Il sistema eroga un bolo esteso: 65% della dose subito e il restante 35% dilazionato.
+Nel dataset compare come: "Extended 65.00%/3.18" oppure "Extended/Correction 50.00%/23.75".
+
+EventDateTime,DeviceMode,BolusType,Basal,CorrectionDelivered,TotalBolusInsulinDelivered,FoodDelivered,CarbSize,CGM
+2024-01-05 19:15:00,,Extended 65.00%/3.18,,0.0,9.08,9.08,65.0,142
+2024-01-05 19:20:00,,,,,,,,145
+2024-01-05 19:25:00,,,,,,,,151
+2024-01-05 19:30:00,,,,,,,,158
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+SNIPPET 6: CASO SPECIALE SUBJECT 14 (Nome Colonna: "Readings (CGM / BGM)")
+Contesto: Il soggetto 14 adotta un ordine colonne diverso e la colonna glucosio è denominata
+"Readings (CGM / BGM)". Mostra un controllo glicemico eccezionale (TIR: 92.6%, Media: 107.5 mg/dL).
+
+EventDateTime,Basal,BolusType,CarbSize,CorrectionDelivered,FoodDelivered,Readings (CGM / BGM),TotalBolusInsulinDelivered,DeviceMode
+2024-01-13 08:33:00,,Standard,45.0,0.0,4.5,105,4.5,
+2024-01-13 08:38:00,,,,,,108,,
+2024-01-13 08:43:00,,,,,,114,,
+2024-01-13 08:48:00,,,,,,121,,
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+6. BENCHMARK COMPLETO DEI 25 SOGGETTI (STATISTICHE CLINICHE ESTRATTE)
+--------------------------------------------------------------------------------
+Metriche calcolate secondo il Consenso Internazionale ADA/ATTD:
+- TIR (Time in Range): % di letture tra 70 e 180 mg/dL (Target Clinico: > 70%)
+- TAR (Time Above Range): % di letture > 180 mg/dL (Target Clinico: < 25%)
+- TBR (Time Below Range): % di letture < 70 mg/dL (Target Clinico: < 4%)
+- GMI (Glucose Management Indicator / Stima HbA1c %): Formula 3.31 + (0.02392 * Glicemia_Media)
+
+SOGGETTO   | RECORD | DATA INIZIO | DATA FINE  | MEDIA CGM | TIR %  | TAR %  | TBR % | GMI % | PASTI | BOLI
+---------------------------------------------------------------------------------------------------------
+Subject 1  | 11.042 | 2023-12-08  | 2024-01-15 | 142.1 mg  | 84.1%  | 14.9%  |  1.0% | 6.71% |   268 |  590
+Subject 2  | 11.194 | 2023-12-10  | 2024-01-17 | 156.1 mg  | 74.6%  | 25.1%  |  0.3% | 7.04% |   247 |  397
+Subject 3  | 11.605 | 2023-12-09  | 2024-01-16 | 138.3 mg  | 83.0%  | 14.6%  |  2.4% | 6.62% |   222 |  560
+Subject 4  | 12.822 | 2023-12-08  | 2024-01-21 | 170.9 mg  | 63.2%  | 36.7%  |  0.1% | 7.40% |   153 |  514
+Subject 5  | 13.210 | 2023-12-12  | 2024-01-26 | 134.6 mg  | 81.3%  | 14.6%  |  4.1% | 6.53% |   180 |  396
+Subject 6  | 12.901 | 2023-12-09  | 2024-01-22 | 143.6 mg  | 85.2%  | 14.7%  |  0.1% | 6.75% |   143 |  189
+Subject 7  | 13.392 | 2023-12-16  | 2024-01-31 | 142.5 mg  | 85.0%  | 14.1%  |  0.9% | 6.72% |   585 |  716
+Subject 8  |  8.139 | 2024-01-11  | 2024-02-08 | 159.9 mg  | 68.1%  | 31.2%  |  0.7% | 7.13% |   196 |  349
+Subject 9  | 10.717 | 2024-01-01  | 2024-02-08 | 190.9 mg  | 44.7%  | 53.6%  |  1.7% | 7.88% |   107 |  521
+Subject 10 | 12.183 | 2023-12-29  | 2024-02-08 | 157.3 mg  | 69.2%  | 29.9%  |  0.9% | 7.07% |   145 |  474
+Subject 11 | 12.954 | 2024-01-08  | 2024-02-21 | 166.3 mg  | 64.9%  | 34.7%  |  0.4% | 7.29% |   320 |  685
+Subject 12 | 12.681 | 2024-01-08  | 2024-02-20 | 135.6 mg  | 83.4%  | 14.1%  |  2.5% | 6.55% |   142 |  296
+Subject 13 | 12.895 | 2024-01-13  | 2024-02-26 | 134.8 mg  | 92.4%  |  7.2%  |  0.4% | 6.54% |   151 |  265
+Subject 14 | 13.003 | 2024-01-13  | 2024-02-26 | 107.5 mg  | 92.6%  |  1.0%  |  6.4% | 5.88% |   263 |  553
+Subject 15 | 15.825 | 2024-01-12  | 2024-02-29 | 133.5 mg  | 81.9%  | 13.6%  |  4.5% | 6.50% |    44 |  392
+Subject 16 | 12.385 | 2024-01-18  | 2024-02-29 | 148.7 mg  | 76.5%  | 22.8%  |  0.7% | 6.87% |    99 |  293
+Subject 17 | 12.972 | 2024-01-10  | 2024-02-22 | 154.6 mg  | 73.3%  | 25.7%  |  1.1% | 7.01% |   109 |  440
+Subject 18 | 10.577 | 2024-02-08  | 2024-03-15 | 152.1 mg  | 75.0%  | 24.5%  |  0.4% | 6.95% |    90 |  226
+Subject 19 | 13.222 | 2024-02-01  | 2024-03-17 | 132.1 mg  | 89.8%  |  8.9%  |  1.3% | 6.47% |   179 |  267
+Subject 20 | 13.390 | 2024-02-01  | 2024-03-18 | 133.2 mg  | 90.0%  |  8.9%  |  1.1% | 6.50% |   153 |  421
+Subject 21 | 13.404 | 2024-02-01  | 2024-03-18 | 158.7 mg  | 69.4%  | 29.5%  |  1.1% | 7.11% |   194 |  669
+Subject 22 | 11.363 | 2024-02-23  | 2024-04-02 | 141.7 mg  | 82.1%  | 16.5%  |  1.3% | 6.70% |   173 |  508
+Subject 23 | 13.766 | 2024-02-02  | 2024-03-20 | 140.4 mg  | 83.1%  | 15.6%  |  1.3% | 6.67% |     0 |  569
+Subject 24 | 10.150 | 2024-03-01  | 2024-04-04 | 137.7 mg  | 85.0%  | 13.4%  |  1.6% | 6.60% |   147 |  424
+Subject 25 | 10.920 | 2024-03-01  | 2024-04-07 | 161.8 mg  | 67.5%  | 31.4%  |  1.1% | 7.18% |   161 |  404
+---------------------------------------------------------------------------------------------------------
+TOTALE     |306.712 | 08/12/2023  | 07/04/2024 | 147.2 mg  | 78.2%  | 20.3%  |  1.5% | 6.83% | 4.444 |11.368
+
+
+--------------------------------------------------------------------------------
+7. GUIDA PER L'AI: COME TRASFORMARE I DATI AZT1D PER IL FRONTEND GLUCOTWIN
+--------------------------------------------------------------------------------
+Quando l'agente AI riceve in pasto un segmento di AZT1D (es. Subject 1.csv o Subject 2.csv), deve formattare l'output JSON affinché il sito React possa renderizzarlo senza alcuna modifica al codice:
+
+Modello JSON Generato per il Grafico Post-Prandiale:
+{
+  "paziente_id": "Subject 2",
+  "orario_pasto": "2023-12-10 07:24:54",
+  "glicemia_base": 136,
+  "carboidrati_g": 51.0,
+  "bolo_erogato_totale": 5.1,
+  "rapporto_ic_calcolato": 10.0,
+  "punti_curva_cgm": [
+    {"tempo": "-10m", "valore": 148},
+    {"tempo": "-5m", "valore": 147},
+    {"tempo": "0m", "valore": 136, "evento": "Pasto 51g + Bolo 5.1U"},
+    {"tempo": "+5m", "valore": 129},
+    {"tempo": "+10m", "valore": 131},
+    {"tempo": "+15m", "valore": 137},
+    {"tempo": "+20m", "valore": 143},
+    {"tempo": "+25m", "valore": 147},
+    {"tempo": "+30m", "valore": 156},
+    {"tempo": "+35m", "valore": 160}
+  ],
+  "analisi_coach_gemma": {
+    "commento": "Partendo da 136 mg/dL, il bolo di 5.1U ha coperto i 51g di CHO mantenendo il picco a 160 mg/dL, pienamente nel target < 180 mg/dL.",
+    "hack_applicabile": "Camminata di 15 min per abbattere la coda glicemica (come evidenziato nelle sessioni 'exercise' del Subject 2)."
+  }
+}
+
+NOTE OPERATIVE CRUCIALI PER L'AGENTE:
+1. Gestione Robusta Header: Cerca sempre `cgm` o `readings` (case-insensitive) per identificare la colonna del sensore glicemico.
+2. Unità di Misura: I valori di glucosio sono già in mg/dL (nessuna conversione da mmol/L necessaria).
+3. Riconoscimento Modalità Fisiche: Il filtro `DeviceMode == 'exercise'` estrae istantaneamente sessioni di allenamento reali dove la glicemia crolla fisiologicamente.
+4. Riconoscimento Grassi / Bolo Dual-Wave: Le righe dove `BolusType` contiene "Extended" certificano clinicamente pasti ricchi di grassi / proteine ("effetto pizza").
+================================================================================
