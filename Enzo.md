@@ -1,6 +1,6 @@
-# 🩸 GlucoTwin AI — Documentazione Tecnica Modifiche Frontend
+# 🩸 Gluco — Documentazione Tecnica Modifiche Frontend
 
-Questo documento descrive in dettaglio tutte le implementazioni, le scelte architetturali e i componenti realizzati per il front-end di **GlucoTwin AI** all'interno della cartella `frontend/`.
+Questo documento descrive in dettaglio tutte le implementazioni, le scelte architetturali e i componenti realizzati per il front-end di **Gluco** all'interno della cartella `frontend/`.
 
 ---
 
@@ -114,28 +114,19 @@ Implementato l'agente conversazionale "GlucoTwin Coach" integrato direttamente n
 ---
 
 ### 3.8. `src/App.jsx`
-Il componente radice che coordina l'intera dashboard:
-1. **Header Intelligente:**
-   - Indicatore di stato dinamico: segnala in tempo reale se il backend FastAPI (`http://localhost:8000`) è connesso oppure se è attiva la modalità simulatore locale offline.
-   - Slider CGM Live per regolare istantaneamente la glicemia di partenza ($70 - 220\text{ mg/dL}$) con badge cromatico di stato (Bersaglio, Elevata, Iperglicemia).
-   - Campo input per l'API Key OpenRouter con pulsante show/hide.
-2. **Selettore Pasti & Vision Uploader:**
-   - 4 pasti pre-configurati completi di emoji, descrizione e valori nutrizionali precisi:
-     - 🍕 **Pizza Margherita Verace:** $85\text{g}$ Carbs, $4\text{g}$ Fibre, $22\text{g}$ Grassi, IG 82 (con Coda Grassi attiva).
-     - 🍝 **Spaghetti alla Carbonara:** $78\text{g}$ Carbs, $3\text{g}$ Fibre, $36\text{g}$ Grassi, IG 70 (con Coda Grassi attiva).
-     - 🥗 **Poke Bowl Salmone & Edamame:** $62\text{g}$ Carbs, $10\text{g}$ Fibre, $18\text{g}$ Grassi, IG 60.
-     - 🥙 **Insalata Mediterranea & Quinoa:** $38\text{g}$ Carbs, $14\text{g}$ Fibre, $16\text{g}$ Grassi, IG 42.
-   - Area di caricamento foto reale con anteprima e stato di analisi.
-3. **Pannello What-If con feedback immediato:**
-   - Toggle Hack 1 (Pre-carico fibre) e Toggle Hack 2 (Camminata 15 min GLUT4).
-   - Badge con indicazione combinata del delta di riduzione del picco e dell'incremento di Time-in-Range.
-4. **Metriche KPI Superiori:**
-   - Picco Previsto Standard (mg/dL) e minuto esatto.
-   - Picco Previsto Ottimizzato (mg/dL) e minuto esatto.
-   - Escursione Risparmiata (-mg/dL).
-   - Percentuale di Time-in-Range (TIR) Standard vs Ottimizzata.
-5. **Resilienza e Fallback Offline:**
-   - In caso di assenza o ritardo del backend FastAPI, l'applicazione non si blocca mai e attiva automaticamente il dataset demo locale garantendo il 100% dell'interattività.
+Il componente radice che coordina l'intera dashboard con architettura a schede e layout responsivo per la chat:
+1. **Navigazione a Schede / Pagine Ordinata:**
+   - **⚡ Home Rapida (Daily):** Schermata principale per l'uso quotidiano con controller rapido CGM ($\pm 5\text{ mg/dL}$ e preset rapidi $90, 115, 140, 175$), scelta pasto a 1-tap, stima immediata del bolo consigliato con scorporo, mini-toggle What-If e anteprima diretta della curva glicemica con i 4 KPI.
+   - **🍽️ Analisi Pasto:** Selettore pasti con 4 opzioni quotidiane, uploader drag & drop con Vision Agent multimodale Gemma 4, scheda bromatologica completa (Carbs, Fibre, Grassi, Proteine, Indice Glicemico).
+   - **📈 Curva & Trend:** Vista immersiva e ingrandita della cinetica post-prandiale ($-45\text{m} \dots +180\text{m}$), soglie di ipo/iperglicemia e Time-in-Range ($70 - 180\text{ mg/dL}$), e spiegazione fisiologica approfondita.
+   - **💉 Calcolatore Bolo:** Modulo trasparente interattivo con formule matematiche a 4 fasi, adattamento all'attività GLUT4 ($-20\%$), cassetto configurazione parametri paziente (Target, I:C, FSI, IOB) e alert Onda Doppia per cibi ricchi di lipidi.
+
+2. **Disposizione Responsiva della Chat AI ("Gluco Coach"):**
+   - **Modalità Desktop (`lg:`):** Chat laterale sticky sul lato destro dello schermo (`sticky top-24`), costantemente accessibile durante la navigazione tra le schede. Include pulsante di apertura/chiusura nell'header e dock flottante discreto in basso a destra quando compressa.
+   - **Modalità Mobile (`< lg`):** Barra flottante in rilievo in basso (`fixed bottom-4 left-4 right-4`) con effetto glassmorphism e bagliore neon. Con un tap si apre un elegante **Bottom Sheet** a tutto schermo con maniglia di trascinamento e tasto di chiusura, garantendo la massima usabilità su smartphone.
+
+3. **Resilienza e Fallback Offline:**
+   - In caso di assenza o ritardo del backend FastAPI, l'applicazione non si blocca mai e attiva automaticamente il dataset demo locale garantendo il 100% dell'interattività deterministica.
 
 ---
 

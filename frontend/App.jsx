@@ -30,7 +30,7 @@ export default function App() {
 
   useEffect(() => { analizzaPasto(demoId); }, [demoId]);
 
-  if (!risultato) return <div className="min-h-screen bg-slate-950 text-white p-10">Avvio GlucoTwin Engine...</div>;
+  if (!risultato) return <div className="min-h-screen bg-slate-950 text-white p-10">Avvio Gluco Engine...</div>;
 
   const { meal, coach } = risultato;
   const datiCurva = generaDatiCurva(glicemia, meal, coach, usaHack1, usaHack2);
@@ -42,7 +42,7 @@ export default function App() {
       <header className="max-w-6xl mx-auto flex flex-wrap justify-between items-center pb-6 mb-6 border-b border-slate-800">
         <div>
           <h1 className="text-3xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
-            🩸 GlucoTwin AI
+            🩸 Gluco
           </h1>
           <p className="text-slate-400 text-sm">Digital Twin Metabolico basato su Modelli Open-Weight (Qwen2.5-VL + Llama 3.3)</p>
         </div>

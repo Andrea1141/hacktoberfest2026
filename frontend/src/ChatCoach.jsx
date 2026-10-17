@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Bot, User, Send, Sparkles, MessageSquare, RefreshCw, Zap, TrendingUp, Syringe, ShieldAlert } from 'lucide-react';
+import { Bot, User, Send, Sparkles, MessageSquare, RefreshCw, Zap, TrendingUp, Syringe, ShieldAlert, X } from 'lucide-react';
 
 export default function ChatCoach({
   glicemia,
@@ -15,13 +15,15 @@ export default function ChatCoach({
   tPiccoOpt,
   tirStd,
   tirOpt,
-  apiKey
+  apiKey,
+  className = "h-[520px]",
+  onChiudi = null
 }) {
   const [messaggi, setMessaggi] = useState([
     {
       id: 'welcome',
       mittente: 'coach',
-      testo: `Ciao! Sono **GlucoTwin Coach**, il tuo assistente clinico predittivo. Ho analizzato il tuo pasto (**${meal?.nome_piatto || 'Pasto'}**) e la tua glicemia attuale (**${glicemia} mg/dL**).\n\nPuoi chiedermi il calcolo dettagliato del bolo insulinico, l'analisi del picco glicemico o come i toggle What-If stanno appiattendo la curva. Di cosa hai bisogno?`,
+      testo: `Ciao! Sono **Gluco Coach**, il tuo assistente clinico predittivo. Ho analizzato il tuo pasto (**${meal?.nome_piatto || 'Pasto'}**) e la tua glicemia attuale (**${glicemia} mg/dL**).\n\nPuoi chiedermi il calcolo dettagliato del bolo insulinico, l'analisi del picco glicemico o come i toggle What-If stanno appiattendo la curva. Di cosa hai bisogno?`,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }
   ]);
@@ -160,45 +162,56 @@ export default function ChatCoach({
   ];
 
   return (
-    <div className="bg-slate-900/70 border border-slate-800 rounded-2xl flex flex-col h-[520px] shadow-2xl backdrop-blur-md overflow-hidden">
+    <div className={`bg-slate-900/70 border border-slate-800 rounded-2xl flex flex-col shadow-2xl backdrop-blur-md overflow-hidden ${className}`}>
       {/* Header Chat */}
-      <div className="p-4 bg-slate-950/80 border-b border-slate-800 flex items-center justify-between">
-        <div className="flex items-center gap-3">
+      <div className="p-3.5 sm:p-4 bg-slate-950/80 border-b border-slate-800 flex items-center justify-between shrink-0">
+        <div className="flex items-center gap-2.5 sm:gap-3">
           <div className="relative">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-500 to-cyan-500 flex items-center justify-center text-slate-950 font-bold shadow-lg shadow-emerald-500/20">
-              <Bot className="w-5 h-5 text-slate-950" />
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-tr from-emerald-500 to-cyan-500 flex items-center justify-center text-slate-950 font-bold shadow-lg shadow-emerald-500/20">
+              <Bot className="w-4 h-4 sm:w-5 sm:h-5 text-slate-950" />
             </div>
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 absolute -bottom-0.5 -right-0.5 border-2 border-slate-950"></span>
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <h3 className="font-bold text-sm text-slate-100">GlucoTwin Coach AI</h3>
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-medium">
-                Llama 3.3 70B & Algoritmo Clinico
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <h3 className="font-bold text-xs sm:text-sm text-slate-100">Gluco Coach AI</h3>
+              <span className="text-[9px] sm:text-[10px] px-1.5 sm:px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-medium">
+                Gemma 4
               </span>
             </div>
-            <p className="text-[11px] text-slate-400">
-              Accesso continuo a CGM, I:C, FSI, IOB e telemetria della curva
+            <p className="text-[10px] sm:text-[11px] text-slate-400">
+              Accesso continuo a CGM, I:C, FSI, IOB
             </p>
           </div>
         </div>
 
-        <button
-          onClick={() => {
-            setMessaggi([
-              {
-                id: 'welcome_reset',
-                mittente: 'coach',
-                testo: `Chat reimpostata. Sono pronto per una nuova domanda su **${meal?.nome_piatto}** o sulla tua glicemia (**${glicemia} mg/dL**)!`,
-                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-              }
-            ]);
-          }}
-          title="Reimposta conversazione"
-          className="p-2 text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded-lg transition"
-        >
-          <RefreshCw className="w-4 h-4" />
-        </button>
+        <div className="flex items-center gap-1">
+          <button
+            onClick={() => {
+              setMessaggi([
+                {
+                  id: 'welcome_reset',
+                  mittente: 'coach',
+                  testo: `Chat reimpostata. Sono pronto per una nuova domanda su **${meal?.nome_piatto}** o sulla tua glicemia (**${glicemia} mg/dL**)!`,
+                  timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                }
+              ]);
+            }}
+            title="Reimposta conversazione"
+            className="p-1.5 sm:p-2 text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded-lg transition"
+          >
+            <RefreshCw className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+          </button>
+          {onChiudi && (
+            <button
+              onClick={onChiudi}
+              title="Chiudi pannello chat"
+              className="p-1.5 sm:p-2 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition"
+            >
+              <X className="w-4 h-4 sm:w-4 sm:h-4" />
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Area Messaggi */}

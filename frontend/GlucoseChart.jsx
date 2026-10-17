@@ -61,7 +61,7 @@ export default function GlucoseChart({ data, mostraOttimizzata }) {
           <ReferenceLine x="0m" stroke="#64748b" strokeDasharray="3 3" label={{ value: 'Pasto', fill: '#cbd5e1', position: 'top' }} />
           <Area type="monotone" dataKey="standard" name="Curva Standard (Picco)" stroke="#ef4444" strokeWidth={3} fillOpacity={1} fill="url(#colorStd)" />
           {mostraOttimizzata && (
-            <Area type="monotone" dataKey="ottimizzata" name="Con Hack GlucoTwin" stroke="#10b981" strokeWidth={4} fillOpacity={1} fill="url(#colorOpt)" />
+            <Area type="monotone" dataKey="ottimizzata" name="Con Hack Gluco" stroke="#10b981" strokeWidth={4} fillOpacity={1} fill="url(#colorOpt)" />
           )}
         </AreaChart>
       </ResponsiveContainer>

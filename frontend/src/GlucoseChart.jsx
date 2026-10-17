@@ -92,7 +92,7 @@ const CustomTooltip = ({ active, payload, label }) => {
           <div className="flex items-center justify-between gap-4">
             <span className="flex items-center gap-1.5 text-emerald-400 font-medium">
               <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block shadow-sm shadow-emerald-500/50"></span>
-              Con Hack GlucoTwin:
+              Con Hack Gluco:
             </span>
             <span className="font-mono font-bold text-emerald-300">{optVal} mg/dL</span>
           </div>
@@ -228,7 +228,7 @@ export default function GlucoseChart({ data, mostraOttimizzata }) {
             <Area
               type="monotone"
               dataKey="ottimizzata"
-              name="Con Hack GlucoTwin"
+              name="Con Hack Gluco"
               stroke="#10b981"
               strokeWidth={3.5}
               fillOpacity={1}
