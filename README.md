@@ -104,8 +104,13 @@ hacktoberfest2026/
 Dalla cartella `backend`:
 ```bash
 cd backend
+
+# Crea e attiva l'ambiente virtuale
+python3 -m venv .venv
+source .venv/bin/activate
+
+# Installa le dipendenze
 pip install -r requirements.txt
-```
 
 Configura facoltativamente la chiave API in `.env` (se assente, il sistema opera in modalità simulatore locale offline):
 ```bash
@@ -125,7 +130,14 @@ Il servizio risponde su `http://localhost:8000` (documentazione interattiva su `
 In un terminale separato, accedi alla cartella `frontend`:
 ```bash
 cd frontend
+
+# Installa i pacchetti npm
 npm install
+
+# (Opzionale) Esegui la build di produzione per verificare che sia tutto pulito
+npm run build
+
+# Avvia il dev server
 npm run dev
 ```
 
