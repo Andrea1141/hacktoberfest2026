@@ -107,6 +107,13 @@ const DEFAULT_COACH_DATA = {
   commento_clinico: "Questo pasto genera una risposta glicemica marcata a causa dei carboidrati combinati con grassi. Applicando il pre-carico di verdura e una camminata post-prandiale, i trasportatori muscolari GLUT4 consentono di mantenere la glicemia stabilmente entro la soglia di 180 mg/dL."
 };
 
+const TREND_OPTIONS = [
+  { id: 'RAPIDA_SALITA', label: 'Rapida Salita', freccia: '↑↑', desc: 'Forte pendenza in ascesa' },
+  { id: 'IN_SALITA', label: 'In Salita', freccia: '↗', desc: 'Tendenza in ascesa' },
+  { id: 'STABILE', label: 'Stabile', freccia: '→', desc: 'Valore stazionario' },
+  { id: 'IN_DISCESA', label: 'In Discesa', freccia: '↘', desc: 'Tendenza in calo' },
+];
+
 export default function App() {
   // Stato Schede / Pagine
   const [schedaAttiva, setSchedaAttiva] = useState('home'); // 'home' | 'pasto' | 'curva' | 'bolo'
@@ -159,7 +166,8 @@ export default function App() {
 
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 4000);
+      const timeoutMs = fileFoto ? 35000 : 10000;
+      const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
       const res = await fetch('http://localhost:8000/api/analyze', {
         method: 'POST',
@@ -198,16 +206,74 @@ export default function App() {
     analizzaPasto(demoId);
   }, [demoId]);
 
-  const { meal, coach } = risultato;
-  const { punti: datiCurva, tPiccoStd, tPiccoOpt } = generaDatiCurva(glicemia, meal, coach, usaHack1, usaHack2);
+  // 1. Simulatore dinamico di telemetria CGM Live
+  useEffect(() => {
+    if (!simulatoreCgm) return;
+    const interval = setInterval(() => {
+      setGlicemia(prev => {
+        let delta = 0;
+        if (trendCgm === 'RAPIDA_SALITA') delta = 5;
+        else if (trendCgm === 'IN_SALITA') delta = 3;
+        else if (trendCgm === 'IN_DISCESA') delta = -3;
+        else delta = Math.random() > 0.5 ? 1 : -1;
+        return Math.min(240, Math.max(70, prev + delta));
+      });
+    }, 3500);
+    return () => clearInterval(interval);
+  }, [simulatoreCgm, trendCgm]);
 
-  const piccoStd = Math.max(...datiCurva.map(d => d.standard));
-  const piccoOpt = Math.max(...datiCurva.map(d => d.ottimizzata));
+  // 2. Predizione AI Automatica guidata dal sensore CGM (Gemma 4)
+  useEffect(() => {
+    let isCancelled = false;
+    const timer = setTimeout(async () => {
+      setLoadingPredizione(true);
+      try {
+        const res = await fetch('http://localhost:8000/api/predict', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            glicemia_cgm: glicemia,
+            trend_cgm: trendCgm,
+            meal: risultato.meal,
+            usa_hack1: usaHack1,
+            usa_hack2: usaHack2,
+            api_key: apiKey
+          })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (!isCancelled) {
+            setPredizioneAi(data);
+            setBackendConnesso(true);
+          }
+        }
+      } catch (err) {
+        // Mantiene fallback locale
+      } finally {
+        if (!isCancelled) setLoadingPredizione(false);
+      }
+    }, 350);
+
+    return () => {
+      isCancelled = true;
+      clearTimeout(timer);
+    };
+  }, [glicemia, trendCgm, risultato.meal, usaHack1, usaHack2, apiKey]);
+
+  const { meal, coach } = risultato;
+  const localCurva = generaDatiCurva(glicemia, meal, coach, usaHack1, usaHack2);
+
+  // Unione intelligente dei dati: usa la traiettoria AI predittiva del backend se disponibile
+  const datiCurva = predizioneAi?.punti || localCurva.punti;
+  const tPiccoStd = predizioneAi?.t_picco_std ?? localCurva.tPiccoStd;
+  const tPiccoOpt = predizioneAi?.t_picco_opt ?? localCurva.tPiccoOpt;
+  const piccoStd = predizioneAi?.picco_std ?? Math.max(...datiCurva.map(d => d.standard));
+  const piccoOpt = predizioneAi?.picco_opt ?? Math.max(...datiCurva.map(d => d.ottimizzata));
   const deltaPicco = Math.max(0, piccoStd - piccoOpt);
 
   // Time-in-Range (70 - 180 mg/dL)
-  const tirStd = Math.round((datiCurva.filter(d => d.standard >= 70 && d.standard <= 180).length / datiCurva.length) * 100);
-  const tirOpt = Math.round((datiCurva.filter(d => d.ottimizzata >= 70 && d.ottimizzata <= 180).length / datiCurva.length) * 100);
+  const tirStd = predizioneAi?.tir_std ?? Math.round((datiCurva.filter(d => d.standard >= 70 && d.standard <= 180).length / datiCurva.length) * 100);
+  const tirOpt = predizioneAi?.tir_opt ?? Math.round((datiCurva.filter(d => d.ottimizzata >= 70 && d.ottimizzata <= 180).length / datiCurva.length) * 100);
   const gainTir = Math.max(0, tirOpt - tirStd);
 
   // Calcolo Bolo Rapido per la Home

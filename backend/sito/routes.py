@@ -1,6 +1,11 @@
 from fastapi import APIRouter, UploadFile, File, Form
-from ai import estrai_nutrienti_vision, genera_hack_coach, rispondi_chat_coach
-from .schemas import ChatRequest
+from ai import (
+    estrai_nutrienti_vision,
+    genera_hack_coach,
+    rispondi_chat_coach,
+    predici_risposta_glicemica,
+)
+from .schemas import ChatRequest, PredictionRequest
 
 router = APIRouter()
 
@@ -31,6 +36,23 @@ async def analyze_meal(
         "coach": coach,
         "glicemia_base": glicemia_base,
     }
+
+
+@router.post("/api/predict")
+async def predict_glucose_response(req: PredictionRequest):
+    """
+    Predizione automatica AI basata sul valore e trend del sensore CGM,
+    con calcolo della cinetica e generazione di allerte cliniche proattive.
+    """
+    prediction = predici_risposta_glicemica(
+        glicemia_cgm=req.glicemia_cgm,
+        trend_cgm=req.trend_cgm,
+        meal=req.meal,
+        usa_hack1=req.usa_hack1,
+        usa_hack2=req.usa_hack2,
+        api_key=req.api_key,
+    )
+    return prediction
 
 
 @router.post("/api/chat")

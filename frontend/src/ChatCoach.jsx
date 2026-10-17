@@ -140,18 +140,46 @@ export default function ChatCoach({
     setInputTesto('');
     setStaScrivendo(true);
 
-    // Se c'è un'API key OpenRouter o backend, simuliamo risposta real-time clinica ad alta fedeltà
-    setTimeout(() => {
+    try {
+      const res = await fetch('http://localhost:8000/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: query,
+          glicemia: glicemia,
+          meal: meal || {},
+          usa_hack1: usaHack1,
+          usa_hack2: usaHack2,
+          api_key: apiKey || '',
+          ic_ratio: impostazioni?.rapportoIC || 10,
+          isf: impostazioni?.fsi || 40,
+          target: impostazioni?.targetGlicemico || 110,
+          iob: impostazioni?.iob || 0.0
+        })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setMessaggi(prev => [...prev, {
+          id: String(Date.now() + 1),
+          mittente: 'coach',
+          testo: data.reply,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        }]);
+      } else {
+        throw new Error('Chat API error');
+      }
+    } catch {
+      // Fallback clinico trasparente in locale
       const testoRisposta = generaRispostaCoach(query);
-      const messaggioCoach = {
+      setMessaggi(prev => [...prev, {
         id: String(Date.now() + 1),
         mittente: 'coach',
         testo: testoRisposta,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      };
-      setMessaggi(prev => [...prev, messaggioCoach]);
+      }]);
+    } finally {
       setStaScrivendo(false);
-    }, 450);
+    }
   };
 
   const quickPrompts = [

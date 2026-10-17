@@ -1,5 +1,11 @@
 import os
 
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
+
 # Supporto per Google GenAI SDK (per Gemma 4 e modelli Google)
 try:
     from google import genai
