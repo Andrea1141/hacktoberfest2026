@@ -25,4 +25,12 @@ DEMO_MEALS = {
         "proteine_g": 32,
         "indice_glicemico": 60,
     },
+    "insalata": {
+        "nome_piatto": "Insalata Mediterranea & Quinoa",
+        "carboidrati_g": 38,
+        "fibre_g": 14,
+        "grassi_g": 16,
+        "proteine_g": 20,
+        "indice_glicemico": 42,
+    },
 }

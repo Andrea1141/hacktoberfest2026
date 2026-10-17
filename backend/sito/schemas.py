@@ -12,3 +12,12 @@ class ChatRequest(BaseModel):
     isf: int = 40
     target: int = 110
     iob: float = 0.0
+
+
+class PredictionRequest(BaseModel):
+    glicemia_cgm: int = 115
+    trend_cgm: str = "STABILE"
+    meal: dict = Field(default_factory=dict)
+    usa_hack1: bool = False
+    usa_hack2: bool = False
+    api_key: str = ""
