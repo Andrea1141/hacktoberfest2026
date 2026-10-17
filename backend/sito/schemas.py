@@ -20,4 +20,6 @@ class PredictionRequest(BaseModel):
     meal: dict = Field(default_factory=dict)
     usa_hack1: bool = False
     usa_hack2: bool = False
+    tempo_min: int = 60
     api_key: str = ""
+

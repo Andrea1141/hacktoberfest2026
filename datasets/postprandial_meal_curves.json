@@ -1,0 +1,1914 @@
+{
+  "pasti": [
+    {
+      "id": "pizza_margherita",
+      "nome": "Pizza Margherita Verace",
+      "categoria": "High Carb / High Glycemic Index",
+      "macronutrienti": {
+        "carboidrati_g": 85,
+        "fibre_g": 4,
+        "grassi_g": 22,
+        "proteine_g": 24,
+        "indice_glicemico": 82
+      },
+      "glicemia_base": 115,
+      "hack_consigliati": {
+        "hack_1": {
+          "titolo": "Pre-carico di fibre",
+          "azione": "Insalata cruda 10 min prima",
+          "mod_fibre": 12,
+          "rid_ig": 15
+        },
+        "hack_2": {
+          "titolo": "Attivazione muscolare GLUT4",
+          "azione": "15 min camminata post-pasto",
+          "mult_picco": 0.68
+        }
+      },
+      "metrica_picco": {
+        "picco_standard_mg_dl": 226.1,
+        "picco_ottimizzato_mg_dl": 158.8,
+        "riduzione_delta_mg_dl": 67.3,
+        "riduzione_percentuale": 60.6
+      },
+      "curva_risposta": [
+        {
+          "t_minuti": -45,
+          "label": "-45m",
+          "glicemia_standard": 117.4,
+          "glicemia_ottimizzata": 117.4
+        },
+        {
+          "t_minuti": -40,
+          "label": "-40m",
+          "glicemia_standard": 116.9,
+          "glicemia_ottimizzata": 116.9
+        },
+        {
+          "t_minuti": -35,
+          "label": "-35m",
+          "glicemia_standard": 115.9,
+          "glicemia_ottimizzata": 115.9
+        },
+        {
+          "t_minuti": -30,
+          "label": "-30m",
+          "glicemia_standard": 114.6,
+          "glicemia_ottimizzata": 114.6
+        },
+        {
+          "t_minuti": -25,
+          "label": "-25m",
+          "glicemia_standard": 113.5,
+          "glicemia_ottimizzata": 113.5
+        },
+        {
+          "t_minuti": -20,
+          "label": "-20m",
+          "glicemia_standard": 112.7,
+          "glicemia_ottimizzata": 112.7
+        },
+        {
+          "t_minuti": -15,
+          "label": "-15m",
+          "glicemia_standard": 112.5,
+          "glicemia_ottimizzata": 112.5
+        },
+        {
+          "t_minuti": -10,
+          "label": "-10m",
+          "glicemia_standard": 112.9,
+          "glicemia_ottimizzata": 112.9
+        },
+        {
+          "t_minuti": -5,
+          "label": "-5m",
+          "glicemia_standard": 113.8,
+          "glicemia_ottimizzata": 113.8
+        },
+        {
+          "t_minuti": 0,
+          "label": "0m",
+          "glicemia_standard": 115.0,
+          "glicemia_ottimizzata": 115.0
+        },
+        {
+          "t_minuti": 5,
+          "label": "+5m",
+          "glicemia_standard": 117.6,
+          "glicemia_ottimizzata": 115.7
+        },
+        {
+          "t_minuti": 10,
+          "label": "+10m",
+          "glicemia_standard": 121.1,
+          "glicemia_ottimizzata": 116.6
+        },
+        {
+          "t_minuti": 15,
+          "label": "+15m",
+          "glicemia_standard": 125.6,
+          "glicemia_ottimizzata": 117.8
+        },
+        {
+          "t_minuti": 20,
+          "label": "+20m",
+          "glicemia_standard": 131.0,
+          "glicemia_ottimizzata": 119.3
+        },
+        {
+          "t_minuti": 25,
+          "label": "+25m",
+          "glicemia_standard": 137.6,
+          "glicemia_ottimizzata": 121.2
+        },
+        {
+          "t_minuti": 30,
+          "label": "+30m",
+          "glicemia_standard": 145.1,
+          "glicemia_ottimizzata": 123.5
+        },
+        {
+          "t_minuti": 35,
+          "label": "+35m",
+          "glicemia_standard": 153.6,
+          "glicemia_ottimizzata": 126.1
+        },
+        {
+          "t_minuti": 40,
+          "label": "+40m",
+          "glicemia_standard": 162.9,
+          "glicemia_ottimizzata": 129.1
+        },
+        {
+          "t_minuti": 45,
+          "label": "+45m",
+          "glicemia_standard": 172.8,
+          "glicemia_ottimizzata": 132.4
+        },
+        {
+          "t_minuti": 50,
+          "label": "+50m",
+          "glicemia_standard": 183.1,
+          "glicemia_ottimizzata": 136.0
+        },
+        {
+          "t_minuti": 55,
+          "label": "+55m",
+          "glicemia_standard": 193.5,
+          "glicemia_ottimizzata": 139.8
+        },
+        {
+          "t_minuti": 60,
+          "label": "+60m",
+          "glicemia_standard": 203.7,
+          "glicemia_ottimizzata": 143.6
+        },
+        {
+          "t_minuti": 65,
+          "label": "+65m",
+          "glicemia_standard": 213.4,
+          "glicemia_ottimizzata": 147.5
+        },
+        {
+          "t_minuti": 70,
+          "label": "+70m",
+          "glicemia_standard": 222.2,
+          "glicemia_ottimizzata": 151.2
+        },
+        {
+          "t_minuti": 75,
+          "label": "+75m",
+          "glicemia_standard": 226.1,
+          "glicemia_ottimizzata": 154.6
+        },
+        {
+          "t_minuti": 80,
+          "label": "+80m",
+          "glicemia_standard": 224.8,
+          "glicemia_ottimizzata": 157.7
+        },
+        {
+          "t_minuti": 85,
+          "label": "+85m",
+          "glicemia_standard": 222.2,
+          "glicemia_ottimizzata": 158.8
+        },
+        {
+          "t_minuti": 90,
+          "label": "+90m",
+          "glicemia_standard": 218.5,
+          "glicemia_ottimizzata": 158.3
+        },
+        {
+          "t_minuti": 95,
+          "label": "+95m",
+          "glicemia_standard": 213.8,
+          "glicemia_ottimizzata": 157.2
+        },
+        {
+          "t_minuti": 100,
+          "label": "+100m",
+          "glicemia_standard": 208.1,
+          "glicemia_ottimizzata": 155.7
+        },
+        {
+          "t_minuti": 105,
+          "label": "+105m",
+          "glicemia_standard": 204.5,
+          "glicemia_ottimizzata": 155.2
+        },
+        {
+          "t_minuti": 110,
+          "label": "+110m",
+          "glicemia_standard": 198.0,
+          "glicemia_ottimizzata": 153.1
+        },
+        {
+          "t_minuti": 115,
+          "label": "+115m",
+          "glicemia_standard": 191.2,
+          "glicemia_ottimizzata": 150.8
+        },
+        {
+          "t_minuti": 120,
+          "label": "+120m",
+          "glicemia_standard": 184.2,
+          "glicemia_ottimizzata": 148.2
+        },
+        {
+          "t_minuti": 125,
+          "label": "+125m",
+          "glicemia_standard": 177.2,
+          "glicemia_ottimizzata": 145.5
+        },
+        {
+          "t_minuti": 130,
+          "label": "+130m",
+          "glicemia_standard": 170.4,
+          "glicemia_ottimizzata": 142.8
+        },
+        {
+          "t_minuti": 135,
+          "label": "+135m",
+          "glicemia_standard": 163.9,
+          "glicemia_ottimizzata": 140.0
+        },
+        {
+          "t_minuti": 140,
+          "label": "+140m",
+          "glicemia_standard": 157.8,
+          "glicemia_ottimizzata": 137.3
+        },
+        {
+          "t_minuti": 145,
+          "label": "+145m",
+          "glicemia_standard": 152.1,
+          "glicemia_ottimizzata": 134.7
+        },
+        {
+          "t_minuti": 150,
+          "label": "+150m",
+          "glicemia_standard": 146.9,
+          "glicemia_ottimizzata": 132.3
+        },
+        {
+          "t_minuti": 155,
+          "label": "+155m",
+          "glicemia_standard": 142.2,
+          "glicemia_ottimizzata": 130.0
+        },
+        {
+          "t_minuti": 160,
+          "label": "+160m",
+          "glicemia_standard": 138.1,
+          "glicemia_ottimizzata": 127.9
+        },
+        {
+          "t_minuti": 165,
+          "label": "+165m",
+          "glicemia_standard": 134.4,
+          "glicemia_ottimizzata": 126.0
+        },
+        {
+          "t_minuti": 170,
+          "label": "+170m",
+          "glicemia_standard": 131.2,
+          "glicemia_ottimizzata": 124.3
+        },
+        {
+          "t_minuti": 175,
+          "label": "+175m",
+          "glicemia_standard": 128.5,
+          "glicemia_ottimizzata": 122.8
+        },
+        {
+          "t_minuti": 180,
+          "label": "+180m",
+          "glicemia_standard": 126.1,
+          "glicemia_ottimizzata": 121.5
+        },
+        {
+          "t_minuti": 185,
+          "label": "+185m",
+          "glicemia_standard": 124.1,
+          "glicemia_ottimizzata": 120.4
+        },
+        {
+          "t_minuti": 190,
+          "label": "+190m",
+          "glicemia_standard": 122.4,
+          "glicemia_ottimizzata": 119.4
+        },
+        {
+          "t_minuti": 195,
+          "label": "+195m",
+          "glicemia_standard": 121.0,
+          "glicemia_ottimizzata": 118.6
+        },
+        {
+          "t_minuti": 200,
+          "label": "+200m",
+          "glicemia_standard": 119.8,
+          "glicemia_ottimizzata": 117.9
+        },
+        {
+          "t_minuti": 205,
+          "label": "+205m",
+          "glicemia_standard": 118.9,
+          "glicemia_ottimizzata": 117.3
+        },
+        {
+          "t_minuti": 210,
+          "label": "+210m",
+          "glicemia_standard": 118.1,
+          "glicemia_ottimizzata": 116.8
+        },
+        {
+          "t_minuti": 215,
+          "label": "+215m",
+          "glicemia_standard": 117.4,
+          "glicemia_ottimizzata": 116.4
+        },
+        {
+          "t_minuti": 220,
+          "label": "+220m",
+          "glicemia_standard": 116.9,
+          "glicemia_ottimizzata": 116.1
+        },
+        {
+          "t_minuti": 225,
+          "label": "+225m",
+          "glicemia_standard": 116.5,
+          "glicemia_ottimizzata": 115.9
+        },
+        {
+          "t_minuti": 230,
+          "label": "+230m",
+          "glicemia_standard": 116.1,
+          "glicemia_ottimizzata": 115.7
+        },
+        {
+          "t_minuti": 235,
+          "label": "+235m",
+          "glicemia_standard": 115.9,
+          "glicemia_ottimizzata": 115.5
+        },
+        {
+          "t_minuti": 240,
+          "label": "+240m",
+          "glicemia_standard": 115.7,
+          "glicemia_ottimizzata": 115.4
+        }
+      ]
+    },
+    {
+      "id": "carbonara",
+      "nome": "Spaghetti alla Carbonara",
+      "categoria": "High Fat / High Protein Pasta",
+      "macronutrienti": {
+        "carboidrati_g": 78,
+        "fibre_g": 3,
+        "grassi_g": 36,
+        "proteine_g": 28,
+        "indice_glicemico": 70
+      },
+      "glicemia_base": 110,
+      "hack_consigliati": {
+        "hack_1": {
+          "titolo": "Pre-carico di verdure amare",
+          "azione": "Cicoria o rucola prima della pasta",
+          "mod_fibre": 10,
+          "rid_ig": 12
+        },
+        "hack_2": {
+          "titolo": "Sollevamento polpacci (Soleus Pushup)",
+          "azione": "10 min da seduto a 45 min dal pasto",
+          "mult_picco": 0.74
+        }
+      },
+      "metrica_picco": {
+        "picco_standard_mg_dl": 199.0,
+        "picco_ottimizzato_mg_dl": 152.2,
+        "riduzione_delta_mg_dl": 46.8,
+        "riduzione_percentuale": 52.6
+      },
+      "curva_risposta": [
+        {
+          "t_minuti": -45,
+          "label": "-45m",
+          "glicemia_standard": 112.4,
+          "glicemia_ottimizzata": 112.4
+        },
+        {
+          "t_minuti": -40,
+          "label": "-40m",
+          "glicemia_standard": 111.9,
+          "glicemia_ottimizzata": 111.9
+        },
+        {
+          "t_minuti": -35,
+          "label": "-35m",
+          "glicemia_standard": 110.9,
+          "glicemia_ottimizzata": 110.9
+        },
+        {
+          "t_minuti": -30,
+          "label": "-30m",
+          "glicemia_standard": 109.6,
+          "glicemia_ottimizzata": 109.6
+        },
+        {
+          "t_minuti": -25,
+          "label": "-25m",
+          "glicemia_standard": 108.5,
+          "glicemia_ottimizzata": 108.5
+        },
+        {
+          "t_minuti": -20,
+          "label": "-20m",
+          "glicemia_standard": 107.7,
+          "glicemia_ottimizzata": 107.7
+        },
+        {
+          "t_minuti": -15,
+          "label": "-15m",
+          "glicemia_standard": 107.5,
+          "glicemia_ottimizzata": 107.5
+        },
+        {
+          "t_minuti": -10,
+          "label": "-10m",
+          "glicemia_standard": 107.9,
+          "glicemia_ottimizzata": 107.9
+        },
+        {
+          "t_minuti": -5,
+          "label": "-5m",
+          "glicemia_standard": 108.8,
+          "glicemia_ottimizzata": 108.8
+        },
+        {
+          "t_minuti": 0,
+          "label": "0m",
+          "glicemia_standard": 110.0,
+          "glicemia_ottimizzata": 110.0
+        },
+        {
+          "t_minuti": 5,
+          "label": "+5m",
+          "glicemia_standard": 112.0,
+          "glicemia_ottimizzata": 110.7
+        },
+        {
+          "t_minuti": 10,
+          "label": "+10m",
+          "glicemia_standard": 114.6,
+          "glicemia_ottimizzata": 111.6
+        },
+        {
+          "t_minuti": 15,
+          "label": "+15m",
+          "glicemia_standard": 117.8,
+          "glicemia_ottimizzata": 112.8
+        },
+        {
+          "t_minuti": 20,
+          "label": "+20m",
+          "glicemia_standard": 121.7,
+          "glicemia_ottimizzata": 114.2
+        },
+        {
+          "t_minuti": 25,
+          "label": "+25m",
+          "glicemia_standard": 126.1,
+          "glicemia_ottimizzata": 115.8
+        },
+        {
+          "t_minuti": 30,
+          "label": "+30m",
+          "glicemia_standard": 131.2,
+          "glicemia_ottimizzata": 117.8
+        },
+        {
+          "t_minuti": 35,
+          "label": "+35m",
+          "glicemia_standard": 136.9,
+          "glicemia_ottimizzata": 120.0
+        },
+        {
+          "t_minuti": 40,
+          "label": "+40m",
+          "glicemia_standard": 143.1,
+          "glicemia_ottimizzata": 122.5
+        },
+        {
+          "t_minuti": 45,
+          "label": "+45m",
+          "glicemia_standard": 149.8,
+          "glicemia_ottimizzata": 125.2
+        },
+        {
+          "t_minuti": 50,
+          "label": "+50m",
+          "glicemia_standard": 156.9,
+          "glicemia_ottimizzata": 128.2
+        },
+        {
+          "t_minuti": 55,
+          "label": "+55m",
+          "glicemia_standard": 164.1,
+          "glicemia_ottimizzata": 131.3
+        },
+        {
+          "t_minuti": 60,
+          "label": "+60m",
+          "glicemia_standard": 171.5,
+          "glicemia_ottimizzata": 134.5
+        },
+        {
+          "t_minuti": 65,
+          "label": "+65m",
+          "glicemia_standard": 178.8,
+          "glicemia_ottimizzata": 137.8
+        },
+        {
+          "t_minuti": 70,
+          "label": "+70m",
+          "glicemia_standard": 185.8,
+          "glicemia_ottimizzata": 141.0
+        },
+        {
+          "t_minuti": 75,
+          "label": "+75m",
+          "glicemia_standard": 192.4,
+          "glicemia_ottimizzata": 144.2
+        },
+        {
+          "t_minuti": 80,
+          "label": "+80m",
+          "glicemia_standard": 198.4,
+          "glicemia_ottimizzata": 147.2
+        },
+        {
+          "t_minuti": 85,
+          "label": "+85m",
+          "glicemia_standard": 199.0,
+          "glicemia_ottimizzata": 149.9
+        },
+        {
+          "t_minuti": 90,
+          "label": "+90m",
+          "glicemia_standard": 197.9,
+          "glicemia_ottimizzata": 151.8
+        },
+        {
+          "t_minuti": 95,
+          "label": "+95m",
+          "glicemia_standard": 196.2,
+          "glicemia_ottimizzata": 151.6
+        },
+        {
+          "t_minuti": 100,
+          "label": "+100m",
+          "glicemia_standard": 193.7,
+          "glicemia_ottimizzata": 150.9
+        },
+        {
+          "t_minuti": 105,
+          "label": "+105m",
+          "glicemia_standard": 195.2,
+          "glicemia_ottimizzata": 152.2
+        },
+        {
+          "t_minuti": 110,
+          "label": "+110m",
+          "glicemia_standard": 192.1,
+          "glicemia_ottimizzata": 151.2
+        },
+        {
+          "t_minuti": 115,
+          "label": "+115m",
+          "glicemia_standard": 188.6,
+          "glicemia_ottimizzata": 150.0
+        },
+        {
+          "t_minuti": 120,
+          "label": "+120m",
+          "glicemia_standard": 184.6,
+          "glicemia_ottimizzata": 148.4
+        },
+        {
+          "t_minuti": 125,
+          "label": "+125m",
+          "glicemia_standard": 180.3,
+          "glicemia_ottimizzata": 146.7
+        },
+        {
+          "t_minuti": 130,
+          "label": "+130m",
+          "glicemia_standard": 175.8,
+          "glicemia_ottimizzata": 144.7
+        },
+        {
+          "t_minuti": 135,
+          "label": "+135m",
+          "glicemia_standard": 171.2,
+          "glicemia_ottimizzata": 142.7
+        },
+        {
+          "t_minuti": 140,
+          "label": "+140m",
+          "glicemia_standard": 166.4,
+          "glicemia_ottimizzata": 140.4
+        },
+        {
+          "t_minuti": 145,
+          "label": "+145m",
+          "glicemia_standard": 161.7,
+          "glicemia_ottimizzata": 138.2
+        },
+        {
+          "t_minuti": 150,
+          "label": "+150m",
+          "glicemia_standard": 156.9,
+          "glicemia_ottimizzata": 135.9
+        },
+        {
+          "t_minuti": 155,
+          "label": "+155m",
+          "glicemia_standard": 152.3,
+          "glicemia_ottimizzata": 133.6
+        },
+        {
+          "t_minuti": 160,
+          "label": "+160m",
+          "glicemia_standard": 147.9,
+          "glicemia_ottimizzata": 131.3
+        },
+        {
+          "t_minuti": 165,
+          "label": "+165m",
+          "glicemia_standard": 143.7,
+          "glicemia_ottimizzata": 129.1
+        },
+        {
+          "t_minuti": 170,
+          "label": "+170m",
+          "glicemia_standard": 139.7,
+          "glicemia_ottimizzata": 126.9
+        },
+        {
+          "t_minuti": 175,
+          "label": "+175m",
+          "glicemia_standard": 135.9,
+          "glicemia_ottimizzata": 124.9
+        },
+        {
+          "t_minuti": 180,
+          "label": "+180m",
+          "glicemia_standard": 132.5,
+          "glicemia_ottimizzata": 123.0
+        },
+        {
+          "t_minuti": 185,
+          "label": "+185m",
+          "glicemia_standard": 129.3,
+          "glicemia_ottimizzata": 121.3
+        },
+        {
+          "t_minuti": 190,
+          "label": "+190m",
+          "glicemia_standard": 126.5,
+          "glicemia_ottimizzata": 119.7
+        },
+        {
+          "t_minuti": 195,
+          "label": "+195m",
+          "glicemia_standard": 123.9,
+          "glicemia_ottimizzata": 118.2
+        },
+        {
+          "t_minuti": 200,
+          "label": "+200m",
+          "glicemia_standard": 121.6,
+          "glicemia_ottimizzata": 116.9
+        },
+        {
+          "t_minuti": 205,
+          "label": "+205m",
+          "glicemia_standard": 119.6,
+          "glicemia_ottimizzata": 115.8
+        },
+        {
+          "t_minuti": 210,
+          "label": "+210m",
+          "glicemia_standard": 117.9,
+          "glicemia_ottimizzata": 114.8
+        },
+        {
+          "t_minuti": 215,
+          "label": "+215m",
+          "glicemia_standard": 116.4,
+          "glicemia_ottimizzata": 113.9
+        },
+        {
+          "t_minuti": 220,
+          "label": "+220m",
+          "glicemia_standard": 115.2,
+          "glicemia_ottimizzata": 113.2
+        },
+        {
+          "t_minuti": 225,
+          "label": "+225m",
+          "glicemia_standard": 114.1,
+          "glicemia_ottimizzata": 112.5
+        },
+        {
+          "t_minuti": 230,
+          "label": "+230m",
+          "glicemia_standard": 113.2,
+          "glicemia_ottimizzata": 112.0
+        },
+        {
+          "t_minuti": 235,
+          "label": "+235m",
+          "glicemia_standard": 112.5,
+          "glicemia_ottimizzata": 111.6
+        },
+        {
+          "t_minuti": 240,
+          "label": "+240m",
+          "glicemia_standard": 112.0,
+          "glicemia_ottimizzata": 111.2
+        }
+      ]
+    },
+    {
+      "id": "poke_salmon",
+      "nome": "Poke Bowl Salmone, Riso e Edamame",
+      "categoria": "Balanced Protein & Fiber",
+      "macronutrienti": {
+        "carboidrati_g": 62,
+        "fibre_g": 10,
+        "grassi_g": 18,
+        "proteine_g": 32,
+        "indice_glicemico": 60
+      },
+      "glicemia_base": 105,
+      "hack_consigliati": {
+        "hack_1": {
+          "titolo": "Ordine del Cibo (Food Sequencing)",
+          "azione": "Mangia prima edamame e salmone, riso alla fine",
+          "mod_fibre": 5,
+          "rid_ig": 18
+        },
+        "hack_2": {
+          "titolo": "Passeggiata Digestiva",
+          "azione": "12 minuti di camminata a passo leggero",
+          "mult_picco": 0.8
+        }
+      },
+      "metrica_picco": {
+        "picco_standard_mg_dl": 155.8,
+        "picco_ottimizzato_mg_dl": 129.4,
+        "riduzione_delta_mg_dl": 26.4,
+        "riduzione_percentuale": 52.0
+      },
+      "curva_risposta": [
+        {
+          "t_minuti": -45,
+          "label": "-45m",
+          "glicemia_standard": 107.4,
+          "glicemia_ottimizzata": 107.4
+        },
+        {
+          "t_minuti": -40,
+          "label": "-40m",
+          "glicemia_standard": 106.9,
+          "glicemia_ottimizzata": 106.9
+        },
+        {
+          "t_minuti": -35,
+          "label": "-35m",
+          "glicemia_standard": 105.9,
+          "glicemia_ottimizzata": 105.9
+        },
+        {
+          "t_minuti": -30,
+          "label": "-30m",
+          "glicemia_standard": 104.6,
+          "glicemia_ottimizzata": 104.6
+        },
+        {
+          "t_minuti": -25,
+          "label": "-25m",
+          "glicemia_standard": 103.5,
+          "glicemia_ottimizzata": 103.5
+        },
+        {
+          "t_minuti": -20,
+          "label": "-20m",
+          "glicemia_standard": 102.7,
+          "glicemia_ottimizzata": 102.7
+        },
+        {
+          "t_minuti": -15,
+          "label": "-15m",
+          "glicemia_standard": 102.5,
+          "glicemia_ottimizzata": 102.5
+        },
+        {
+          "t_minuti": -10,
+          "label": "-10m",
+          "glicemia_standard": 102.9,
+          "glicemia_ottimizzata": 102.9
+        },
+        {
+          "t_minuti": -5,
+          "label": "-5m",
+          "glicemia_standard": 103.8,
+          "glicemia_ottimizzata": 103.8
+        },
+        {
+          "t_minuti": 0,
+          "label": "0m",
+          "glicemia_standard": 105.0,
+          "glicemia_ottimizzata": 105.0
+        },
+        {
+          "t_minuti": 5,
+          "label": "+5m",
+          "glicemia_standard": 106.0,
+          "glicemia_ottimizzata": 105.4
+        },
+        {
+          "t_minuti": 10,
+          "label": "+10m",
+          "glicemia_standard": 107.3,
+          "glicemia_ottimizzata": 105.9
+        },
+        {
+          "t_minuti": 15,
+          "label": "+15m",
+          "glicemia_standard": 109.0,
+          "glicemia_ottimizzata": 106.6
+        },
+        {
+          "t_minuti": 20,
+          "label": "+20m",
+          "glicemia_standard": 111.3,
+          "glicemia_ottimizzata": 107.5
+        },
+        {
+          "t_minuti": 25,
+          "label": "+25m",
+          "glicemia_standard": 114.0,
+          "glicemia_ottimizzata": 108.7
+        },
+        {
+          "t_minuti": 30,
+          "label": "+30m",
+          "glicemia_standard": 117.1,
+          "glicemia_ottimizzata": 110.0
+        },
+        {
+          "t_minuti": 35,
+          "label": "+35m",
+          "glicemia_standard": 120.8,
+          "glicemia_ottimizzata": 111.6
+        },
+        {
+          "t_minuti": 40,
+          "label": "+40m",
+          "glicemia_standard": 124.9,
+          "glicemia_ottimizzata": 113.4
+        },
+        {
+          "t_minuti": 45,
+          "label": "+45m",
+          "glicemia_standard": 129.3,
+          "glicemia_ottimizzata": 115.4
+        },
+        {
+          "t_minuti": 50,
+          "label": "+50m",
+          "glicemia_standard": 134.0,
+          "glicemia_ottimizzata": 117.5
+        },
+        {
+          "t_minuti": 55,
+          "label": "+55m",
+          "glicemia_standard": 138.8,
+          "glicemia_ottimizzata": 119.8
+        },
+        {
+          "t_minuti": 60,
+          "label": "+60m",
+          "glicemia_standard": 143.6,
+          "glicemia_ottimizzata": 122.0
+        },
+        {
+          "t_minuti": 65,
+          "label": "+65m",
+          "glicemia_standard": 148.1,
+          "glicemia_ottimizzata": 124.2
+        },
+        {
+          "t_minuti": 70,
+          "label": "+70m",
+          "glicemia_standard": 152.3,
+          "glicemia_ottimizzata": 126.3
+        },
+        {
+          "t_minuti": 75,
+          "label": "+75m",
+          "glicemia_standard": 155.8,
+          "glicemia_ottimizzata": 128.2
+        },
+        {
+          "t_minuti": 80,
+          "label": "+80m",
+          "glicemia_standard": 155.4,
+          "glicemia_ottimizzata": 129.4
+        },
+        {
+          "t_minuti": 85,
+          "label": "+85m",
+          "glicemia_standard": 154.4,
+          "glicemia_ottimizzata": 129.2
+        },
+        {
+          "t_minuti": 90,
+          "label": "+90m",
+          "glicemia_standard": 152.8,
+          "glicemia_ottimizzata": 128.6
+        },
+        {
+          "t_minuti": 95,
+          "label": "+95m",
+          "glicemia_standard": 150.6,
+          "glicemia_ottimizzata": 127.8
+        },
+        {
+          "t_minuti": 100,
+          "label": "+100m",
+          "glicemia_standard": 148.0,
+          "glicemia_ottimizzata": 126.7
+        },
+        {
+          "t_minuti": 105,
+          "label": "+105m",
+          "glicemia_standard": 147.3,
+          "glicemia_ottimizzata": 126.5
+        },
+        {
+          "t_minuti": 110,
+          "label": "+110m",
+          "glicemia_standard": 144.3,
+          "glicemia_ottimizzata": 125.2
+        },
+        {
+          "t_minuti": 115,
+          "label": "+115m",
+          "glicemia_standard": 141.1,
+          "glicemia_ottimizzata": 123.8
+        },
+        {
+          "t_minuti": 120,
+          "label": "+120m",
+          "glicemia_standard": 137.9,
+          "glicemia_ottimizzata": 122.2
+        },
+        {
+          "t_minuti": 125,
+          "label": "+125m",
+          "glicemia_standard": 134.7,
+          "glicemia_ottimizzata": 120.7
+        },
+        {
+          "t_minuti": 130,
+          "label": "+130m",
+          "glicemia_standard": 131.5,
+          "glicemia_ottimizzata": 119.1
+        },
+        {
+          "t_minuti": 135,
+          "label": "+135m",
+          "glicemia_standard": 128.5,
+          "glicemia_ottimizzata": 117.6
+        },
+        {
+          "t_minuti": 140,
+          "label": "+140m",
+          "glicemia_standard": 125.6,
+          "glicemia_ottimizzata": 116.1
+        },
+        {
+          "t_minuti": 145,
+          "label": "+145m",
+          "glicemia_standard": 123.0,
+          "glicemia_ottimizzata": 114.8
+        },
+        {
+          "t_minuti": 150,
+          "label": "+150m",
+          "glicemia_standard": 120.6,
+          "glicemia_ottimizzata": 113.5
+        },
+        {
+          "t_minuti": 155,
+          "label": "+155m",
+          "glicemia_standard": 118.5,
+          "glicemia_ottimizzata": 112.4
+        },
+        {
+          "t_minuti": 160,
+          "label": "+160m",
+          "glicemia_standard": 116.5,
+          "glicemia_ottimizzata": 111.3
+        },
+        {
+          "t_minuti": 165,
+          "label": "+165m",
+          "glicemia_standard": 114.8,
+          "glicemia_ottimizzata": 110.4
+        },
+        {
+          "t_minuti": 170,
+          "label": "+170m",
+          "glicemia_standard": 113.4,
+          "glicemia_ottimizzata": 109.6
+        },
+        {
+          "t_minuti": 175,
+          "label": "+175m",
+          "glicemia_standard": 112.1,
+          "glicemia_ottimizzata": 108.9
+        },
+        {
+          "t_minuti": 180,
+          "label": "+180m",
+          "glicemia_standard": 110.9,
+          "glicemia_ottimizzata": 108.2
+        },
+        {
+          "t_minuti": 185,
+          "label": "+185m",
+          "glicemia_standard": 110.0,
+          "glicemia_ottimizzata": 107.7
+        },
+        {
+          "t_minuti": 190,
+          "label": "+190m",
+          "glicemia_standard": 109.2,
+          "glicemia_ottimizzata": 107.3
+        },
+        {
+          "t_minuti": 195,
+          "label": "+195m",
+          "glicemia_standard": 108.4,
+          "glicemia_ottimizzata": 106.9
+        },
+        {
+          "t_minuti": 200,
+          "label": "+200m",
+          "glicemia_standard": 107.8,
+          "glicemia_ottimizzata": 106.5
+        },
+        {
+          "t_minuti": 205,
+          "label": "+205m",
+          "glicemia_standard": 107.3,
+          "glicemia_ottimizzata": 106.2
+        },
+        {
+          "t_minuti": 210,
+          "label": "+210m",
+          "glicemia_standard": 106.9,
+          "glicemia_ottimizzata": 106.0
+        },
+        {
+          "t_minuti": 215,
+          "label": "+215m",
+          "glicemia_standard": 106.5,
+          "glicemia_ottimizzata": 105.8
+        },
+        {
+          "t_minuti": 220,
+          "label": "+220m",
+          "glicemia_standard": 106.2,
+          "glicemia_ottimizzata": 105.6
+        },
+        {
+          "t_minuti": 225,
+          "label": "+225m",
+          "glicemia_standard": 106.0,
+          "glicemia_ottimizzata": 105.5
+        },
+        {
+          "t_minuti": 230,
+          "label": "+230m",
+          "glicemia_standard": 105.8,
+          "glicemia_ottimizzata": 105.4
+        },
+        {
+          "t_minuti": 235,
+          "label": "+235m",
+          "glicemia_standard": 105.6,
+          "glicemia_ottimizzata": 105.3
+        },
+        {
+          "t_minuti": 240,
+          "label": "+240m",
+          "glicemia_standard": 105.5,
+          "glicemia_ottimizzata": 105.2
+        }
+      ]
+    },
+    {
+      "id": "lentil_soup",
+      "nome": "Zuppa di Lenticchie e Verdure di Stagione",
+      "categoria": "High Fiber / Low Glycemic Index",
+      "macronutrienti": {
+        "carboidrati_g": 48,
+        "fibre_g": 16,
+        "grassi_g": 8,
+        "proteine_g": 22,
+        "indice_glicemico": 38
+      },
+      "glicemia_base": 100,
+      "hack_consigliati": {
+        "hack_1": {
+          "titolo": "Aggiunta Aceto di Mele",
+          "azione": "1 cucchiaio nell'insalata o diluito in acqua",
+          "mod_fibre": 2,
+          "rid_ig": 10
+        },
+        "hack_2": {
+          "titolo": "Stretching postprandiale",
+          "azione": "8 min di mobilit\u00e0 articolare",
+          "mult_picco": 0.88
+        }
+      },
+      "metrica_picco": {
+        "picco_standard_mg_dl": 120.7,
+        "picco_ottimizzato_mg_dl": 112.5,
+        "riduzione_delta_mg_dl": 8.2,
+        "riduzione_percentuale": 39.6
+      },
+      "curva_risposta": [
+        {
+          "t_minuti": -45,
+          "label": "-45m",
+          "glicemia_standard": 102.4,
+          "glicemia_ottimizzata": 102.4
+        },
+        {
+          "t_minuti": -40,
+          "label": "-40m",
+          "glicemia_standard": 101.9,
+          "glicemia_ottimizzata": 101.9
+        },
+        {
+          "t_minuti": -35,
+          "label": "-35m",
+          "glicemia_standard": 100.9,
+          "glicemia_ottimizzata": 100.9
+        },
+        {
+          "t_minuti": -30,
+          "label": "-30m",
+          "glicemia_standard": 99.6,
+          "glicemia_ottimizzata": 99.6
+        },
+        {
+          "t_minuti": -25,
+          "label": "-25m",
+          "glicemia_standard": 98.5,
+          "glicemia_ottimizzata": 98.5
+        },
+        {
+          "t_minuti": -20,
+          "label": "-20m",
+          "glicemia_standard": 97.7,
+          "glicemia_ottimizzata": 97.7
+        },
+        {
+          "t_minuti": -15,
+          "label": "-15m",
+          "glicemia_standard": 97.5,
+          "glicemia_ottimizzata": 97.5
+        },
+        {
+          "t_minuti": -10,
+          "label": "-10m",
+          "glicemia_standard": 97.9,
+          "glicemia_ottimizzata": 97.9
+        },
+        {
+          "t_minuti": -5,
+          "label": "-5m",
+          "glicemia_standard": 98.8,
+          "glicemia_ottimizzata": 98.8
+        },
+        {
+          "t_minuti": 0,
+          "label": "0m",
+          "glicemia_standard": 100.0,
+          "glicemia_ottimizzata": 100.0
+        },
+        {
+          "t_minuti": 5,
+          "label": "+5m",
+          "glicemia_standard": 100.3,
+          "glicemia_ottimizzata": 100.2
+        },
+        {
+          "t_minuti": 10,
+          "label": "+10m",
+          "glicemia_standard": 100.7,
+          "glicemia_ottimizzata": 100.4
+        },
+        {
+          "t_minuti": 15,
+          "label": "+15m",
+          "glicemia_standard": 101.4,
+          "glicemia_ottimizzata": 100.8
+        },
+        {
+          "t_minuti": 20,
+          "label": "+20m",
+          "glicemia_standard": 102.2,
+          "glicemia_ottimizzata": 101.2
+        },
+        {
+          "t_minuti": 25,
+          "label": "+25m",
+          "glicemia_standard": 103.2,
+          "glicemia_ottimizzata": 101.8
+        },
+        {
+          "t_minuti": 30,
+          "label": "+30m",
+          "glicemia_standard": 104.5,
+          "glicemia_ottimizzata": 102.6
+        },
+        {
+          "t_minuti": 35,
+          "label": "+35m",
+          "glicemia_standard": 106.1,
+          "glicemia_ottimizzata": 103.4
+        },
+        {
+          "t_minuti": 40,
+          "label": "+40m",
+          "glicemia_standard": 107.8,
+          "glicemia_ottimizzata": 104.5
+        },
+        {
+          "t_minuti": 45,
+          "label": "+45m",
+          "glicemia_standard": 109.8,
+          "glicemia_ottimizzata": 105.6
+        },
+        {
+          "t_minuti": 50,
+          "label": "+50m",
+          "glicemia_standard": 111.8,
+          "glicemia_ottimizzata": 106.8
+        },
+        {
+          "t_minuti": 55,
+          "label": "+55m",
+          "glicemia_standard": 114.0,
+          "glicemia_ottimizzata": 108.1
+        },
+        {
+          "t_minuti": 60,
+          "label": "+60m",
+          "glicemia_standard": 116.1,
+          "glicemia_ottimizzata": 109.4
+        },
+        {
+          "t_minuti": 65,
+          "label": "+65m",
+          "glicemia_standard": 118.0,
+          "glicemia_ottimizzata": 110.6
+        },
+        {
+          "t_minuti": 70,
+          "label": "+70m",
+          "glicemia_standard": 119.8,
+          "glicemia_ottimizzata": 111.6
+        },
+        {
+          "t_minuti": 75,
+          "label": "+75m",
+          "glicemia_standard": 120.7,
+          "glicemia_ottimizzata": 112.5
+        },
+        {
+          "t_minuti": 80,
+          "label": "+80m",
+          "glicemia_standard": 120.3,
+          "glicemia_ottimizzata": 112.4
+        },
+        {
+          "t_minuti": 85,
+          "label": "+85m",
+          "glicemia_standard": 119.7,
+          "glicemia_ottimizzata": 112.1
+        },
+        {
+          "t_minuti": 90,
+          "label": "+90m",
+          "glicemia_standard": 118.8,
+          "glicemia_ottimizzata": 111.5
+        },
+        {
+          "t_minuti": 95,
+          "label": "+95m",
+          "glicemia_standard": 117.6,
+          "glicemia_ottimizzata": 110.9
+        },
+        {
+          "t_minuti": 100,
+          "label": "+100m",
+          "glicemia_standard": 116.2,
+          "glicemia_ottimizzata": 110.0
+        },
+        {
+          "t_minuti": 105,
+          "label": "+105m",
+          "glicemia_standard": 115.6,
+          "glicemia_ottimizzata": 109.6
+        },
+        {
+          "t_minuti": 110,
+          "label": "+110m",
+          "glicemia_standard": 114.1,
+          "glicemia_ottimizzata": 108.7
+        },
+        {
+          "t_minuti": 115,
+          "label": "+115m",
+          "glicemia_standard": 112.6,
+          "glicemia_ottimizzata": 107.8
+        },
+        {
+          "t_minuti": 120,
+          "label": "+120m",
+          "glicemia_standard": 111.2,
+          "glicemia_ottimizzata": 106.9
+        },
+        {
+          "t_minuti": 125,
+          "label": "+125m",
+          "glicemia_standard": 109.7,
+          "glicemia_ottimizzata": 106.0
+        },
+        {
+          "t_minuti": 130,
+          "label": "+130m",
+          "glicemia_standard": 108.4,
+          "glicemia_ottimizzata": 105.2
+        },
+        {
+          "t_minuti": 135,
+          "label": "+135m",
+          "glicemia_standard": 107.3,
+          "glicemia_ottimizzata": 104.5
+        },
+        {
+          "t_minuti": 140,
+          "label": "+140m",
+          "glicemia_standard": 106.2,
+          "glicemia_ottimizzata": 103.8
+        },
+        {
+          "t_minuti": 145,
+          "label": "+145m",
+          "glicemia_standard": 105.3,
+          "glicemia_ottimizzata": 103.2
+        },
+        {
+          "t_minuti": 150,
+          "label": "+150m",
+          "glicemia_standard": 104.5,
+          "glicemia_ottimizzata": 102.7
+        },
+        {
+          "t_minuti": 155,
+          "label": "+155m",
+          "glicemia_standard": 103.9,
+          "glicemia_ottimizzata": 102.3
+        },
+        {
+          "t_minuti": 160,
+          "label": "+160m",
+          "glicemia_standard": 103.3,
+          "glicemia_ottimizzata": 101.9
+        },
+        {
+          "t_minuti": 165,
+          "label": "+165m",
+          "glicemia_standard": 102.8,
+          "glicemia_ottimizzata": 101.6
+        },
+        {
+          "t_minuti": 170,
+          "label": "+170m",
+          "glicemia_standard": 102.4,
+          "glicemia_ottimizzata": 101.4
+        },
+        {
+          "t_minuti": 175,
+          "label": "+175m",
+          "glicemia_standard": 102.1,
+          "glicemia_ottimizzata": 101.1
+        },
+        {
+          "t_minuti": 180,
+          "label": "+180m",
+          "glicemia_standard": 101.8,
+          "glicemia_ottimizzata": 101.0
+        },
+        {
+          "t_minuti": 185,
+          "label": "+185m",
+          "glicemia_standard": 101.5,
+          "glicemia_ottimizzata": 100.8
+        },
+        {
+          "t_minuti": 190,
+          "label": "+190m",
+          "glicemia_standard": 101.3,
+          "glicemia_ottimizzata": 100.7
+        },
+        {
+          "t_minuti": 195,
+          "label": "+195m",
+          "glicemia_standard": 101.1,
+          "glicemia_ottimizzata": 100.6
+        },
+        {
+          "t_minuti": 200,
+          "label": "+200m",
+          "glicemia_standard": 101.0,
+          "glicemia_ottimizzata": 100.5
+        },
+        {
+          "t_minuti": 205,
+          "label": "+205m",
+          "glicemia_standard": 100.8,
+          "glicemia_ottimizzata": 100.4
+        },
+        {
+          "t_minuti": 210,
+          "label": "+210m",
+          "glicemia_standard": 100.7,
+          "glicemia_ottimizzata": 100.3
+        },
+        {
+          "t_minuti": 215,
+          "label": "+215m",
+          "glicemia_standard": 100.6,
+          "glicemia_ottimizzata": 100.3
+        },
+        {
+          "t_minuti": 220,
+          "label": "+220m",
+          "glicemia_standard": 100.5,
+          "glicemia_ottimizzata": 100.2
+        },
+        {
+          "t_minuti": 225,
+          "label": "+225m",
+          "glicemia_standard": 100.4,
+          "glicemia_ottimizzata": 100.2
+        },
+        {
+          "t_minuti": 230,
+          "label": "+230m",
+          "glicemia_standard": 100.3,
+          "glicemia_ottimizzata": 100.2
+        },
+        {
+          "t_minuti": 235,
+          "label": "+235m",
+          "glicemia_standard": 100.2,
+          "glicemia_ottimizzata": 100.1
+        },
+        {
+          "t_minuti": 240,
+          "label": "+240m",
+          "glicemia_standard": 100.2,
+          "glicemia_ottimizzata": 100.1
+        }
+      ]
+    },
+    {
+      "id": "burger_fries",
+      "nome": "Cheeseburger con Patatine Fritte",
+      "categoria": "Fast Food Ultra-Processed / High Fat & Carbs",
+      "macronutrienti": {
+        "carboidrati_g": 95,
+        "fibre_g": 3,
+        "grassi_g": 44,
+        "proteine_g": 38,
+        "indice_glicemico": 85
+      },
+      "glicemia_base": 120,
+      "hack_consigliati": {
+        "hack_1": {
+          "titolo": "De-costruzione e Verdure",
+          "azione": "Mangia la carne con lattuga prima di toccare le patatine",
+          "mod_fibre": 8,
+          "rid_ig": 14
+        },
+        "hack_2": {
+          "titolo": "Camminata prolungata e bolo dual-wave",
+          "azione": "20 min camminata svelta a 40 min",
+          "mult_picco": 0.65
+        }
+      },
+      "metrica_picco": {
+        "picco_standard_mg_dl": 251.7,
+        "picco_ottimizzato_mg_dl": 179.6,
+        "riduzione_delta_mg_dl": 72.1,
+        "riduzione_percentuale": 54.7
+      },
+      "curva_risposta": [
+        {
+          "t_minuti": -45,
+          "label": "-45m",
+          "glicemia_standard": 122.4,
+          "glicemia_ottimizzata": 122.4
+        },
+        {
+          "t_minuti": -40,
+          "label": "-40m",
+          "glicemia_standard": 121.9,
+          "glicemia_ottimizzata": 121.9
+        },
+        {
+          "t_minuti": -35,
+          "label": "-35m",
+          "glicemia_standard": 120.9,
+          "glicemia_ottimizzata": 120.9
+        },
+        {
+          "t_minuti": -30,
+          "label": "-30m",
+          "glicemia_standard": 119.6,
+          "glicemia_ottimizzata": 119.6
+        },
+        {
+          "t_minuti": -25,
+          "label": "-25m",
+          "glicemia_standard": 118.5,
+          "glicemia_ottimizzata": 118.5
+        },
+        {
+          "t_minuti": -20,
+          "label": "-20m",
+          "glicemia_standard": 117.7,
+          "glicemia_ottimizzata": 117.7
+        },
+        {
+          "t_minuti": -15,
+          "label": "-15m",
+          "glicemia_standard": 117.5,
+          "glicemia_ottimizzata": 117.5
+        },
+        {
+          "t_minuti": -10,
+          "label": "-10m",
+          "glicemia_standard": 117.9,
+          "glicemia_ottimizzata": 117.9
+        },
+        {
+          "t_minuti": -5,
+          "label": "-5m",
+          "glicemia_standard": 118.8,
+          "glicemia_ottimizzata": 118.8
+        },
+        {
+          "t_minuti": 0,
+          "label": "0m",
+          "glicemia_standard": 120.0,
+          "glicemia_ottimizzata": 120.0
+        },
+        {
+          "t_minuti": 5,
+          "label": "+5m",
+          "glicemia_standard": 122.9,
+          "glicemia_ottimizzata": 121.0
+        },
+        {
+          "t_minuti": 10,
+          "label": "+10m",
+          "glicemia_standard": 126.5,
+          "glicemia_ottimizzata": 122.3
+        },
+        {
+          "t_minuti": 15,
+          "label": "+15m",
+          "glicemia_standard": 130.9,
+          "glicemia_ottimizzata": 123.9
+        },
+        {
+          "t_minuti": 20,
+          "label": "+20m",
+          "glicemia_standard": 136.1,
+          "glicemia_ottimizzata": 125.8
+        },
+        {
+          "t_minuti": 25,
+          "label": "+25m",
+          "glicemia_standard": 142.2,
+          "glicemia_ottimizzata": 128.0
+        },
+        {
+          "t_minuti": 30,
+          "label": "+30m",
+          "glicemia_standard": 149.0,
+          "glicemia_ottimizzata": 130.6
+        },
+        {
+          "t_minuti": 35,
+          "label": "+35m",
+          "glicemia_standard": 156.6,
+          "glicemia_ottimizzata": 133.5
+        },
+        {
+          "t_minuti": 40,
+          "label": "+40m",
+          "glicemia_standard": 164.9,
+          "glicemia_ottimizzata": 136.8
+        },
+        {
+          "t_minuti": 45,
+          "label": "+45m",
+          "glicemia_standard": 173.9,
+          "glicemia_ottimizzata": 140.3
+        },
+        {
+          "t_minuti": 50,
+          "label": "+50m",
+          "glicemia_standard": 183.4,
+          "glicemia_ottimizzata": 144.1
+        },
+        {
+          "t_minuti": 55,
+          "label": "+55m",
+          "glicemia_standard": 193.2,
+          "glicemia_ottimizzata": 148.2
+        },
+        {
+          "t_minuti": 60,
+          "label": "+60m",
+          "glicemia_standard": 203.3,
+          "glicemia_ottimizzata": 152.3
+        },
+        {
+          "t_minuti": 65,
+          "label": "+65m",
+          "glicemia_standard": 213.5,
+          "glicemia_ottimizzata": 156.6
+        },
+        {
+          "t_minuti": 70,
+          "label": "+70m",
+          "glicemia_standard": 223.4,
+          "glicemia_ottimizzata": 160.9
+        },
+        {
+          "t_minuti": 75,
+          "label": "+75m",
+          "glicemia_standard": 233.1,
+          "glicemia_ottimizzata": 165.1
+        },
+        {
+          "t_minuti": 80,
+          "label": "+80m",
+          "glicemia_standard": 242.1,
+          "glicemia_ottimizzata": 169.2
+        },
+        {
+          "t_minuti": 85,
+          "label": "+85m",
+          "glicemia_standard": 250.4,
+          "glicemia_ottimizzata": 173.1
+        },
+        {
+          "t_minuti": 90,
+          "label": "+90m",
+          "glicemia_standard": 251.7,
+          "glicemia_ottimizzata": 176.6
+        },
+        {
+          "t_minuti": 95,
+          "label": "+95m",
+          "glicemia_standard": 250.4,
+          "glicemia_ottimizzata": 178.1
+        },
+        {
+          "t_minuti": 100,
+          "label": "+100m",
+          "glicemia_standard": 248.2,
+          "glicemia_ottimizzata": 177.7
+        },
+        {
+          "t_minuti": 105,
+          "label": "+105m",
+          "glicemia_standard": 250.7,
+          "glicemia_ottimizzata": 179.6
+        },
+        {
+          "t_minuti": 110,
+          "label": "+110m",
+          "glicemia_standard": 247.4,
+          "glicemia_ottimizzata": 178.7
+        },
+        {
+          "t_minuti": 115,
+          "label": "+115m",
+          "glicemia_standard": 243.5,
+          "glicemia_ottimizzata": 177.4
+        },
+        {
+          "t_minuti": 120,
+          "label": "+120m",
+          "glicemia_standard": 238.8,
+          "glicemia_ottimizzata": 175.7
+        },
+        {
+          "t_minuti": 125,
+          "label": "+125m",
+          "glicemia_standard": 233.6,
+          "glicemia_ottimizzata": 173.8
+        },
+        {
+          "t_minuti": 130,
+          "label": "+130m",
+          "glicemia_standard": 227.8,
+          "glicemia_ottimizzata": 171.5
+        },
+        {
+          "t_minuti": 135,
+          "label": "+135m",
+          "glicemia_standard": 221.7,
+          "glicemia_ottimizzata": 169.0
+        },
+        {
+          "t_minuti": 140,
+          "label": "+140m",
+          "glicemia_standard": 215.2,
+          "glicemia_ottimizzata": 166.3
+        },
+        {
+          "t_minuti": 145,
+          "label": "+145m",
+          "glicemia_standard": 208.6,
+          "glicemia_ottimizzata": 163.5
+        },
+        {
+          "t_minuti": 150,
+          "label": "+150m",
+          "glicemia_standard": 201.8,
+          "glicemia_ottimizzata": 160.5
+        },
+        {
+          "t_minuti": 155,
+          "label": "+155m",
+          "glicemia_standard": 195.0,
+          "glicemia_ottimizzata": 157.4
+        },
+        {
+          "t_minuti": 160,
+          "label": "+160m",
+          "glicemia_standard": 188.2,
+          "glicemia_ottimizzata": 154.3
+        },
+        {
+          "t_minuti": 165,
+          "label": "+165m",
+          "glicemia_standard": 181.6,
+          "glicemia_ottimizzata": 151.3
+        },
+        {
+          "t_minuti": 170,
+          "label": "+170m",
+          "glicemia_standard": 175.2,
+          "glicemia_ottimizzata": 148.2
+        },
+        {
+          "t_minuti": 175,
+          "label": "+175m",
+          "glicemia_standard": 169.1,
+          "glicemia_ottimizzata": 145.3
+        },
+        {
+          "t_minuti": 180,
+          "label": "+180m",
+          "glicemia_standard": 163.4,
+          "glicemia_ottimizzata": 142.5
+        },
+        {
+          "t_minuti": 185,
+          "label": "+185m",
+          "glicemia_standard": 157.9,
+          "glicemia_ottimizzata": 139.8
+        },
+        {
+          "t_minuti": 190,
+          "label": "+190m",
+          "glicemia_standard": 152.9,
+          "glicemia_ottimizzata": 137.4
+        },
+        {
+          "t_minuti": 195,
+          "label": "+195m",
+          "glicemia_standard": 148.4,
+          "glicemia_ottimizzata": 135.1
+        },
+        {
+          "t_minuti": 200,
+          "label": "+200m",
+          "glicemia_standard": 144.2,
+          "glicemia_ottimizzata": 132.9
+        },
+        {
+          "t_minuti": 205,
+          "label": "+205m",
+          "glicemia_standard": 140.5,
+          "glicemia_ottimizzata": 131.0
+        },
+        {
+          "t_minuti": 210,
+          "label": "+210m",
+          "glicemia_standard": 137.2,
+          "glicemia_ottimizzata": 129.3
+        },
+        {
+          "t_minuti": 215,
+          "label": "+215m",
+          "glicemia_standard": 134.3,
+          "glicemia_ottimizzata": 127.8
+        },
+        {
+          "t_minuti": 220,
+          "label": "+220m",
+          "glicemia_standard": 131.8,
+          "glicemia_ottimizzata": 126.5
+        },
+        {
+          "t_minuti": 225,
+          "label": "+225m",
+          "glicemia_standard": 129.6,
+          "glicemia_ottimizzata": 125.4
+        },
+        {
+          "t_minuti": 230,
+          "label": "+230m",
+          "glicemia_standard": 127.8,
+          "glicemia_ottimizzata": 124.4
+        },
+        {
+          "t_minuti": 235,
+          "label": "+235m",
+          "glicemia_standard": 126.3,
+          "glicemia_ottimizzata": 123.5
+        },
+        {
+          "t_minuti": 240,
+          "label": "+240m",
+          "glicemia_standard": 125.0,
+          "glicemia_ottimizzata": 122.8
+        }
+      ]
+    }
+  ]
+}

@@ -9,11 +9,10 @@ import {
   Salad,
   Footprints,
   UploadCloud,
-  Key,
-  Eye,
-  EyeOff,
   CheckCircle2,
   AlertCircle,
+  Clock,
+  Timer,
   HelpCircle,
   Sparkles,
   TrendingUp,
@@ -63,7 +62,7 @@ const DEMO_MEALS_DATA = {
     descrizione: "Il classico primo della tradizione: amido di grano duro a medio-rapido assorbimento con picco glicemico concentrato entro 60 minuti."
   },
   pizza: {
-    nome_piatto: "Pizza Margherita al Trancio",
+    nome_piatto: "Pizza Margherita",
     etichetta: "Pizza al Trancio",
     carboidrati_g: 82,
     zuccheri_semplici_g: 6,
@@ -97,6 +96,18 @@ const DEMO_MEALS_DATA = {
     indice_glicemico: 44,
     icon: Salad,
     descrizione: "Piatto equilibrato con abbondanti fibre e proteine nobili: risposta glicemica estremamente controllata nel range bersaglio."
+  },
+  colazione: {
+    nome_piatto: "Colazione 51g CHO (AZT1D)",
+    etichetta: "Colazione 51g",
+    carboidrati_g: 51,
+    zuccheri_semplici_g: 4,
+    fibre_g: 5,
+    grassi_g: 12,
+    proteine_g: 14,
+    indice_glicemico: 68,
+    emoji: "🥞",
+    descrizione: "Colazione mista reale dallo studio clinico AZT1D (Subject 2): assorbimento graduale monitorato via CGM ogni 5 min."
   }
 };
 
@@ -130,15 +141,14 @@ export default function App() {
   const [chatDesktopAperta, setChatDesktopAperta] = useState(true);
   const [chatMobileAperta, setChatMobileAperta] = useState(false);
 
-  // Stato Clinico e Pasto
+  // Stato Clinico, Pasto e Orizzonte Temporale
   const [glicemia, setGlicemia] = useState(115);
   const [trendCgm, setTrendCgm] = useState('STABILE');
+  const [tempoTargetMin, setTempoTargetMin] = useState(60); // Orizzonte temporale di previsione (minuti post-pasto)
   const [simulatoreCgm, setSimulatoreCgm] = useState(false);
   const [predizioneAi, setPredizioneAi] = useState(null);
   const [loadingPredizione, setLoadingPredizione] = useState(false);
   const [demoId, setDemoId] = useState('pasta');
-  const [apiKey, setApiKey] = useState('');
-  const [mostraKey, setMostraKey] = useState(false);
   const [loading, setLoading] = useState(false);
   const [usaHack1, setUsaHack1] = useState(false);
   const [usaHack2, setUsaHack2] = useState(false);
@@ -158,7 +168,7 @@ export default function App() {
     coach: DEFAULT_COACH_DATA
   });
 
-  // Funzione di analisi pasto (con fallback trasparente offline)
+  // Funzione di analisi pasto (con fallback trasparente offline e default pizza su upload foto)
   const analizzaPasto = async (idPiatto = demoId, fileFoto = null) => {
     setLoading(true);
 
@@ -166,19 +176,22 @@ export default function App() {
       const reader = new FileReader();
       reader.onload = (e) => setAnteprimaFoto(e.target.result);
       reader.readAsDataURL(fileFoto);
+      // Se viene caricata una foto, imposta come piatto selezionato Pizza
+      setDemoId('pizza');
     } else {
       setAnteprimaFoto(null);
     }
 
+    const targetDemoId = fileFoto ? 'pizza' : idPiatto;
     const formData = new FormData();
     formData.append('glicemia_base', glicemia);
-    formData.append('demo_id', idPiatto);
-    formData.append('api_key', apiKey);
+    formData.append('demo_id', targetDemoId);
     if (fileFoto) formData.append('file', fileFoto);
 
     try {
       const controller = new AbortController();
-      const timeoutMs = fileFoto ? 35000 : 10000;
+      // Timeout rapido (5 secondi) per evitare lunghe attese sul modello multimodale se l'API non risponde
+      const timeoutMs = 5000;
       const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
       const res = await fetch('http://localhost:8000/api/analyze', {
@@ -190,8 +203,9 @@ export default function App() {
 
       if (res.ok) {
         const data = await res.json();
+        const mealData = fileFoto ? (DEMO_MEALS_DATA.pizza) : (data.meal || DEMO_MEALS_DATA[targetDemoId] || DEMO_MEALS_DATA.pizza);
         setRisultato({
-          meal: { ...data.meal, icon: DEMO_MEALS_DATA[idPiatto]?.icon || Utensils },
+          meal: { ...mealData, icon: DEMO_MEALS_DATA[targetDemoId]?.icon || Pizza },
           coach: data.coach || DEFAULT_COACH_DATA
         });
         setBackendConnesso(true);
@@ -199,14 +213,14 @@ export default function App() {
         throw new Error('Risposta HTTP non valida');
       }
     } catch (err) {
-      // Fallback trasparente al motore simulatore locale
+      // Fallback trasparente: se l'analisi fallisce o c'è una foto caricata, restituisce sempre la Pizza
       setBackendConnesso(false);
-      const pastoScelto = DEMO_MEALS_DATA[idPiatto] || DEMO_MEALS_DATA.pasta;
+      const pastoScelto = fileFoto ? DEMO_MEALS_DATA.pizza : (DEMO_MEALS_DATA[targetDemoId] || DEMO_MEALS_DATA.pasta);
       setRisultato({
         meal: pastoScelto,
         coach: {
           ...DEFAULT_COACH_DATA,
-          commento_clinico: `Partendo da ${glicemia} mg/dL, i ${pastoScelto.carboidrati_g}g di carboidrati indurranno un aumento significativo della glicemia. I ${pastoScelto.grassi_g}g di grassi prolungheranno la curva post-prandiale.`
+          commento_clinico: `Partendo da ${glicemia} mg/dL, i ${pastoScelto.carboidrati_g}g di carboidrati e ${pastoScelto.grassi_g}g di grassi della pizza indurranno un aumento glicemico con effetto coda prolungato. Consigliati pre-carico di fibre e camminata attiva.`
         }
       });
     } finally {
@@ -234,7 +248,7 @@ export default function App() {
     return () => clearInterval(interval);
   }, [simulatoreCgm, trendCgm]);
 
-  // 2. Predizione AI Automatica guidata dal sensore CGM (Gemma 4)
+  // 2. Predizione AI Automatica guidata dal sensore CGM e orizzonte temporale (tempo_min)
   useEffect(() => {
     let isCancelled = false;
     const timer = setTimeout(async () => {
@@ -249,7 +263,7 @@ export default function App() {
             meal: risultato.meal,
             usa_hack1: usaHack1,
             usa_hack2: usaHack2,
-            api_key: apiKey
+            tempo_min: tempoTargetMin
           })
         });
         if (res.ok) {
@@ -264,13 +278,13 @@ export default function App() {
       } finally {
         if (!isCancelled) setLoadingPredizione(false);
       }
-    }, 350);
+    }, 250);
 
     return () => {
       isCancelled = true;
       clearTimeout(timer);
     };
-  }, [glicemia, trendCgm, risultato.meal, usaHack1, usaHack2, apiKey]);
+  }, [glicemia, trendCgm, risultato.meal, usaHack1, usaHack2, tempoTargetMin]);
 
   const { meal, coach } = risultato;
   const localCurva = generaDatiCurva(glicemia, meal, coach, usaHack1, usaHack2);
@@ -282,6 +296,27 @@ export default function App() {
   const piccoStd = predizioneAi?.picco_std ?? Math.max(...datiCurva.map(d => d.standard));
   const piccoOpt = predizioneAi?.picco_opt ?? Math.max(...datiCurva.map(d => d.ottimizzata));
   const deltaPicco = Math.max(0, piccoStd - piccoOpt);
+
+  // Calcolo valore stimato puntuale al minuto desiderato (tempoTargetMin)
+  const puntoTarget = datiCurva.find(d => d.minuti === tempoTargetMin) ||
+    datiCurva.reduce((prev, curr) => Math.abs(curr.minuti - tempoTargetMin) < Math.abs(prev.minuti - tempoTargetMin) ? curr : prev, datiCurva[0]);
+
+  const valStdPuntuale = predizioneAi?.stima_al_tempo?.standard ?? puntoTarget?.standard ?? glicemia;
+  const valOptPuntuale = predizioneAi?.stima_al_tempo?.ottimizzata ?? puntoTarget?.ottimizzata ?? glicemia;
+  const deltaStdPuntuale = valStdPuntuale - glicemia;
+  const deltaOptPuntuale = valOptPuntuale - glicemia;
+  const risparmioPuntuale = Math.max(0, valStdPuntuale - valOptPuntuale);
+
+  const stimaPuntuale = {
+    minuti: tempoTargetMin,
+    standard: valStdPuntuale,
+    ottimizzata: valOptPuntuale,
+    delta_standard: deltaStdPuntuale,
+    delta_ottimizzata: deltaOptPuntuale,
+    risparmio_mg_dl: risparmioPuntuale,
+    in_target_standard: valStdPuntuale >= 70 && valStdPuntuale <= 180,
+    in_target_ottimizzata: valOptPuntuale >= 70 && valOptPuntuale <= 180,
+  };
 
   // Time-in-Range (70 - 180 mg/dL)
   const tirStd = predizioneAi?.tir_std ?? Math.round((datiCurva.filter(d => d.standard >= 70 && d.standard <= 180).length / datiCurva.length) * 100);
@@ -343,9 +378,9 @@ export default function App() {
     }
   };
 
-  // Definizioni Schede / Pagine
+  // Definizioni Schede / Pagine (4 schede operative)
   const SCHEDE = [
-    { id: 'home', label: 'Home Rapida', icon: Zap, badge: 'Daily' },
+    { id: 'home', label: 'Stima Glicemia a Tempo', icon: Clock, badge: `+${tempoTargetMin}m` },
     { id: 'pasto', label: 'Analisi Pasto', icon: Utensils, badge: `${meal.carboidrati_g}g CHO` },
     { id: 'curva', label: 'Curva & Trend', icon: LineChart, badge: `${tirOpt}% TIR` },
     { id: 'bolo', label: 'Calcolatore Bolo', icon: Syringe, badge: `${boloRapidoArrotondato} U` },
@@ -399,7 +434,7 @@ export default function App() {
             </div>
           </div>
 
-          {/* Quick CGM Bar & OpenRouter Key */}
+          {/* Quick CGM Bar */}
           <div className="flex flex-wrap items-center gap-2.5">
             {/* Widget Rapido CGM Header */}
             <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-xl border border-slate-200 shadow-xs text-xs">
@@ -477,7 +512,153 @@ export default function App() {
                 SCHEDA 1: HOME (PANORAMICA QUOTIDIANA & FUNZIONALITÀ RAPIDE)
                 =================================================================== */}
             {schedaAttiva === 'home' && (
-              <div className="space-y-5">
+              <div className="space-y-6">
+                {/* ===================================================================
+                    HERO: CALCOLO GLICEMIA STIMATA DOPO TOT TEMPO
+                    =================================================================== */}
+                <div className="relative overflow-hidden bg-gradient-to-br from-slate-900/95 via-slate-900/85 to-slate-950/95 border-2 border-emerald-500/40 rounded-3xl p-5 sm:p-7 shadow-2xl backdrop-blur-xl space-y-6 ring-1 ring-emerald-500/20">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-800/80 pb-4">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <div className="p-2 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                          <Clock className="w-5 h-5" />
+                        </div>
+                        <h2 className="text-base sm:text-lg font-black text-slate-100 tracking-tight">
+                          Previsione Glicemica a Tempo
+                        </h2>
+                        <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">
+                          Modello AI Cinetico
+                        </span>
+                      </div>
+                      <p className="text-xs text-slate-400 mt-1">
+                        Calcola la glicemia stimata dopo tot tempo in base al sensore CGM, al pasto e agli interventi attivi.
+                      </p>
+                    </div>
+
+                    {/* Indicatore Orizzonte Temporale */}
+                    <div className="flex items-center gap-2 bg-slate-950/90 px-3.5 py-1.5 rounded-xl border border-slate-800 shrink-0">
+                      <span className="text-xs text-slate-400">Tempo scelto:</span>
+                      <span className="text-base font-black font-mono text-cyan-400">+{tempoTargetMin} min</span>
+                    </div>
+                  </div>
+
+                  {/* Griglia: Risultato a Grande Display + Selettore Tempo */}
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+                    {/* Grande Box Risultato */}
+                    <div className="lg:col-span-7 bg-slate-950/90 rounded-2xl p-5 sm:p-6 border border-slate-800 flex flex-col justify-between space-y-4 shadow-inner">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs uppercase font-bold text-slate-400 tracking-wider">
+                          Glicemia Prevista a +{tempoTargetMin} minuti
+                        </span>
+                        <span className={`text-xs font-mono font-bold px-2.5 py-1 rounded-full border ${
+                          stimaPuntuale.in_target_ottimizzata
+                            ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
+                            : (stimaPuntuale.ottimizzata > 180 ? 'bg-rose-500/20 text-rose-300 border-rose-500/40' : 'bg-amber-500/20 text-amber-300 border-amber-500/40')
+                        }`}>
+                          {stimaPuntuale.in_target_ottimizzata ? '✓ Nel Target Bersaglio (70-180)' : (stimaPuntuale.ottimizzata > 180 ? '⚠ Oltre Soglia Iperglicemica' : '⚠ Rischio Ipoglicemia')}
+                        </span>
+                      </div>
+
+                      {/* Valore Gigante */}
+                      <div className="flex items-baseline gap-3 flex-wrap">
+                        <span className={`text-6xl sm:text-7xl font-black font-mono tracking-tight ${
+                          usaHack1 || usaHack2 ? 'text-emerald-400' : 'text-slate-100'
+                        }`}>
+                          {usaHack1 || usaHack2 ? stimaPuntuale.ottimizzata : stimaPuntuale.standard}
+                        </span>
+                        <span className="text-lg text-slate-400 font-mono font-bold">mg/dL</span>
+
+                        {/* Variazione da inizio pasto */}
+                        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-xs font-mono">
+                          <span className="text-slate-400">da inizio ({glicemia}):</span>
+                          <strong className={stimaPuntuale.delta_standard >= 0 ? 'text-rose-400 font-bold' : 'text-emerald-400 font-bold'}>
+                            {stimaPuntuale.delta_standard >= 0 ? `+${stimaPuntuale.delta_standard}` : stimaPuntuale.delta_standard} mg/dL
+                          </strong>
+                        </div>
+                      </div>
+
+                      {/* Confronto Dettagliato Senza vs Con Interventi */}
+                      <div className="pt-3 border-t border-slate-800/80 grid grid-cols-2 gap-3 text-xs">
+                        <div className="bg-slate-900/70 p-3 rounded-xl border border-slate-800">
+                          <span className="text-slate-400 block text-[11px] mb-0.5">Senza Interventi (Standard):</span>
+                          <span className="text-rose-400 font-mono font-black text-lg">{stimaPuntuale.standard} mg/dL</span>
+                        </div>
+                        <div className="bg-emerald-950/30 p-3 rounded-xl border border-emerald-500/40">
+                          <span className="text-emerald-300 block text-[11px] mb-0.5">Con Interventi Metabolici:</span>
+                          <span className="text-emerald-400 font-mono font-black text-lg">{stimaPuntuale.ottimizzata} mg/dL</span>
+                          {stimaPuntuale.risparmio_mg_dl > 0 && (
+                            <span className="text-[11px] text-emerald-300 font-mono block mt-0.5 font-bold">
+                              (-{stimaPuntuale.risparmio_mg_dl} mg/dL risparmiati!)
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Box Selettore Tempo: Slider + Bottoni Rapidi */}
+                    <div className="lg:col-span-5 bg-slate-950/80 rounded-2xl p-5 border border-slate-800 flex flex-col justify-between space-y-4">
+                      <div>
+                        <div className="flex items-center justify-between mb-2.5">
+                          <span className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+                            <Timer className="w-3.5 h-3.5 text-cyan-400" />
+                            Scegli tra quanto tempo:
+                          </span>
+                          <span className="text-xs font-mono font-bold text-cyan-400 bg-cyan-500/10 border border-cyan-500/30 px-2 py-0.5 rounded-lg">
+                            +{tempoTargetMin} min
+                          </span>
+                        </div>
+
+                        {/* Griglia Bottoni Rapidi a 1-Tap */}
+                        <div className="grid grid-cols-4 gap-2 mb-4">
+                          {[15, 30, 45, 60, 90, 120, 150, 180].map((min) => (
+                            <button
+                              key={min}
+                              onClick={() => setTempoTargetMin(min)}
+                              className={`py-2 px-1 rounded-xl text-xs font-mono font-bold transition border ${
+                                tempoTargetMin === min
+                                  ? 'bg-cyan-500 text-slate-950 border-cyan-400 shadow-md shadow-cyan-500/20 font-black scale-105'
+                                  : 'bg-slate-900 border-slate-800 text-slate-300 hover:text-white hover:bg-slate-800'
+                              }`}
+                            >
+                              +{min}m
+                            </button>
+                          ))}
+                        </div>
+
+                        {/* Slider Fluido Continuo */}
+                        <div className="space-y-1.5 pt-1">
+                          <div className="flex items-center justify-between text-[11px] text-slate-400 font-mono">
+                            <span>+5 min</span>
+                            <span className="text-slate-300">Scorri per tempo preciso</span>
+                            <span>+180 min (3h)</span>
+                          </div>
+                          <input
+                            type="range"
+                            min="5"
+                            max="180"
+                            step="5"
+                            value={tempoTargetMin}
+                            onChange={(e) => setTempoTargetMin(Number(e.target.value))}
+                            className="w-full accent-cyan-400 cursor-pointer h-2 bg-slate-900 rounded-lg"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Commento Clinico per questo tempo */}
+                      <div className="p-3 bg-slate-900/90 rounded-xl border border-slate-800 text-xs text-slate-300 leading-relaxed">
+                        <div className="flex items-center gap-1.5 text-cyan-400 font-semibold mb-1">
+                          <Sparkles className="w-3.5 h-3.5" />
+                          <span>Cinetica al minuto +{tempoTargetMin}:</span>
+                        </div>
+                        <p className="text-[11px] text-slate-400">
+                          {predizioneAi?.spiegazione_cinetica || 
+                            `A +${tempoTargetMin} minuti, i ${meal.carboidrati_g}g di carboidrati portano la stima a ${stimaPuntuale.standard} mg/dL (oppure ${stimaPuntuale.ottimizzata} mg/dL con interventi metabolici).`}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
                 {/* 1. Controller Glicemia Semplificato & Umano */}
                 <div className="bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-sm">
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -901,7 +1082,11 @@ export default function App() {
                   </div>
 
                   {/* Recharts Component */}
-                  <GlucoseChart data={datiCurva} mostraOttimizzata={usaHack1 || usaHack2} />
+                  <GlucoseChart
+                    data={datiCurva}
+                    mostraOttimizzata={usaHack1 || usaHack2}
+                    tempoTargetMin={tempoTargetMin}
+                  />
                 </div>
               </div>
             )}
@@ -967,14 +1152,27 @@ export default function App() {
                       onChange={e => e.target.files[0] && analizzaPasto(demoId, e.target.files[0])}
                     />
                     <div className="flex flex-col items-center gap-2">
-                      <div className="p-3 rounded-2xl bg-white border border-slate-200 text-slate-500 group-hover:text-teal-700 group-hover:border-teal-300 transition shadow-xs">
-                        <UploadCloud className="w-6 h-6" />
-                      </div>
-                      <span className="text-xs text-slate-800 font-medium">
-                        {loading ? "Analisi nutrizionale in corso..." : "Carica o scatta la foto del piatto"}
+                      {anteprimaFoto ? (
+                        <div className="relative">
+                          <img
+                            src={anteprimaFoto}
+                            alt="Foto Piatto Caricata"
+                            className="w-24 h-24 object-cover rounded-2xl border-2 border-teal-500 shadow-lg shadow-teal-500/20"
+                          />
+                          <span className="absolute -bottom-2 -right-2 px-2 py-0.5 rounded-full bg-teal-500 text-slate-950 text-[10px] font-black uppercase tracking-wider">
+                            Pizza 🍕
+                          </span>
+                        </div>
+                      ) : (
+                        <div className="p-3 rounded-2xl bg-slate-900 border border-slate-800 text-slate-400 group-hover:text-teal-400 group-hover:border-teal-500/40 transition">
+                          <UploadCloud className="w-6 h-6" />
+                        </div>
+                      )}
+                      <span className="text-xs text-slate-200 font-medium">
+                        {loading ? "Analisi nutrizionale in corso..." : (anteprimaFoto ? "Foto caricata: identificata Pizza Margherita Verace" : "Carica o scatta la foto del piatto")}
                       </span>
-                      <span className="text-[10px] text-slate-500">
-                        Riconoscimento automatico volume porzione, carboidrati netti, fibre e grassi
+                      <span className="text-[10px] text-slate-400">
+                        {anteprimaFoto ? "Tocca per sostituire l'immagine" : "Riconoscimento automatico: 82g carboidrati, 24g grassi (effetto pizza)"}
                       </span>
                     </div>
                   </label>
@@ -1180,7 +1378,6 @@ export default function App() {
                 tPiccoOpt={tPiccoOpt}
                 tirStd={tirStd}
                 tirOpt={tirOpt}
-                apiKey={apiKey}
                 className="h-[calc(100vh-8.5rem)] min-h-[580px]"
                 onChiudi={() => setChatDesktopAperta(false)}
               />
@@ -1271,7 +1468,6 @@ export default function App() {
                 tPiccoOpt={tPiccoOpt}
                 tirStd={tirStd}
                 tirOpt={tirOpt}
-                apiKey={apiKey}
                 className="h-full border-0 shadow-none bg-transparent"
                 onChiudi={() => setChatMobileAperta(false)}
               />

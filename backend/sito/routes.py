@@ -50,6 +50,7 @@ async def predict_glucose_response(req: PredictionRequest):
         meal=req.meal,
         usa_hack1=req.usa_hack1,
         usa_hack2=req.usa_hack2,
+        tempo_target=req.tempo_min,
         api_key=req.api_key,
     )
     return prediction

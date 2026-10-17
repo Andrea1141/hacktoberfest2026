@@ -1,81 +1,135 @@
 # 🩸 GlucoTwin AI — Simulatore Metabolico Preventivo Open-Weight
 
-> **Prevedi il picco glicemico prima della prima forchettata. Appiattisci la curva con micro-interventi comportamentali personalizzati e l'AI multimodale Gemma.**
+> **Prevedi la glicemia stimata dopo tot tempo prima del primo boccone. Appiattisci la curva con interventi metabolici personalizzati e l'AI di Google Gemma 4.**
 
 ![License](https://img.shields.io/badge/License-MIT-emerald.svg)
 ![AI](https://img.shields.io/badge/Model-Google_Gemma_4-cyan.svg)
-![Privacy](https://img.shields.io/badge/Privacy-GDPR_On--Premise_Ready-blue.svg)
-![Stack](https://img.shields.io/badge/Stack-FastAPI_%7C_React_%7C_Recharts-purple.svg)
+![Trial](https://img.shields.io/badge/Dataset-AZT1D_Clinical_Trial_2025-blue.svg)
+![Privacy](https://img.shields.io/badge/Privacy-GDPR_On--Premise_Ready-purple.svg)
+![Stack](https://img.shields.io/badge/Stack-FastAPI_%7C_React_%7C_Tailwind_v4_%7C_Recharts-teal.svg)
 
 ---
 
-## 🎯 Il Problema
-Una persona con diabete prende circa **180 decisioni extra ogni giorno** legate al cibo. I sensori continui di glicemia (CGM) attuali sono **reattivi**: avvisano il paziente solo *dopo* che il picco iperglicemico è già avvenuto. Inoltre, contare manualmente i grammi di carboidrati, fibre e grassi a ogni pasto genera un enorme carico cognitivo (*diabetes burnout*).
+## 🎯 Il Problema Clinico
+Una persona con diabete prende circa **180 decisioni extra ogni giorno** legate al cibo. I sensori continui di monitoraggio glicemico (CGM) tradizionali sono prevalentemente **reattivi**: avvisano il paziente quando l'escursione iperglicemica o ipoglicemica è già in atto. Inoltre, il calcolo manuale dei grammi di carboidrati, lipidi e fibre a ogni pasto genera un carico cognitivo cronico (*diabetes burnout*).
+
+---
 
 ## 💡 La Soluzione: GlucoTwin AI
-**GlucoTwin AI** trasforma la gestione glicemica da reattiva a **preventiva**. Basta scattare una foto al piatto o selezionare un pasto demo per:
-1. **Stimare istantaneamente i macronutrienti** (Carboidrati, Fibre, Grassi, Proteine e Indice Glicemico) tramite **Gemma 4** (`gemma-4-26b-a4b-it`) nativamente multimodale.
-2. **Visualizzare il futuro a 3 ore:** Un motore matematico fisiologico proietta sul grafico la curva glicemica prevista a partire dal valore attuale del sensore CGM.
-3. **Simulare "Hack Metabolici" (What-If Engine):** Un agente clinico suggerisce micro-azioni scientificamente validate (es. *pre-carico di fibre* per creare una barriera viscosa intestinale o *attivazione muscolare GLUT4 post-pasto*) mostrando in tempo reale come la curva rossa si appiattisce e rientra nel **Target Range (70–180 mg/dL)**.
-4. **Conversare con il Coach Clinico (Gemma):** Poni domande in tempo reale sul calcolo matematico trasparente del bolo, sulla cinetica di assorbimento o sull'effetto dell'attività fisica.
+**GlucoTwin AI** trasforma la gestione metabolica da reattiva a **preventiva e predittiva**:
+
+1. **⏱️ Calcolo della Glicemia Stimata a Tempo ($+t$ min):**
+   - Calcola e mostra con precisione millimetrica il valore glicemico atteso a qualsiasi intervallo temporale (es. $+15$, $+30$, $+45$, $+60$, $+90$, $+120$, $+180$ minuti).
+   - Display a grande contrasto con indicazione del delta glicemico e badge clinico di sicurezza (*Bersaglio Ideale 70–140 mg/dL*, *Nel Target 70–180 mg/dL*, *Allerta Iperglicemia*).
+2. **🥗 Interventi Metabolici Personalizzati (What-If Engine):**
+   - Confronta istantaneamente la curva **Standard** con la curva **Con Interventi Metabolici** (pre-carico di fibre vegetali e stimolazione recettoriale GLUT4 via camminata post-prandiale).
+   - Quantifica il risparmio glicemico netto in tempo reale (es. **$-36\text{ mg/dL}$** al picco).
+3. **📊 Calibrazione su Dati Clinici Reali (Studio AZT1D 2025):**
+   - Modello cinetico calibrato sulle evidenze del trial clinico **AZT1D** (25 soggetti con diabete di tipo 1 equipaggiati con microinfusori automatici AID e sensori CGM, oltre 306.000 rilevazioni continue).
+   - Monitoraggio delle metriche di consenso internazionale: **TIR (Time-in-Range 70–180 mg/dL)**, **TAR (Time-Above-Range >180 mg/dL)** e **TBR (Time-Below-Range <70 mg/dL)**.
+4. **📷 Analisi Nutrizionale Multimodale con Gemma 4:**
+   - Estrazione automatica dei macronutrienti (Carboidrati netti, Zuccheri semplici, Fibre, Lipidi, Proteine, Indice Glicemico) tramite **Gemma 4** (`gemma-4-26b-a4b-it`).
+5. **💬 Assistente Clinico Conversazionale & Calcolatore Bolo:**
+   - Chatbot empatico e scientifico che spiega le cinetiche fisiologiche, con supporto per formule $\LaTeX$ e calcolo trasparente del bolo insulinico (Rapporto I:C, Fattore di Sensibilità FSI, Insulina Attiva IOB e strategia dual-wave per pasti ad alto contenuto di grassi).
 
 ---
 
-## 🧠 Architettura Multi-Modello (100% Open-Weight)
-
-Perché abbiamo scelto modelli **Open-Weight**? 
-I dati sanitari e nutrizionali dei pazienti sono tra i più sensibili al mondo (Art. 9 GDPR). La nostra architettura può essere ospitata **On-Premise** direttamente sui server di ospedali, cliniche o dispositivi personali, garantendo **zero data-leak**.
+## 🧠 Architettura di Sistema (100% Open-Weight)
 
 ```mermaid
 graph LR
-    A["📷 Foto del Piatto"] --> B("Gemma 4 Multimodal Vision")
-    B -->|"JSON Macronutrienti"| C{"Motore Fisiologico (Glucose Engine)"}
-    D["📡 Sensore CGM Live"] --> C
-    B --> E("Gemma Clinical Coach")
-    D --> E
-    E -->|"Hack Metabolici & Chat"| C
-    C --> F["📈 Dashboard Reattiva React + Recharts"]
+    A["📷 Immagine del Pasto / Dati Demo"] --> B("Gemma 4 Multimodal Vision")
+    B -->|"Macronutrienti & Indice Glicemico"| C{"Predittore Fisiologico Cinetico (AZT1D Grounded)"}
+    D["📡 Telemetria CGM Live (Valore + Trend)"] --> C
+    E["⏱️ Orizzonte Temporale (+t min)"] --> C
+    F["🌿 Interventi Metabolici (Fibre + GLUT4)"] --> C
+    C --> G["📈 Display Glicemia Stimata & Curva a 60 FPS"]
+    C --> H("Gemma 4 Clinical Copilot")
+    H --> I["💬 Chat & Raccomandazioni Cliniche"]
 ```
 
-* **👁️ Vision & Carbohydrate Counting:** `gemma-4-26b-a4b-it` (Google GenAI / OpenRouter) per l'analisi visiva delle porzioni e la scomposizione bromatologica strutturata in JSON.
-* **🩺 Clinical & Behavioral Coach Agent:** `gemma-4-26b-a4b-it` per la formulazione di strategie di mitigazione e per rispondere alle domande dell'utente (calcolo del bolo carboidrati/correzione, riduzione per moto, bolo prolungato per i grassi).
-* **📐 Simulatore Farmacocinetico dell'Assorbimento:** Modello matematico deterministico che calcola la velocità di svuotamento gastrico (rallentata da lipidi e fibre, es. *"effetto pizza"*) e l'escursione glicemica post-prandiale a 60 fps.
+* **Backend:** FastAPI, Python 3.10+, Google GenAI SDK / OpenRouter API per Gemma 4.
+* **Frontend:** React 19, Vite, Tailwind CSS v4, Recharts, KaTeX, Lucide Icons.
+* **Privacy & GDPR:** Architettura open-weight implementabile anche on-premise su server clinici locali senza dispersione di dati sensibili.
 
 ---
 
-## 🚀 Quick Start (Avvio Rapido)
+## 🧭 Struttura del Progetto
+
+```text
+hacktoberfest2026/
+├── backend/                  # API REST FastAPI & Motore AI
+│   ├── ai/                   # Moduli di intelligenza artificiale
+│   │   ├── coach.py          # Agente clinico & chat conversazionale Gemma 4
+│   │   ├── config.py         # Configurazione modelli e gestione chiavi API
+│   │   ├── demo_meals.py     # Database pasti demo validati
+│   │   ├── predictor.py      # Simulatore fisiologico & stima a tempo (+t min)
+│   │   ├── utils.py          # Helper estrazione e sanitizzazione JSON
+│   │   └── vision.py         # Analisi nutrizionale multimodale con Gemma 4
+│   ├── sito/                 # Routing FastAPI & Schemi Pydantic
+│   │   ├── routes.py         # Endpoint API (/api/predict, /api/analyze, /api/chat)
+│   │   └── schemas.py        # Validazione contratti dati
+│   ├── .env.example          # Template per configurazione chiavi API
+│   ├── main.py               # Entrypoint applicazione FastAPI
+│   └── requirements.txt      # Dipendenze Python
+├── data/                     # Dati clinici e trial AZT1D di riferimento
+│   ├── AZT1D_DATASET_SUMMARY_FOR_AI.txt
+│   └── stressdiabete.txt
+├── frontend/                 # Applicazione Single Page React
+│   ├── src/
+│   │   ├── App.jsx           # Dashboard principale, Hero card a tempo e selettori
+│   │   ├── BolusCalculator.jsx # Modulo calcolo bolo insulinico trasparente
+│   │   ├── ChatCoach.jsx     # Chat clinica con supporto formule LaTeX
+│   │   ├── GlucoseChart.jsx  # Grafico cinetico interattivo con ago a +t min
+│   │   └── index.css         # Design system Tailwind CSS v4
+│   ├── package.json          # Dipendenze Node.js
+│   └── vite.config.js        # Configurazione Vite
+├── .gitignore                # Regole di esclusione git pulite
+└── README.md                 # Documentazione del progetto
+```
+
+---
+
+## 🚀 Avvio Rapido
 
 ### Prerequisiti
 * **Python 3.10+**
 * **Node.js 18+**
-* *(Opzionale)* Una chiave API di **Google Gemini / AI Studio** o **OpenRouter** (il sistema include comunque una modalità **Demo Fallback** integrata funzionante 100% offline).
 
----
-
-### 1. Avvio Backend (FastAPI)
+### 1. Configurazione & Avvio Backend (FastAPI)
 
 ```bash
 cd backend
 pip install -r requirements.txt
+```
+
+Copia il file delle variabili d'ambiente e inserisci la tua chiave (Google AI Studio o OpenRouter):
+```bash
+cp .env.example .env
+```
+*(Nota: se la chiave non viene inserita, il backend attiva automaticamente la modalità simulatore locale offline).*
+
+Avvia il server:
+```bash
 uvicorn main:app --reload --port 8000
 ```
-Il server sarà attivo su: **`http://localhost:8000`** (documentazione Swagger su `http://localhost:8000/docs`).
+API attiva su **`http://localhost:8000`** (Swagger docs su `http://localhost:8000/docs`).
 
 ---
 
-### 2. Avvio Frontend (React + Vite + TailwindCSS)
+### 2. Avvio Frontend (React + Vite)
 
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
-Apri il browser su: **`http://localhost:5173`**.
+Apri il browser all'indirizzo: **`http://localhost:5173`**.
 
 ---
 
-## 🛡️ Sicurezza Clinica & Etica (By Design)
-**GlucoTwin AI** è progettato come **sistema di supporto decisionale comportamentale ed educativo**.
-* ❌ **Non sostituisce la prescrizione medica** né impone dosaggi rigidi di farmaci.
-* ✅ Mostra calcoli matematici trasparenti educativi (Rapporto I:C, Fattore di Sensibilità FSI, Insulina Attiva IOB) da validare sempre con il proprio team diabetologico.
-* ✅ Agisce su leve comportamentali validate (sequenza dei macronutrienti e movimento post-prandiale) per massimizzare il **Time-in-Range (TIR)**.
+## 🛡️ Note di Sicurezza Clinica & Etica
+**GlucoTwin AI** è sviluppato ad esclusivo scopo **educativo, preventivo e di supporto decisionale comportamentale**:
+* ❌ **Non sostituisce in alcun modo il parere del medico diabetologo** né modifica autonomamente prescrizioni farmacologiche.
+* ✅ Mostra calcoli matematici chiari e trasparenti da discutere e validare sempre con il proprio team curante.
+* ✅ Promuove interventi metabolici non invasivi e scientificamente comprovati (ordine di assunzione dei nutrienti e lieve mobilità post-prandiale) per favorire l'ottimizzazione del Time-in-Range (TIR).

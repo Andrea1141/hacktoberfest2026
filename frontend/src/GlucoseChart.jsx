@@ -109,11 +109,16 @@ const CustomTooltip = ({ active, payload, label }) => {
   return null;
 };
 
-export default function GlucoseChart({ data, mostraOttimizzata }) {
+export default function GlucoseChart({ data, mostraOttimizzata, tempoTargetMin }) {
   // Calcolo dinamico del dominio Y per visualizzazione ottimale
   const allValues = data.flatMap(d => [d.standard, mostraOttimizzata ? d.ottimizzata : null].filter(Boolean));
   const minVal = Math.min(60, ...allValues);
-  const maxVal = Math.max(220, ...allValues + 15);
+  const maxVal = Math.max(220, ...allValues) + 15;
+
+  // Trova il punto esatto o più vicino per il marker temporale
+  const puntoTarget = tempoTargetMin !== undefined
+    ? data.find(d => d.minuti === tempoTargetMin) || data.reduce((prev, curr) => Math.abs(curr.minuti - tempoTargetMin) < Math.abs(prev.minuti - tempoTargetMin) ? curr : prev, data[0])
+    : null;
 
   return (
     <div className="h-84 sm:h-96 w-full relative">
@@ -209,6 +214,23 @@ export default function GlucoseChart({ data, mostraOttimizzata }) {
               fontWeight: 600
             }}
           />
+
+          {/* Marker Verticale Tempo Selezionato (Tot Tempo) */}
+          {puntoTarget && (
+            <ReferenceLine
+              x={puntoTarget.tempo}
+              stroke="#38bdf8"
+              strokeWidth={2.5}
+              strokeDasharray="3 3"
+              label={{
+                value: `📍 +${tempoTargetMin}m (${mostraOttimizzata ? puntoTarget.ottimizzata : puntoTarget.standard} mg/dL)`,
+                fill: '#38bdf8',
+                position: 'top',
+                fontSize: 11,
+                fontWeight: 700
+              }}
+            />
+          )}
 
           {/* Curva Standard (Rossa) */}
           <Area
