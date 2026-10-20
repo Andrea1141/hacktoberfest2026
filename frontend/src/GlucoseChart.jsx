@@ -54,7 +54,7 @@ export function generaDatiCurva(glicemiaBase, meal, coach, usaHack1, usaHack2) {
       const codaGrassiOpt = grassi >= 20 && t > 100 ? (grassi * 0.25) * Math.sin((t - 100) / 40) : 0;
 
       const stdVal = Math.round(glicemiaBase + ampStd * gaussStd + Math.max(0, codaGrassiStd));
-      const optVal = Math.round(glicemiaBase + ampOpt * gaussOpt + Math.max(0, codaGrassiOpt));
+      const optVal = Math.min(stdVal, Math.round(glicemiaBase + ampOpt * gaussOpt + Math.max(0, codaGrassiOpt)));
 
       punti.push({
         tempo: `+${t}m`,

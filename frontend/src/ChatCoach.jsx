@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Bot, User, Send, Sparkles, MessageSquare, RefreshCw, Zap, TrendingUp, Syringe, ShieldAlert, X } from 'lucide-react';
+import { Bot, User, Send, Sparkles, MessageSquare, RefreshCw, Zap, TrendingUp, Syringe, ShieldAlert, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import katex from 'katex';
 
 /**
@@ -140,20 +140,21 @@ function FormattedMessageContent({ text }) {
 }
 
 export default function ChatCoach({
-  glicemia,
-  meal,
-  coach,
-  usaHack1,
-  usaHack2,
-  impostazioni,
-  datiCurva,
-  piccoStd,
-  piccoOpt,
-  tPiccoStd,
-  tPiccoOpt,
-  tirStd,
-  tirOpt,
-  apiKey,
+  glicemia = 115,
+  meal = {},
+  coach = {},
+  usaHack1 = false,
+  usaHack2 = false,
+  impostazioni = { rapportoIC: 10, fsi: 40, targetGlicemico: 110, iob: 0.0 },
+  datiCurva = [],
+  piccoStd = 180,
+  piccoOpt = 145,
+  tPiccoStd = 65,
+  tPiccoOpt = 70,
+  tirStd = 70,
+  tirOpt = 85,
+  apiKey = '',
+  aiConfig = { provider: 'auto', localUrl: 'http://localhost:11434', localModel: 'gemma2:2b', apiKey: '' },
   className = "h-[520px]",
   onChiudi = null
 }) {
@@ -177,6 +178,44 @@ Tocca uno dei suggerimenti rapidi qui sotto oppure scrivimi direttamente!`,
   const [inputTesto, setInputTesto] = useState('');
   const [staScrivendo, setStaScrivendo] = useState(false);
   const chatBottomRef = useRef(null);
+  const quickPromptsRef = useRef(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+
+  const checkScrollPillole = () => {
+    const el = quickPromptsRef.current;
+    if (el) {
+      setCanScrollLeft(el.scrollLeft > 4);
+      setCanScrollRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 4);
+    }
+  };
+
+  const scrollPillole = (offset) => {
+    if (quickPromptsRef.current) {
+      quickPromptsRef.current.scrollBy({ left: offset, behavior: 'smooth' });
+      setTimeout(checkScrollPillole, 250);
+    }
+  };
+
+  // Supporto per scorrimento orizzontale sia con rotella del mouse che con resize
+  useEffect(() => {
+    const el = quickPromptsRef.current;
+    if (!el) return;
+    const handleWheel = (e) => {
+      if (e.deltaY !== 0) {
+        e.preventDefault();
+        el.scrollLeft += e.deltaY;
+        checkScrollPillole();
+      }
+    };
+    el.addEventListener('wheel', handleWheel, { passive: false });
+    checkScrollPillole();
+    window.addEventListener('resize', checkScrollPillole);
+    return () => {
+      el.removeEventListener('wheel', handleWheel);
+      window.removeEventListener('resize', checkScrollPillole);
+    };
+  }, []);
 
   useEffect(() => {
     chatBottomRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -185,19 +224,73 @@ Tocca uno dei suggerimenti rapidi qui sotto oppure scrivimi direttamente!`,
   // Generatore di risposte cliniche in formato LaTeX rigoroso
   const generaRispostaCoach = (domanda) => {
     const q = domanda.toLowerCase();
-    const { targetGlicemico, rapportoIC, fsi, iob } = impostazioni;
+    const safeImpostazioni = impostazioni || { rapportoIC: 10, fsi: 40, targetGlicemico: 110, iob: 0.0 };
+    const { targetGlicemico = 110, rapportoIC = 10, fsi = 40, iob = 0.0 } = safeImpostazioni;
     const carbs = meal?.carboidrati_g ?? 74;
     const grassi = meal?.grassi_g ?? 15;
     const fibre = meal?.fibre_g ?? 4;
 
+    const curveList = Array.isArray(datiCurva) ? datiCurva : [];
     // Punti della curva a t = 0, +120m, +180m
-    const punto0 = datiCurva.find(p => p.minuti === 0)?.standard ?? glicemia;
-    const punto120Std = datiCurva.find(p => p.minuti === 120)?.standard ?? Math.round(piccoStd * 0.85);
-    const punto120Opt = datiCurva.find(p => p.minuti === 120)?.ottimizzata ?? Math.round(piccoOpt * 0.82);
-    const punto180Std = datiCurva.find(p => p.minuti === 180)?.standard ?? Math.round(glicemia * 1.1);
-    const punto180Opt = datiCurva.find(p => p.minuti === 180)?.ottimizzata ?? glicemia;
+    const punto0 = curveList.find(p => p.minuti === 0)?.standard ?? glicemia;
+    const punto120Std = curveList.find(p => p.minuti === 120)?.standard ?? Math.round(piccoStd * 0.85);
+    const punto120Opt = curveList.find(p => p.minuti === 120)?.ottimizzata ?? Math.round(piccoOpt * 0.82);
+    const punto180Std = curveList.find(p => p.minuti === 180)?.standard ?? Math.round(glicemia * 1.1);
+    const punto180Opt = curveList.find(p => p.minuti === 180)?.ottimizzata ?? glicemia;
 
-    // 1. Domanda su bolo / insulina
+    // 1. Domanda su Timing del Bolo (quando iniettare)
+    if (q.includes('timing') || q.includes('anticipo') || (q.includes('quando') && (q.includes('bolo') || q.includes('insulina') || q.includes('iniett') || q.includes('fare')))) {
+      let anticipoTxt = '';
+      if (glicemia < 90) {
+        anticipoTxt = 'Glicemia di partenza tendente al basso ($<90\\text{ mg/dL}$): inietta **subito all\'inizio del pasto o dopo i primi bocconi**, per scongiurare un calo reattivo.';
+      } else if (glicemia <= 140) {
+        anticipoTxt = 'Glicemia in target ($90-140\\text{ mg/dL}$): inietta **10–15 minuti prima** per analoghi rapidi (Humalog/Novorapid) o **0–5 minuti prima** per ultra-rapidi (Fiasp/Lyumjev).';
+      } else {
+        anticipoTxt = `Glicemia basale elevata ($${glicemia}\\text{ mg/dL}$): anticipa il bolo di **20–25 minuti prima del pasto** per far partire l\'azione insulinica prima dell\'assorbimento degli amidi.`;
+      }
+
+      let resp = `### Timing Ottimale dell\'Iniezione del Bolo\\n\\n`;
+      resp += `* **Glicemia CGM Attuale:** $G_0 = ${glicemia}\\text{ mg/dL}$ (${trendCgm || 'STABILE'})\\n`;
+      resp += `* **Finestra di Anticipo Consigliata:** ${anticipoTxt}\\n`;
+      resp += `* **Pre-carico di Fibre:** ${usaHack1 ? 'Attivo (smorza l\'impennata iniziale)' : 'Consigliato 10 min prima per ritardare il picco'}\\n`;
+      resp += `* **Camminata GLUT4:** Da iniziare $25-30\\text{ min}$ post-pasto per sincronizzare i trasportatori muscolari con l\'assorbimento intestinale.\\n\\n`;
+      if (grassi >= 20) {
+        resp += `**Attenzione ai Lipidi ($${grassi}\\text{g}$ di grassi):** Con pasti ad alto contenuto di grassi, valuta con il diabetologo un **bolo ad onda doppia**: 60% subito e 40% prolungato su 2–3 ore.\\n\\n`;
+      }
+      resp += `> *Avviso:* Regola sempre i tempi in base alle indicazioni del tuo diabetologo e all\'insulina specifica utilizzata.`;
+      return resp;
+    }
+
+    // 2. Domanda su Sostituzioni Alimentari e Alternative a Basso IG
+    if (q.includes('sostituz') || q.includes('alternativ') || q.includes('basso indice') || q.includes('low carb') || q.includes('meno carb') || q.includes('cosa posso mangiare')) {
+      const pNome = (meal?.nome_piatto || '').toLowerCase();
+      let swaps = '';
+      if (pNome.includes('pasta') || pNome.includes('carbonara') || pNome.includes('spaghetti')) {
+        swaps = `* **Pasta 100% Farina di Legumi (lenticchie rosse o ceci):** Riduce i carboidrati netti del 40%, triplica le fibre (12g+) e abbassa l'indice glicemico a ~32.\n` +
+          `* **Pasta Integrale di Grano Duro al Dente:** L'amido al dente resiste alla digestione gastrica (amido resistente tipo 3), con IG di 45 invece di 70.\n` +
+          `* **Zoodles (Spaghetti di Zucchine) o Shirataki di Konjac:** Praticamente privi di carboidrati (<5g), picco glicemico quasi piatto.`;
+      } else if (pNome.includes('pizza')) {
+        swaps = `* **Pinsa Romana con farine miste a lievitazione 72h:** Maggiore alveolazione e digeribilità, picco meno violento.\n` +
+          `* **Base Integrale o Farina Tipo 2:** La crusca rallenta l'assorbimento dell'alfa-amilasi gastrica.\n` +
+          `* **Strategia Porzione:** 2 tranci di pizza accompagnati da abbondante insalata verde pre-pasto per dimezzare l'indice glicemico effettivo.`;
+      } else if (pNome.includes('riso') || pNome.includes('risotto')) {
+        swaps = `* **Riso Basmati Integrale o Riso Venere:** Ricchi di amilosio e antociani, evitano la rapida gelatinizzazione del riso raffinato.\n` +
+          `* **Orzotto o Farrotto perlato:** Ricchi di beta-glucani solubili con IG 35-40 (rispetto all'80 del riso bianco).`;
+      } else if (pNome.includes('brioche') || pNome.includes('colazione')) {
+        swaps = `* **Porridge di Avena Integrale con Noci e Cannella:** I beta-glucani formano una barriera naturale che modera la salita glicemica del mattino.\n` +
+          `* **Yogurt Greco intero (o 5%) con Frutti di Bosco:** Zero zuccheri raffinati, 15g di proteine e picco glicemico stabile (<120 mg/dL).`;
+      } else {
+        swaps = `* **Verdure crude pre-pasto:** Mangiare insalata o finocchi 10 minuti prima riduce l'IG complessivo di 15-20 punti.\n` +
+          `* **Abbinamento proteico e lipidico:** Aggiungere olio EVO a crudo o proteine sane per rallentare lo svuotamento gastrico.\n` +
+          `* **Cereali a chicco intero:** Sostituisci farine raffinate con cereali integri (farro, grano saraceno, avena).`;
+      }
+
+      return `### Alternative e Sostituzioni a Basso Indice Glicemico per **${meal?.nome_piatto}**:\n\n` +
+        `${swaps}\n\n` +
+        `💡 **Regola d'Oro:** L'ordine con cui consumi i cibi (Fibre -> Proteine/Grassi -> Carboidrati) riduce il picco fino al 35% anche a parità di porzione!`;
+    }
+
+    // 3. Domanda su bolo / insulina
     if (q.includes('bolo') || q.includes('insulina') || q.includes('quanto') || q.includes('dose') || q.includes('fai') || q.includes('calcol')) {
       const boloPasto = (carbs / rapportoIC);
       const deltaGli = Math.max(0, glicemia - targetGlicemico);
@@ -305,25 +398,35 @@ Tocca uno dei suggerimenti rapidi qui sotto oppure scrivimi direttamente!`,
     setInputTesto('');
     setStaScrivendo(true);
 
+    let rispostaOttenuta = false;
+
     try {
-      // Prova chiamata API backend se configurato
+      // Prova chiamata API backend (con timeout permissivo per inferenza locale)
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 4000);
+      const timeoutMs = 25000;
+      const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
       const res = await fetch('http://localhost:8000/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: query,
-          glicemia,
-          meal,
+          history: messaggi.slice(-6).map(m => ({
+            role: m.mittente === 'utente' ? 'user' : 'assistant',
+            content: m.testo
+          })),
+          glicemia: glicemia || 115,
+          meal: meal || {},
           usa_hack1: usaHack1,
           usa_hack2: usaHack2,
-          ic_ratio: impostazioni.rapportoIC,
-          isf: impostazioni.fsi,
-          target: impostazioni.targetGlicemico,
-          iob: impostazioni.iob,
-          api_key: apiKey
+          ic_ratio: impostazioni?.rapportoIC || 10,
+          isf: impostazioni?.fsi || 40,
+          target: impostazioni?.targetGlicemico || 110,
+          iob: impostazioni?.iob || 0.0,
+          api_key: aiConfig?.apiKey || apiKey || '',
+          provider: aiConfig?.provider || 'auto',
+          local_url: aiConfig?.localUrl || '',
+          local_model: aiConfig?.localModel || ''
         }),
         signal: controller.signal
       });
@@ -331,41 +434,42 @@ Tocca uno dei suggerimenti rapidi qui sotto oppure scrivimi direttamente!`,
 
       if (res.ok) {
         const data = await res.json();
+        if (data?.reply) {
+          rispostaOttenuta = true;
+          setMessaggi(prev => [
+            ...prev,
+            {
+              id: String(Date.now() + 1),
+              mittente: 'coach',
+              testo: data.reply,
+              timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            }
+          ]);
+        }
+      }
+    } catch (err) {
+      // Fallback trasparente al generatore clinico locale
+    } finally {
+      if (!rispostaOttenuta) {
+        const rispostaLocale = generaRispostaCoach(query);
         setMessaggi(prev => [
           ...prev,
           {
             id: String(Date.now() + 1),
             mittente: 'coach',
-            testo: data.reply,
+            testo: rispostaLocale,
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
           }
         ]);
-        return;
       }
-    } catch (err) {
-      // Fallback trasparente al generatore clinico locale
-    } finally {
       setStaScrivendo(false);
     }
-
-    // Risposta deterministica locale in LaTeX
-    setTimeout(() => {
-      const rispostaLocale = generaRispostaCoach(query);
-      setMessaggi(prev => [
-        ...prev,
-        {
-          id: String(Date.now() + 1),
-          mittente: 'coach',
-          testo: rispostaLocale,
-          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        }
-      ]);
-      setStaScrivendo(false);
-    }, 450);
   };
 
   const quickPrompts = [
     { label: 'Calcola Bolo', query: 'Quanto bolo devo fare per questo pasto? Mostrami le formule di calcolo.' },
+    { label: '⏱️ Timing Bolo', query: 'Quando devo fare il bolo di insulina per questo pasto?' },
+    { label: '🥗 Alternative Basso IG', query: 'Quali alternative o sostituzioni a basso indice glicemico mi consigli per questo piatto?' },
     { label: 'Picco Glicemico', query: 'Quando avrò il picco e come andrà la glicemia?' },
     { label: 'Camminata post-pasto', query: 'Cosa succede se faccio una camminata di 15 minuti?' },
     { label: 'Verdure prima del pasto', query: 'Come agiscono le fibre prima del pasto?' }
@@ -386,7 +490,7 @@ Tocca uno dei suggerimenti rapidi qui sotto oppure scrivimi direttamente!`,
             <div className="flex items-center gap-1.5 sm:gap-2">
               <h3 className="font-bold text-xs sm:text-sm text-slate-900">Gluco Coach</h3>
               <span className="text-[9px] sm:text-[10px] px-2 py-0.5 rounded-full bg-teal-50 text-teal-700 border border-teal-200 font-semibold">
-                Online
+                {aiConfig?.provider === 'offline' ? 'Motore Locale' : (aiConfig?.provider === 'local' ? `Locale (${aiConfig?.localModel || 'Ollama'})` : (aiConfig?.provider === 'cloud' ? 'Cloud AI' : 'AI Attiva'))}
               </span>
             </div>
             <p className="text-[10px] sm:text-[11px] text-slate-500">
@@ -480,17 +584,52 @@ Tocca uno dei suggerimenti rapidi qui sotto oppure scrivimi direttamente!`,
         <div ref={chatBottomRef} />
       </div>
 
-      {/* Quick Prompts Suggestions */}
-      <div className="px-3 py-2 bg-white border-t border-slate-100 overflow-x-auto flex gap-1.5 scrollbar-none">
-        {quickPrompts.map((qp, idx) => (
-          <button
-            key={idx}
-            onClick={() => inviaMessaggio(qp.query)}
-            className="shrink-0 text-[11px] bg-slate-100 hover:bg-teal-50 text-slate-700 hover:text-teal-800 px-3 py-1.5 rounded-full border border-slate-200 hover:border-teal-300 font-medium transition whitespace-nowrap shadow-2xs"
-          >
-            {qp.label}
-          </button>
-        ))}
+      {/* Quick Prompts Suggestions (Frecce Fisse ai Lati e Zero Barra di Scorrimento Visibile) */}
+      <div className="relative bg-white border-t border-slate-100 flex items-center px-2 py-1.5 gap-1.5">
+        <button
+          type="button"
+          onClick={() => scrollPillole(-150)}
+          disabled={!canScrollLeft}
+          className={`p-1.5 rounded-xl border shrink-0 transition z-10 ${
+            canScrollLeft
+              ? 'text-slate-700 hover:text-teal-700 bg-slate-50 hover:bg-slate-100 border-slate-200 shadow-2xs cursor-pointer active:scale-95'
+              : 'text-slate-300 bg-slate-50/50 border-slate-100 cursor-not-allowed opacity-30'
+          }`}
+          title="Scorri a sinistra"
+        >
+          <ChevronLeft className="w-4 h-4" />
+        </button>
+
+        <div
+          ref={quickPromptsRef}
+          onScroll={checkScrollPillole}
+          className="flex-1 overflow-x-auto flex gap-1.5 py-1 px-0.5 scroll-smooth select-none cursor-grab active:cursor-grabbing [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+        >
+          {quickPrompts.map((qp, idx) => (
+            <button
+              key={idx}
+              type="button"
+              onClick={() => inviaMessaggio(qp.query)}
+              className="shrink-0 text-[11px] bg-slate-100 hover:bg-teal-50 text-slate-700 hover:text-teal-800 px-3 py-1.5 rounded-full border border-slate-200 hover:border-teal-300 font-medium transition whitespace-nowrap shadow-2xs active:scale-95"
+            >
+              {qp.label}
+            </button>
+          ))}
+        </div>
+
+        <button
+          type="button"
+          onClick={() => scrollPillole(150)}
+          disabled={!canScrollRight}
+          className={`p-1.5 rounded-xl border shrink-0 transition z-10 ${
+            canScrollRight
+              ? 'text-slate-700 hover:text-teal-700 bg-slate-50 hover:bg-slate-100 border-slate-200 shadow-2xs cursor-pointer active:scale-95'
+              : 'text-slate-300 bg-slate-50/50 border-slate-100 cursor-not-allowed opacity-30'
+          }`}
+          title="Scorri a destra"
+        >
+          <ChevronRight className="w-4 h-4" />
+        </button>
       </div>
 
       {/* Input Box */}

@@ -5,14 +5,8 @@ i livelli di rischio e le allerte cliniche in base al valore live del sensore CG
 """
 import json
 import math
-from .config import (
-    genai,
-    types,
-    OpenAI,
-    GEMMA_GENAI_MODEL,
-    GEMMA_OPENROUTER_MODEL,
-    get_effective_key,
-)
+from typing import Optional
+from .config import query_llm
 from .utils import extract_json
 
 
@@ -86,7 +80,8 @@ def calcola_curva_fisiologica(
             (t / t_picco_opt) if t < t_picco_opt else 1.0
         )
         val_std = round(glicemia_base + amp_std * gauss_std)
-        val_opt = round(glicemia_base + amp_opt * gauss_opt)
+        # La curva con interventi non puo mai superare la curva standard
+        val_opt = min(val_std, round(glicemia_base + amp_opt * gauss_opt))
         return val_std, val_opt
 
     # Punti della serie temporale completa
@@ -123,6 +118,42 @@ def calcola_curva_fisiologica(
     tbr_std = round((sum(1 for p in punti if p["standard"] < 70) / len(punti)) * 100)
     tbr_opt = round((sum(1 for p in punti if p["ottimizzata"] < 70) / len(punti)) * 100)
 
+    # Time-in-Tight-Range (TITR: 70-140 mg/dL - Nuovo Gold Standard ATTD / ADA 2024-2026)
+    titr_std = round((sum(1 for p in punti if 70 <= p["standard"] <= 140) / len(punti)) * 100)
+    titr_opt = round((sum(1 for p in punti if 70 <= p["ottimizzata"] <= 140) / len(punti)) * 100)
+    gain_titr = max(0, titr_opt - titr_std)
+
+    # Coefficiente di Variabilità Glicemica (CV% = SD / Media * 100, Target clinico <= 36%)
+    valori_std = [p["standard"] for p in punti]
+    media_std = sum(valori_std) / len(valori_std)
+    sd_std = math.sqrt(sum((x - media_std) ** 2 for x in valori_std) / len(valori_std))
+    cv_std = round((sd_std / media_std) * 100, 1)
+
+    valori_opt = [p["ottimizzata"] for p in punti]
+    media_opt = sum(valori_opt) / len(valori_opt)
+    sd_opt = math.sqrt(sum((x - media_opt) ** 2 for x in valori_opt) / len(valori_opt))
+    cv_opt = round((sd_opt / media_opt) * 100, 1)
+
+    # Allerte Cliniche Precoci (Ipo/Iper e dinamica di variazione)
+    min_opt = min(p["ottimizzata"] for p in punti)
+    min_std = min(p["standard"] for p in punti)
+    ipo_rilevata = min_opt < 70 or min_std < 70
+    severita_ipo = "SEVERA (<54 mg/dL)" if (min_opt < 54 or min_std < 54) else ("MODERATA (54-69 mg/dL)" if ipo_rilevata else "NESSUNA")
+    iper_rilevata = picco_std > 180
+    severita_iper = "SEVERA (>250 mg/dL)" if picco_std > 250 else ("MODERATA (181-250 mg/dL)" if picco_std > 180 else "NESSUNA")
+    velocita_salita_max = round(amp_std / max(25, t_picco_std), 2)
+
+    allerte_precoci = {
+        "ipo_prevista": ipo_rilevata,
+        "severita_ipo": severita_ipo,
+        "minimo_previsto_mg_dl": min(min_opt, min_std),
+        "iper_prevista": iper_rilevata,
+        "severita_iper": severita_iper,
+        "picco_massimo_mg_dl": picco_std,
+        "velocita_ascesa_mg_dl_min": velocita_salita_max,
+        "stabilita_cv": "STABILE (<=36%)" if cv_opt <= 36.0 else "ELEVATA_VARIABILITA (>36%)",
+    }
+
     # Benchmark clinico di riferimento estratto dal trial AZT1D (25 soggetti T1D con AID microinfusore)
     azt1d_benchmark = {
         "descrizione": "Trial clinico AZT1D 2025 (25 soggetti T1D, microinfusore AID e sensore CGM Dexcom, 306.712 rilevazioni)",
@@ -142,10 +173,16 @@ def calcola_curva_fisiologica(
         "stima_al_tempo": stima_al_tempo,
         "tir_std": tir_std,
         "tir_opt": tir_opt,
+        "titr_std": titr_std,
+        "titr_opt": titr_opt,
+        "gain_titr": gain_titr,
+        "cv_std": cv_std,
+        "cv_opt": cv_opt,
         "tar_std": tar_std,
         "tar_opt": tar_opt,
         "tbr_std": tbr_std,
         "tbr_opt": tbr_opt,
+        "allerte_precoci": allerte_precoci,
         "azt1d_benchmark": azt1d_benchmark,
     }
 
@@ -158,11 +195,15 @@ def predici_risposta_glicemica(
     usa_hack2: bool = False,
     tempo_target: int = 60,
     api_key: str = "",
+    provider: str = "auto",
+    local_url: Optional[str] = None,
+    local_model: Optional[str] = None,
 ) -> dict:
     """
     Predizione AI clinica basata sul valore e trend del sensore CGM e orizzonte temporale.
     Calcola la stima puntuale a +t minuti, la cinetica, il livello di rischio metabolico
-    e l'avviso clinico proattivo generato con il supporto di Gemma 4.
+    e l'avviso clinico proattivo generato con il supporto di LLM locali (Ollama/LM Studio),
+    modelli cloud o motore fisiologico deterministico AZT1D.
     """
     if meal is None:
         meal = {
@@ -205,31 +246,35 @@ def predici_risposta_glicemica(
         else ("CAMMINATA_GLUT4" if glicemia_cgm > 130 else "FIBRE_PRE_PASTO")
     )
 
+    allerte = cinetica["allerte_precoci"]
+    if allerte["ipo_prevista"]:
+        allerta_txt = f"⚠️ Allerta Ipoglicemia: valore stimato fino a {allerte['minimo_previsto_mg_dl']} mg/dL. Tieni pronti 15g di carboidrati a rapido assorbimento."
+    elif allerte["iper_prevista"]:
+        allerta_txt = f"⚠️ Allerta Iperglicemia: picco a {picco_std} mg/dL (ascesa +{allerte['velocita_ascesa_mg_dl_min']} mg/dL/min). Pre-carico fibre e camminata GLUT4 raccomandati."
+    else:
+        allerta_txt = (
+            f"Sensore a {glicemia_cgm} mg/dL ({trend_cgm}): stima a +{tempo_target}m pari a {val_t_std} mg/dL (TITR 70-140: {cinetica['titr_opt']}%, CV: {cinetica['cv_opt']}%). "
+            f"Con interventi metabolici la stima si attesta a {val_t_opt} mg/dL."
+        )
+
     fallback_ai = {
         "livello_rischio": rischio_default,
         "stima_puntuale_desc": f"A +{tempo_target} min: {val_t_std} mg/dL (senza interventi) vs {val_t_opt} mg/dL (con interventi, -{risparmio_t} mg/dL).",
-        "allerta_proattiva": (
-            f"Sensore a {glicemia_cgm} mg/dL ({trend_cgm}): stima a +{tempo_target}m pari a {val_t_std} mg/dL (picco {picco_std} mg/dL). "
-            f"Con gli interventi metabolici la stima si attesta a {val_t_opt} mg/dL."
-        ),
+        "allerta_proattiva": allerta_txt,
         "consiglio_prioritario": (
             "Attiva la camminata post-prandiale di 15 min per stimolare i recettori muscolari GLUT4."
             if not usa_hack2 and (val_t_std > 160 or picco_std > 170)
             else "Pre-carico di fibre vegetali 10 min prima per rallentare lo svuotamento gastrico."
         ),
         "spiegazione_cinetica": (
-            f"A +{tempo_target} minuti, l'assorbimento dei {meal.get('carboidrati_g', 75)}g di carboidrati "
-            f"raggiunge {val_t_std} mg/dL. Gli interventi metabolici consentono un risparmio stimato di -{risparmio_t} mg/dL ({val_t_opt} mg/dL)."
+            f"A +{tempo_target} minuti, l'assorbimento dei {meal.get('carboidrati_g', 75)}g di carboidrati raggiunge {val_t_std} mg/dL. "
+            f"Gli interventi metabolici portano il Time-in-Tight-Range (70-140 mg/dL) dal {cinetica['titr_std']}% al {cinetica['titr_opt']}%, con variabilità glicemica CV={cinetica['cv_opt']}%."
         ),
         "intervento_consigliato_prioritario": intervento_consigliato,
     }
 
-    key = get_effective_key(api_key)
-    if not key:
-        return {**cinetica, **fallback_ai}
-
-    # 3. Inferenza clinica proattiva con Gemma 4
-    prompt = f"""Sei il Copilota AI di Predizione Metabolica GlucoTwin, calibrato sui protocolli clinici dello studio AZT1D 2025.
+    # 3. Inferenza clinica proattiva tramite LLM (Locale / Cloud)
+    prompt = f"""Sei il Copilota AI di Predizione Metabolica Gluco, calibrato sui protocolli clinici dello studio AZT1D 2025.
 Dati sensore CGM live e orizzonte temporale:
 - Valore Glicemia Attuale: {glicemia_cgm} mg/dL (Trend: {trend_cgm})
 - Orizzonte di Stima Puntuale: +{tempo_target} minuti
@@ -250,29 +295,26 @@ Restituisci ESCLUSIVAMENTE un JSON valido (senza markdown o testo extra) con que
   "intervento_consigliato_prioritario": "FIBRE_PRE_PASTO" | "CAMMINATA_GLUT4" | "ENTRAMBI"
 }}"""
 
+    system_prompt = (
+        "Sei il Copilota AI di Predizione Metabolica Gluco clinico per il diabete. "
+        "Rispondi ESCLUSIVAMENTE in formato JSON senza markdown aggiuntivo."
+    )
+
     try:
-        if (key.startswith("sk-") or genai is None) and OpenAI is not None:
-            client = OpenAI(base_url="https://openrouter.ai/api/v1", api_key=key)
-            res = client.chat.completions.create(
-                model=GEMMA_OPENROUTER_MODEL,
-                messages=[{"role": "user", "content": prompt}],
-                temperature=0.2,
-            )
-            parsed = extract_json(res.choices[0].message.content or "")
-        elif genai is not None:
-            client = genai.Client(api_key=key)
-            config = types.GenerateContentConfig(
-                response_mime_type="application/json",
-                temperature=0.2,
-            )
-            response = client.models.generate_content(
-                model=GEMMA_GENAI_MODEL,
-                contents=prompt,
-                config=config,
-            )
-            parsed = extract_json(response.text or "")
-        else:
+        raw_response = query_llm(
+            prompt=prompt,
+            system_prompt=system_prompt,
+            json_mode=True,
+            provider=provider,
+            api_key=api_key,
+            local_url=local_url,
+            local_model=local_model,
+        )
+
+        if not raw_response:
             return {**cinetica, **fallback_ai}
+
+        parsed = extract_json(raw_response)
 
         ai_data = {
             "livello_rischio": str(parsed.get("livello_rischio", fallback_ai["livello_rischio"])),
