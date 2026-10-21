@@ -177,7 +177,8 @@ Tocca uno dei suggerimenti rapidi qui sotto oppure scrivimi direttamente!`,
   ]);
   const [inputTesto, setInputTesto] = useState('');
   const [staScrivendo, setStaScrivendo] = useState(false);
-  const chatBottomRef = useRef(null);
+  const messagesContainerRef = useRef(null);
+  const isFirstMountRef = useRef(true);
   const quickPromptsRef = useRef(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
@@ -218,7 +219,16 @@ Tocca uno dei suggerimenti rapidi qui sotto oppure scrivimi direttamente!`,
   }, []);
 
   useEffect(() => {
-    chatBottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (isFirstMountRef.current) {
+      isFirstMountRef.current = false;
+      return;
+    }
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTo({
+        top: messagesContainerRef.current.scrollHeight,
+        behavior: 'smooth'
+      });
+    }
   }, [messaggi, staScrivendo]);
 
   // Generatore di risposte cliniche in formato LaTeX rigoroso
@@ -406,7 +416,7 @@ Tocca uno dei suggerimenti rapidi qui sotto oppure scrivimi direttamente!`,
       const timeoutMs = 25000;
       const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
-      const res = await fetch('http://localhost:8000/api/chat', {
+      const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -529,7 +539,7 @@ Tocca uno dei suggerimenti rapidi qui sotto oppure scrivimi direttamente!`,
       </div>
 
       {/* Area Messaggi con Rendering LaTeX Formattato */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-3.5 text-xs bg-slate-50/50">
+      <div ref={messagesContainerRef} className="flex-1 overflow-y-auto overscroll-contain p-4 space-y-3.5 text-xs bg-slate-50/50">
         {messaggi.map((msg) => (
           <div
             key={msg.id}
@@ -580,8 +590,6 @@ Tocca uno dei suggerimenti rapidi qui sotto oppure scrivimi direttamente!`,
             </div>
           </div>
         )}
-
-        <div ref={chatBottomRef} />
       </div>
 
       {/* Quick Prompts Suggestions (Frecce Fisse ai Lati e Zero Barra di Scorrimento Visibile) */}

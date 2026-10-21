@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- Rounded Base Background -->
+  <rect width="512" height="512" rx="120" fill="#0f766e"/>
+  <!-- Ambient glow -->
+  <circle cx="256" cy="256" r="185" fill="#14b8a6" opacity="0.35"/>
+  <!-- Centered Metabolic Glucose Drop (H: 256px, Top: 128, Bottom: 384, Center: 256) -->
+  <path d="M 256 128 C 220 188 172 258 172 316 C 172 364 208 384 256 384 C 304 384 340 364 340 316 C 340 258 292 188 256 128 Z" fill="#14b8a6"/>
+  <path d="M 256 148 C 226 200 186 264 186 316 C 186 355 216 372 256 372 C 296 372 326 355 326 316 C 326 264 286 200 256 148 Z" fill="#2dd4bf"/>
+  <!-- Highlight shine -->
+  <path d="M 215 220 C 198 255 196 285 198 310" stroke="#ffffff" stroke-width="8" stroke-linecap="round" opacity="0.45"/>
+  <!-- Centered ECG / Pulse Line (Center X: 256, Baseline Y: 300) -->
+  <path d="M 190 300 L 220 300 L 238 255 L 258 345 L 278 285 L 292 300 L 322 300" stroke="#0f766e" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" opacity="0.35"/>
+  <path d="M 190 300 L 220 300 L 238 255 L 258 345 L 278 285 L 292 300 L 322 300" stroke="#ffffff" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

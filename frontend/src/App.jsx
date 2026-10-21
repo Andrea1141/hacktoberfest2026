@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 
 import Header from './components/Header';
+import PwaInstallPrompt from './components/PwaInstallPrompt';
 import HomeTab from './components/tabs/HomeTab';
 import MealTab from './components/tabs/MealTab';
 import CurveTab from './components/tabs/CurveTab';
@@ -22,6 +23,7 @@ import BolusTab from './components/tabs/BolusTab';
 import InfoTab from './components/tabs/InfoTab';
 import AiConfigModal from './components/modals/AiConfigModal';
 import VisionModal from './components/modals/VisionModal';
+import CoachMobileSheet from './components/modals/CoachMobileSheet';
 import ChatCoach from './ChatCoach';
 import { generaDatiCurva } from './GlucoseChart';
 import { DEMO_MEALS_DATA, DEFAULT_COACH_DATA } from './constants/mealData';
@@ -31,7 +33,13 @@ export default function App() {
   const [schedaAttiva, setSchedaAttiva] = useState('home'); // 'home' | 'pasto' | 'curva' | 'bolo' | 'info'
 
   // Stato apertura Chat Coach (Fissata sullo schermo con toggle apri/chiudi)
-  const [chatAperta, setChatAperta] = useState(true);
+  // Su desktop (>= 1024px) aperta di default, su schermi piccoli/mobile chiusa come widget flottante
+  const [chatAperta, setChatAperta] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth >= 1024;
+    }
+    return false;
+  });
 
   // Stato Clinico, Pasto e Orizzonte Temporale
   const [glicemia, setGlicemia] = useState(115);
@@ -86,7 +94,7 @@ export default function App() {
     setLoadingVerificaAi(true);
     try {
       const url = customUrl !== null ? customUrl : aiConfig.localUrl;
-      const res = await fetch(`http://localhost:8000/api/ai/status?local_url=${encodeURIComponent(url || '')}`);
+      const res = await fetch(`/api/ai/status?local_url=${encodeURIComponent(url || '')}`);
       if (res.ok) {
         const data = await res.json();
         setAiStatus(data);
@@ -147,7 +155,7 @@ export default function App() {
       const timeoutMs = 25000;
       const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
-      const res = await fetch('http://localhost:8000/api/analyze', {
+      const res = await fetch('/api/analyze', {
         method: 'POST',
         body: formData,
         signal: controller.signal
@@ -227,7 +235,7 @@ export default function App() {
     const timer = setTimeout(async () => {
       setLoadingPredizione(true);
       try {
-        const res = await fetch('http://localhost:8000/api/predict', {
+        const res = await fetch('/api/predict', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -401,6 +409,9 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 font-sans selection:bg-teal-500/20 selection:text-teal-900 pb-28 lg:pb-12">
+      {/* Banner Notifica Installazione & Stato Offline PWA */}
+      <PwaInstallPrompt />
+
       {/* Top Navbar Header */}
       <Header
         schedaAttiva={schedaAttiva}
@@ -525,45 +536,25 @@ export default function App() {
           )}
         </main>
 
-        {/* Chat Coach per Tablet e Mobile (< lg) */}
-        {chatAperta && (
-          <div id="gluco-coach-chat-mobile" className="block lg:hidden px-4 sm:px-6 pb-8">
-            <div className="max-w-5xl mx-auto pt-6 border-t border-slate-200">
-              <div className="mb-3 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Bot className="w-4 h-4 text-teal-600" />
-                  <span className="text-xs font-bold uppercase tracking-wider text-slate-800">
-                    Coach AI Gluco (Chat Clinica)
-                  </span>
-                </div>
-                <button
-                  onClick={() => setChatAperta(false)}
-                  className="text-xs text-slate-500 hover:text-slate-800 font-semibold px-2 py-0.5 rounded-lg border border-slate-200 cursor-pointer"
-                >
-                  Chiudi Chat
-                </button>
-              </div>
-              <ChatCoach
-                glicemia={glicemia}
-                meal={meal}
-                coach={coach}
-                usaHack1={usaHack1}
-                usaHack2={usaHack2}
-                impostazioni={impostazioni}
-                datiCurva={datiCurva}
-                piccoStd={piccoStd}
-                piccoOpt={piccoOpt}
-                tPiccoStd={tPiccoStd}
-                tPiccoOpt={tPiccoOpt}
-                tirStd={tirStd}
-                tirOpt={tirOpt}
-                aiConfig={aiConfig}
-                className="h-[520px] border border-slate-200 shadow-sm"
-                onChiudi={() => setChatAperta(false)}
-              />
-            </div>
-          </div>
-        )}
+        {/* Chat Coach per Tablet e Mobile (< lg) — Drawer Bottom Sheet Modale con Gestures e Scroll Lock */}
+        <CoachMobileSheet
+          isOpen={chatAperta}
+          onClose={() => setChatAperta(false)}
+          glicemia={glicemia}
+          meal={meal}
+          coach={coach}
+          usaHack1={usaHack1}
+          usaHack2={usaHack2}
+          impostazioni={impostazioni}
+          datiCurva={datiCurva}
+          piccoStd={piccoStd}
+          piccoOpt={piccoOpt}
+          tPiccoStd={tPiccoStd}
+          tPiccoOpt={tPiccoOpt}
+          tirStd={tirStd}
+          tirOpt={tirOpt}
+          aiConfig={aiConfig}
+        />
       </div>
 
       {/* Chat Coach AI Desktop (>= lg) */}
@@ -593,18 +584,18 @@ export default function App() {
         </aside>
       )}
 
-      {/* Pulsante Flottante a Scomparsa quando la chat è chiusa */}
+      {/* Pulsante Flottante a Scomparsa per aprire Coach AI */}
       {!chatAperta && (
         <button
           onClick={() => setChatAperta(true)}
-          className="fixed bottom-6 right-6 z-40 flex items-center gap-2.5 px-4 py-3 rounded-2xl bg-white border border-slate-200 text-slate-800 shadow-xl hover:shadow-2xl hover:border-teal-300 transition group hover:scale-105 cursor-pointer"
+          className="fixed bottom-6 right-5 sm:right-6 z-40 flex items-center gap-2.5 px-4 py-3 rounded-2xl bg-teal-700 text-white shadow-xl hover:shadow-2xl hover:bg-teal-800 active:scale-95 transition-all cursor-pointer border border-teal-600/40"
           title="Apri Coach AI"
         >
-          <div className="w-8 h-8 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center border border-teal-200 shadow-2xs">
-            <Bot className="w-4 h-4 text-teal-600" />
+          <div className="w-7 h-7 rounded-xl bg-white/20 flex items-center justify-center">
+            <Bot className="w-4 h-4 text-white" />
           </div>
-          <span className="text-xs font-bold text-slate-900">Apri Coach AI</span>
-          <span className="w-2 h-2 rounded-full bg-teal-500 animate-pulse"></span>
+          <span className="text-xs font-bold tracking-wide">Coach AI</span>
+          <span className="w-2 h-2 rounded-full bg-emerald-300 animate-pulse"></span>
         </button>
       )}
 

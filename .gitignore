@@ -44,6 +44,7 @@ htmlcov/
 # ==========================================
 # Node.js & Frontend (React, Vite)
 # ==========================================
+cloudflared
 node_modules/
 **/node_modules/
 .npm/
@@ -57,6 +58,8 @@ pnpm-debug.log*
 # Build output & Vite Cache
 dist/
 **/dist/
+dev-dist/
+**/dev-dist/
 dist-ssr/
 **/dist-ssr/
 .vite/
