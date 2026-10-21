@@ -467,12 +467,12 @@ Tocca uno dei suggerimenti rapidi qui sotto oppure scrivimi direttamente!`,
   };
 
   const quickPrompts = [
-    { label: 'Calcola Bolo', query: 'Quanto bolo devo fare per questo pasto? Mostrami le formule di calcolo.' },
+    { label: '💉 Calcola Bolo', query: 'Quanto bolo devo fare per questo pasto? Mostrami le formule di calcolo.' },
     { label: '⏱️ Timing Bolo', query: 'Quando devo fare il bolo di insulina per questo pasto?' },
     { label: '🥗 Alternative Basso IG', query: 'Quali alternative o sostituzioni a basso indice glicemico mi consigli per questo piatto?' },
-    { label: 'Picco Glicemico', query: 'Quando avrò il picco e come andrà la glicemia?' },
-    { label: 'Camminata post-pasto', query: 'Cosa succede se faccio una camminata di 15 minuti?' },
-    { label: 'Verdure prima del pasto', query: 'Come agiscono le fibre prima del pasto?' }
+    { label: '📈 Picco Glicemico', query: 'Quando avrò il picco e come andrà la glicemia?' },
+    { label: '🚶‍♂️ Camminata post-pasto', query: 'Cosa succede se faccio una camminata di 15 minuti?' },
+    { label: '🥦 Fibre pre-pasto', query: 'Come agiscono le fibre prima del pasto?' }
   ];
 
   return (

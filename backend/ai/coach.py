@@ -149,8 +149,23 @@ def rispondi_chat_coach(
     def _fallback_risposta():
         msg_lower = messaggio.lower()
 
-        # 1. Domanda su Timing del Bolo (quando fare l'iniezione/bolo)
-        if any(w in msg_lower for w in ["quando", "timing", "anticipo", "minuti prima", "dopo pasto", "dopo mangiato", "orario bolo"]):
+        # 1. Domanda su Dinamica e Picco Glicemico (curva, andamento, ascesa, tempo al picco)
+        if any(w in msg_lower for w in ["picco", "curva", "escursione", "andamento", "salita", "sale", "aumenta"]) or ("tempo" in msg_lower and "glicem" in msg_lower):
+            minuti_picco = 55 + int(grassi * 0.65) + int(fibre * 0.8)
+            return (
+                f"### Dinamica Glicemica Prevista per {nome_piatto}:\n"
+                f"• **Glicemia Iniziale CGM:** {glicemia} mg/dL.\n"
+                f"• **Tempo Stimato al Picco:** circa **+{minuti_picco} minuti** dall'inizio del pasto.\n"
+                f"• **Impatto Interventi:** Con il pre-carico di fibre e la camminata attiva, l'ampiezza del picco si riduce del 30-35% massimizzando il Time-in-Range (70-180 mg/dL).\n"
+                f"• **Coda Digestiva:** I {grassi}g di grassi rallentano lo svuotamento gastrico e mantengono la glicemia sostenuta a +120..+180 min."
+            )
+
+        # 2. Domanda su Timing del Bolo (quando fare l'iniezione/bolo, anticipo)
+        is_timing_query = (
+            any(w in msg_lower for w in ["timing", "anticipo", "minuti prima", "orario bolo", "dopo pasto", "dopo mangiato"])
+            or (any(w in msg_lower for w in ["quando", "a che ora", "orario"]) and any(w in msg_lower for w in ["bolo", "insulina", "iniett", "puntura", "fare", "somministr"]))
+        )
+        if is_timing_query:
             if glicemia < 90:
                 consiglio_anticipo = "Glicemia di partenza bassa o tendente al ribasso (<90 mg/dL): inietta **subito all'inizio del pasto o a metà pasto** dopo i primi carboidrati, per scongiurare un calo reattivo prima che gli zuccheri entrino in circolo."
             elif glicemia <= 140:
@@ -231,15 +246,6 @@ def rispondi_chat_coach(
                 f"• Insulina Attiva (IOB): **-{iob}U**{dettaglio_moto}\n"
                 f"➡ **Dose Consigliata Stimata:** **~{bolo_consigliato}U**{dettaglio_grassi}\n\n"
                 f"⚠️ *Nota di Sicurezza:* Questa è una simulazione matematica a scopo educativo. Conferma sempre con il tuo piano terapeutico."
-            )
-        elif any(w in msg_lower for w in ["picco", "curva", "tempo", "salita", "escursione", "andamento", "sale", "aumenta"]):
-            minuti_picco = 55 + int(grassi * 0.65) + int(fibre * 0.8)
-            return (
-                f"### Dinamica Glicemica Prevista per {nome_piatto}:\n"
-                f"• **Glicemia Iniziale CGM:** {glicemia} mg/dL.\n"
-                f"• **Tempo Stimato al Picco:** circa **+{minuti_picco} minuti** dall'inizio del pasto.\n"
-                f"• **Impatto Interventi:** Con il pre-carico di fibre e la camminata attiva, l'ampiezza del picco si riduce del 30-35% massimizzando il Time-in-Range (70-180 mg/dL).\n"
-                f"• **Coda Digestiva:** I {grassi}g di grassi rallentano lo svuotamento gastrico e mantengono la glicemia sostenuta a +120..+180 min."
             )
         elif any(w in msg_lower for w in ["cammin", "glut4", "moto", "attivit"]):
             return (
